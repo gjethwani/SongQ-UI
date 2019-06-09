@@ -1,15 +1,7 @@
 import React, { Component } from 'react'
 import axios from 'axios'
-import { Redirect } from 'react-router'
 
-class Playground extends Component {
-    constructor(props) {
-        super(props)
-        this.state = {
-            redirect: false
-        }
-        this.redirect = this.redirect.bind(this)
-    }
+class Login extends Component {
     submitForm() {
         axios.post('http://localhost:5000/login', {
             email: document.getElementById('email').value,
@@ -18,25 +10,30 @@ class Playground extends Component {
             withCredentials: true
         })
         .then(function(response) {
-            console.log(response)
+            var { needToSpotifyAuth, spotifyRefresh } = response.data
+            if (needToSpotifyAuth) {
+                if (spotifyRefresh) {
+                    window.location.href = 'http://localhost:5000/spotify-refresh-token'
+                } else {
+                    window.location.href = 'http://localhost:5000/spotify-login'
+                }
+            } else {
+                window.location.href = 'http://localhost:3000/home'
+            }
         })
         .catch(function(error) {
             console.log(error)
         })
-    }
-    redirect() {
-        window.location.href = 'http://localhost:5000/spotify-login'
     }
     render() {
         return(
             <div>
                 <input id='email' type='text'/>
                 <input id='password' type ='password'/>
-                <button onClick={this.redirect}>Submit</button>
-                {/* {this.state.redirect && <Redirect push to={'http://localhost:5000/spotify-login'}/> } */}
+                <button onClick={this.submitForm}>Submit</button>
             </div>
         )
     }
 }
 
-export default Playground
+export default Login
