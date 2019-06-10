@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom'
 import { homedir } from 'os';
 import Login from '../Login'
-import Home from '../Home'
+import CreatePlaylist from '../CreatePlaylist'
 
 class AppRouter extends Component {
     render() {
@@ -15,7 +15,7 @@ class AppRouter extends Component {
                         /> }
                     />
                     <Route exact path='/home' render={(props) => 
-                        <Home
+                        <CreatePlaylist
                             {...props}
                         /> }
                     />
