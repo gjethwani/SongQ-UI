@@ -7,7 +7,19 @@ class CreatePlaylist extends Component {
             playlistName: 'test-playlist',
             playlistIsByLocation: false,
             playlistIsPublic: false,
-            roomCode: 'NNNN',
+        }, {
+            withCredentials: true
+        })
+        .then(function(response) {
+            console.log(response)
+        })
+        .catch(function(error) {
+            console.log(error)
+        })
+    }
+    getPlaylists() {
+        axios.get('http://localhost:5000/get-playlists', {
+            someParam: "here"
         }, {
             withCredentials: true
         })
@@ -20,7 +32,7 @@ class CreatePlaylist extends Component {
     }
     render() {
         return(
-            <button onClick={this.createPlaylist}>Create Playlist</button>
+            <button onClick={this.getPlaylists}>Create Playlist</button>
         )
     }
 }
