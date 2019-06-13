@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Route, Switch } from 'react-router-dom'
 import { homedir } from 'os';
 import Login from '../Login'
 import CreatePlaylist from '../CreatePlaylist'
+import WelcomeScreen from '../WelcomeScreen';
 
 class AppRouter extends Component {
     render() {
@@ -10,7 +11,7 @@ class AppRouter extends Component {
             <Router>
                 <Switch>
                     <Route exact path='/' render={(props) => 
-                        <Login 
+                        <WelcomeScreen 
                             {...props} 
                         /> }
                     />
