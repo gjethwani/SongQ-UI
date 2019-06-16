@@ -1,0 +1,24 @@
+.hostOrGuestContainer {
+    display: table;
+    height: 100%;
+    width: 100%;
+    background: linear-gradient(239.6deg, #3C1778 24.44%, #574AE2 100.52%), #8E2DE2;
+}
+
+.hostOrGuestTextContainer {
+    display: table-cell;
+    vertical-align: middle;
+    text-align: center;
+    height: 100%;
+    color: white;
+}
+
+.welcomeHeader {
+    color: white;
+}
+
+.hostGuestButton {
+    width: 40%;
+    margin: auto;
+    margin-bottom: 20px;
+}

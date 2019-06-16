@@ -1,0 +1,9 @@
+.createContainer {
+    width: 90%;
+    margin: auto;
+}
+
+.createButton {
+    margin-top: 20px;
+    float: right;
+}

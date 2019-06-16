@@ -1,0 +1,19 @@
+.card {
+    margin-top: 20px;
+    margin-bottom: 20px;
+    border-radius: 20px;
+    background: linear-gradient(239.6deg, #3C1778 24.44%, #574AE2 100.52%), #8E2DE2; 
+}
+.card:hover {
+    background: linear-gradient(239.6deg, #8E2DE2 24.44%, #574AE2 100.52%), #3C1778; 
+}
+
+.lineDivider {
+    margin-top: 3px;
+    width: 100%;
+}
+
+.overallContainer {
+    width: 90%;
+    margin: auto;
+}

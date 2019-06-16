@@ -1,0 +1,25 @@
+@font-face {
+    font-family: "SF Pro Text";
+    src: url(./fonts/SF-Pro/SF-Pro-Text-Regular.otf);
+}
+
+h1, h2, p {
+    font-family: "SF Pro Text";
+}
+
+button {
+    border-radius:28px;
+    padding-bottom: 17px;
+    padding-top:17px;
+    background-color: Transparent;
+    color: white;
+    font-weight: bold;
+    border: 2px solid white;
+    display: block;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: white;
+    color: black;
+}

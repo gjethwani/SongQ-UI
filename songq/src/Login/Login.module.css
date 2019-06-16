@@ -1,0 +1,28 @@
+.loginContainer {
+    display: table;
+    height: 100%;
+    width: 100%;
+    background: linear-gradient(239.6deg, #3C1778 24.44%, #574AE2 100.52%), #8E2DE2;
+}
+
+.loginTextContainer {
+    display: table-cell;
+    vertical-align: middle;
+}
+
+.loginButton {
+    color: white;
+    margin: auto;
+    width: 30%;
+    margin-bottom: 20px; 
+}
+
+.header {
+    color: white;
+    text-align: center;
+}
+
+.error {
+    color: red;
+    text-align: center;
+}
