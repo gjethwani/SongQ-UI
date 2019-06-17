@@ -2,7 +2,8 @@ import React, { Component } from 'react'
 import Login from '../Login'
 import '../main.css'
 import styles from './WelcomeScreen.module.css'
-import HostOrGuest from '../HostOrGuest/HostOrGuest';
+import HostOrGuest from '../HostOrGuest'
+import SignUp from '../SignUp'
 const { welcomeScreenContainer, 
     welcomeScreenTextContainer, 
     loginSignupButton, 
@@ -15,12 +16,14 @@ class WelcomeScreen extends Component {
         this.state = {
             showLogin: false,
             showWelcome: false,
-            showHostOrGuest: true
+            showHostOrGuest: true,
+            showSignUp: false
         }
-        this.redirectToLogin = this.redirectToLogin.bind(this)
+        this.changeToLoginView = this.changeToLoginView.bind(this)
         this.changeToHostView = this.changeToHostView.bind(this)
+        this.changeToSignUpView = this.changeToSignUpView.bind(this)
     }
-    redirectToLogin() {
+    changeToLoginView() {
         this.setState({ 
             showLogin: true,
             showWelcome: false
@@ -29,8 +32,13 @@ class WelcomeScreen extends Component {
     changeToHostView() {
         this.setState({
             showWelcome: true,
-            showLogin: false,
             showHostOrGuest: false
+        })
+    }
+    changeToSignUpView() {
+        this.setState({
+            showSignUp: true,
+            showWelcome: false 
         })
     }
     render() {
@@ -41,16 +49,18 @@ class WelcomeScreen extends Component {
                     <h1 className={welcomeScreenHeader}>Thanks for hosting!</h1>
                     <p>Are you new here?</p>
                     <button 
-                        onClick={this.redirectToLogin}
+                        onClick={this.changeToLoginView}
                         className={loginSignupButton}>
-                            Log in
+                            LOG IN
                     </button>
                     <button
-                        className={loginSignupButton}>
-                            Sign up
+                        className={loginSignupButton}
+                        onClick={this.changeToSignUpView}>
+                            SIGN UP
                     </button>
                 </div>}
                 {this.state.showLogin && <Login/>}
+                {this.state.showSignUp && <SignUp/>}
             </div>
         )
     }

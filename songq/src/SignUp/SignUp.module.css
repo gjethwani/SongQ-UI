@@ -1,0 +1,22 @@
+.overallContainer {
+    display: table;
+    height: 100%;
+    width: 100%;
+}
+
+.textContainer {
+    display: table-cell;
+    vertical-align: middle;
+    text-align: center;   
+}
+
+.header {
+    color: white !important;
+}
+
+.button {
+    color: white;
+    margin: auto;
+    width: 30%;
+    margin-bottom: 20px; 
+}

@@ -22,12 +22,12 @@ class HostOrGuest extends Component {
                         className={hostGuestButton}
                         onClick={this.props.changeToHostView}
                     >
-                        Host
+                        HOST
                     </button>
                     <button
                         className={hostGuestButton}
                     >
-                        Guest
+                        GUEST
                     </button>
                 </div>
             </div>

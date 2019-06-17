@@ -3,7 +3,7 @@ import CreateNavBar from '../CreateNavBar'
 import axios from 'axios'
 import Input from 'muicss/lib/react/input'
 import { Button, Radio } from 'antd'
-import { getHostName } from '../util'
+import { getHostname } from '../util'
 import styles from './CreatePlaylist.module.css'
 import 'muicss/dist/css/mui.min.css'
 import 'antd/dist/antd.css'
@@ -38,7 +38,7 @@ class CreatePlaylist extends Component {
         })
         .then(function(response) {
             console.log(response)
-            window.location.href = `http://${getHostName()}/home`
+            window.location.href = `http://${getHostname()}/home`
         })
         .catch(function(error) {
             console.log(error)

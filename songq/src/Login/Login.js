@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Input } from 'antd'
+import { Input, Icon } from 'antd'
 import { getHostname } from '../util.js'
 import axios from 'axios'
 import styles from './Login.module.css'
@@ -70,12 +70,7 @@ class Login extends Component {
         .then((response) => {
             var { needToSpotifyAuth, spotifyRefresh } = response.data
             if (needToSpotifyAuth) {
-                if (spotifyRefresh) {
-                    this.authenticateSpotify(spotifyRefresh)
-                    window.location.href = `http://${getHostname()}/spotify-refresh-token`
-                } else {
-                    window.location.href = `http://${getHostname()}/spotify-login`
-                }
+                this.authenticateSpotify(spotifyRefresh)
             } else {
                 window.location.href = `http://${getHostname()}/home`
             }
@@ -94,6 +89,7 @@ class Login extends Component {
                     <h2 className={header}>Welcome back! Tell us who you are</h2>
                     <Input
                         placeholder='Email'
+                        prefix={<Icon type="user" style={{ color: 'rgba(0,0,0,.25)' }} />}
                         style={{
                             width: '30%',
                             margin: 'auto', 
@@ -104,6 +100,7 @@ class Login extends Component {
                     />
                     <Password 
                         placeholder='Password'
+                        prefix={<Icon type="lock" style={{ color: 'rgba(0,0,0,.25)' }} />}
                         style={{
                             width: '30%',
                             margin: 'auto', 
@@ -113,16 +110,10 @@ class Login extends Component {
                         onChange={e => this.onPasswordChange(e.target.value)}
                     />
                     <button 
-                        onClick={this.submitForm}
+                        onClick={this.authenticateSpotify}
                         className={loginButton}
                     >
                         Submit
-                    </button>
-                    <button 
-                        onClick={this.submitForm}
-                        className={loginButton}
-                    >
-                        Back
                     </button>
                     {this.state.error && <p className={error}>{this.state.error}</p>}
                 </div>

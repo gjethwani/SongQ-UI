@@ -4,7 +4,7 @@
 }
 
 h1, h2, p {
-    font-family: "SF Pro Text";
+    font-family: "SF Pro Text" !important;
 }
 
 button {
