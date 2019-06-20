@@ -1,0 +1,9 @@
+.navBar {
+    background: linear-gradient(239.6deg, #3C1778 24.44%, #574AE2 100.52%), #8E2DE2;
+    text-align: center;
+}
+
+.playlistNameText {
+    width: 100%;
+    font-size: 40px;
+}

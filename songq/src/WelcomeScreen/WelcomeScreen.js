@@ -4,6 +4,7 @@ import '../main.css'
 import styles from './WelcomeScreen.module.css'
 import HostOrGuest from '../HostOrGuest'
 import SignUp from '../SignUp'
+import GuestLogin from '../GuestLogin'
 const { welcomeScreenContainer, 
     welcomeScreenTextContainer, 
     loginSignupButton, 
@@ -16,12 +17,14 @@ class WelcomeScreen extends Component {
         this.state = {
             showLogin: false,
             showWelcome: false,
-            showHostOrGuest: true,
-            showSignUp: false
+            showHostOrGuest: true, 
+            showSignUp: false,
+            showGuestLogin: false
         }
         this.changeToLoginView = this.changeToLoginView.bind(this)
         this.changeToHostView = this.changeToHostView.bind(this)
         this.changeToSignUpView = this.changeToSignUpView.bind(this)
+        this.changeToGuestLoginView = this.changeToGuestLoginView.bind(this)
     }
     changeToLoginView() {
         this.setState({ 
@@ -41,10 +44,20 @@ class WelcomeScreen extends Component {
             showWelcome: false 
         })
     }
+    changeToGuestLoginView() {
+        this.setState({
+            showHostOrGuest: false,
+            showGuestLogin: true
+        })
+    }
     render() {
         return(
             <div className={welcomeScreenContainer}>
-                {this.state.showHostOrGuest && <HostOrGuest changeToHostView={this.changeToHostView} />}
+                {this.state.showHostOrGuest && 
+                    <HostOrGuest 
+                    changeToHostView={this.changeToHostView} 
+                    changeToGuestView={this.changeToGuestLoginView}
+                />}
                 {this.state.showWelcome && <div className={welcomeScreenTextContainer}>
                     <h1 className={welcomeScreenHeader}>Thanks for hosting!</h1>
                     <p>Are you new here?</p>
@@ -61,6 +74,7 @@ class WelcomeScreen extends Component {
                 </div>}
                 {this.state.showLogin && <Login/>}
                 {this.state.showSignUp && <SignUp/>}
+                {this.state.showGuestLogin && <GuestLogin/>}
             </div>
         )
     }

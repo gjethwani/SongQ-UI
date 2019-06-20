@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { PageHeader, Button } from 'antd'
+import { PageHeader } from 'antd'
 import 'antd/dist/antd.css'
 import '../main.css'
 
@@ -11,7 +11,7 @@ class CreateNavBar extends Component {
         return(
             <PageHeader
                 onBack={() => window.history.back()}
-                title="Create Playlist"
+                title={<span style={{'color': 'black'}}>Create Playlist</span>}
             />
         )
     }

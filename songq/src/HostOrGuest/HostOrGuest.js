@@ -26,6 +26,7 @@ class HostOrGuest extends Component {
                     </button>
                     <button
                         className={hostGuestButton}
+                        onClick={this.props.changeToGuestView}
                     >
                         GUEST
                     </button>

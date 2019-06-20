@@ -68,6 +68,7 @@ class Login extends Component {
             withCredentials: true
         })
         .then((response) => {
+            console.log(response.data)
             var { needToSpotifyAuth, spotifyRefresh } = response.data
             if (needToSpotifyAuth) {
                 this.authenticateSpotify(spotifyRefresh)
@@ -110,7 +111,7 @@ class Login extends Component {
                         onChange={e => this.onPasswordChange(e.target.value)}
                     />
                     <button 
-                        onClick={this.authenticateSpotify}
+                        onClick={this.submitForm}
                         className={loginButton}
                     >
                         Submit

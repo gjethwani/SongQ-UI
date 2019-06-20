@@ -1,0 +1,41 @@
+.albumArt {
+    width: 80%;
+    border-radius: 10px;
+    margin-left: 10%;
+    display: table-cell;
+    vertical-align: top;
+    cursor: pointer
+}
+
+.albumArt:hover {
+    transform: scale(1.2)
+}
+
+.title {
+    font-size: 10px;
+    text-align: center;
+    font-weight: bold;
+    margin-bottom: 3px;
+    margin-top: 11px;
+}
+
+.artist {
+    font-size: 8px;
+    text-align: center;
+    margin-top: 3px;
+}
+
+.cardContainer {
+    display: inline-block;
+    margin-left: 4%;
+    height: 220px;
+    width: 20%;
+    display: table;
+    float: left;
+}
+
+.container {
+    width: 80%;
+    margin: auto;
+    margin-top: 40px;
+}

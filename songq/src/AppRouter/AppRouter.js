@@ -4,6 +4,7 @@ import { homedir } from 'os';
 import WelcomeScreen from '../WelcomeScreen'
 import HostHome from '../HostHome'
 import CreatePlaylist from '../CreatePlaylist'
+import GuestHome from '../GuestHome'
 
 class AppRouter extends Component {
     render() {
@@ -22,6 +23,11 @@ class AppRouter extends Component {
                     />
                     <Route exact path='/create-playlist' render={(props) =>
                         <CreatePlaylist
+                            {...props}
+                        /> }
+                    />
+                    <Route exact path='/request-songs' render={(props) =>
+                        <GuestHome
                             {...props}
                         /> }
                     />

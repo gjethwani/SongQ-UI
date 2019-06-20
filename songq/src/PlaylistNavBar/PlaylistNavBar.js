@@ -16,7 +16,7 @@ class PlaylistNavBar extends Component {
         return(
             <PageHeader
                 backIcon={false}
-                title="Playlists"
+                title={<span style={{'color': 'black'}}>Playlists</span>}
                 style={{ width: '100%'}}
                 extra={[
                     <Button 
