@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import { Icon } from 'antd'
 import axios from 'axios'
 import '../main.css'
 import 'antd/dist/antd.css'
@@ -8,12 +9,17 @@ const {
     title,
     cardContainer,
     artist,
-    container
+    container,
+    added,
+    innerDiv
 } = styles
 
 class PlaylistNavBar extends Component {
     constructor(props) {
         super(props)
+        this.state = {
+            added: []
+        }
         this.joinArtists = this.joinArtists.bind(this)
     }
     joinArtists(artists) {
@@ -21,12 +27,16 @@ class PlaylistNavBar extends Component {
         artists.forEach((artist, i) => {
             artistsJoined += artist.name
             if (i !== artists.length - 1) {
-                artistsJoined += ','
+                artistsJoined += ', '
             }
         })
         return artistsJoined
     }
-    makeRequest(songData) {
+    makeRequest(index, songData) {
+        var { added } = this.state
+        if (added.includes(index)) {
+            return
+        }
         var requestData = {
             ...songData,
             roomCode: this.props.roomCode
@@ -35,6 +45,8 @@ class PlaylistNavBar extends Component {
             withCredentials: true
         })
         .then((response) => {
+            added.push(index)
+            this.setState({ added })
             console.log(response.status)
         })
         .catch((error) => {
@@ -47,17 +59,30 @@ class PlaylistNavBar extends Component {
                 {
                     this.props.searchResults.map((track, i) => 
                         <div className={cardContainer}>
-                            <img 
-                                src={track.album.images[1].url} 
+                            <div
                                 className={albumArt}
-                                onClick={() => this.makeRequest({
+                                style={{
+                                    'backgroundImage': `url(${track.album.images[1].url})`,
+                                }}
+                                onClick={() => this.makeRequest(i, {
                                     songId: track.id,
                                     songName: track.name,
                                     artists: this.joinArtists(track.artists),
                                     album: track.album.name,
                                     albumArt: track.album.images[1].url
                                 })}
-                            />
+                            >
+                                {this.state.added.includes(i) && <div
+                                    style={{'backgroundColor': `rgba(0,0,0,0.8)`}}
+                                    className={innerDiv}
+                                >
+                                    <Icon 
+                                        type="check-circle" 
+                                        theme="twoTone" 
+                                        className={added}
+                                    />
+                                </div>}
+                            </div>
                             <p className={title}>{track.name}</p>
                             <p className={artist}>{this.joinArtists(track.artists)}</p>
                         </div>

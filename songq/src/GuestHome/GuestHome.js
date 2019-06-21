@@ -38,7 +38,8 @@ class GuestHome extends Component {
             cancel();
         }
         this.setState({
-            loading: true
+            loading: true,
+            searchResults: []
         })
         axios.post('http://localhost:5000/search-songs', {
             q
@@ -71,7 +72,8 @@ class GuestHome extends Component {
                 <Input 
                     className={searchBar}
                     onChange={e => this.onSearchChange(e.target.value)}
-                    placeholder="Search for Tracks"
+                    label="Search for Tracks"
+                    floatingLabel={true}
                 />
                 <SearchResults 
                     searchResults={this.state.searchResults}

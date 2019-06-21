@@ -1,6 +1,7 @@
 .searchBar {
     width: 80%;
     margin: auto;
+    margin-top: 20px;
 }
 
 .loadingIcon {
@@ -8,5 +9,5 @@
     left: 50%;
     top: 50%;
     transform: translate(-50%, -50%);
-    width: 150px;
+    font-size: 100px;
 }

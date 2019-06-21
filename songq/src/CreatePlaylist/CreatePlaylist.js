@@ -56,7 +56,8 @@ class CreatePlaylist extends Component {
                 <CreateNavBar/>
                 <div className={createContainer}>
                     <Input 
-                        placeholder="Playlist Name"
+                        label="Playlist Name"
+                        floatingLabel={true}
                         onChange={this.onPlaylistNameChange}
                     />
                     <h4>Do you want your Spotify playlist to be public?</h4>
