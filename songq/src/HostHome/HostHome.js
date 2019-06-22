@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import { Card, Skeleton } from 'antd'
 import PlaylistNavBar from '../PlaylistNavBar'
+import { getHostname } from '../util'
 import axios from 'axios'
 import '../main.css'
 import 'antd/dist/antd.css'
@@ -22,6 +23,7 @@ class HostHome extends Component {
             playlists: ["placeholder"]
         }
         this.fetchPlaylists = this.fetchPlaylists.bind(this)
+        this.showPlaylists = this.showPlaylists.bind(this)
     }
     componentDidMount() {
         this.fetchPlaylists()
@@ -38,30 +40,32 @@ class HostHome extends Component {
                 // TODO: Error Handling
             })
     }
+    showPlaylists(roomCode, playlistName) {
+        window.location.href = `http://${getHostname()}/requests?roomCode=${roomCode}&playlistName=${playlistName}`
+    }
     render() {
         return(
-            <div className={overallContainer}>
-                <PlaylistNavBar/>
-                <hr className={lineDivider}/>
-                <div>
-                {
-                    this.state.playlists.map((playlist, i) => 
-                        <Card
-                            className={card}
-                            hoverable={true}
-                        >
-                            <Skeleton loading={this.state.loading} active>
-                                <Meta
-                                    title={playlist.playlistName}
-                                    description={`Code: ${playlist.roomCode}`}
-                                />
-                            </Skeleton>
-                        </Card>
-                    )
-                }
+                <div className={overallContainer}>
+                    <hr className={lineDivider}/>
+                    <div>
+                    {
+                        this.state.playlists.map((playlist, i) => 
+                            <Card
+                                className={card}
+                                hoverable={true}
+                                onClick={() => this.showPlaylists(playlist.roomCode, playlist.playlistName)}
+                            >
+                                <Skeleton loading={this.state.loading} active>
+                                    <Meta
+                                        title={playlist.playlistName}
+                                        description={`Code: ${playlist.roomCode}`}
+                                    />
+                                </Skeleton>
+                            </Card>
+                        )
+                    }
+                    </div>
                 </div>
-            </div>
-           
         )
     }
 }

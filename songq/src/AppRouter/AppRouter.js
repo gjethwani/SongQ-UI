@@ -1,10 +1,12 @@
 import React, { Component } from 'react'
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom'
-import { homedir } from 'os';
+import { DragDropContext } from 'react-dnd'
+import HTML5Backend from 'react-dnd-html5-backend'
 import WelcomeScreen from '../WelcomeScreen'
 import HostHome from '../HostHome'
 import CreatePlaylist from '../CreatePlaylist'
 import GuestHome from '../GuestHome'
+import ViewPlaylist from '../ViewPlaylist'
 
 class AppRouter extends Component {
     render() {
@@ -31,10 +33,15 @@ class AppRouter extends Component {
                             {...props}
                         /> }
                     />
+                    <Route exact path='/requests' render={(props) =>
+                        <ViewPlaylist
+                            {...props}
+                        /> }
+                    />
                 </Switch>
             </Router>
         )
     }
 }
 
-export default AppRouter
+export default DragDropContext(HTML5Backend)(AppRouter)

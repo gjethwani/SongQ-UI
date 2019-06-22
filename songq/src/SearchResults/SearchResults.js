@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import { Icon } from 'antd'
+import { joinArtists } from '../util'
 import axios from 'axios'
 import '../main.css'
 import 'antd/dist/antd.css'
@@ -20,17 +21,6 @@ class PlaylistNavBar extends Component {
         this.state = {
             added: []
         }
-        this.joinArtists = this.joinArtists.bind(this)
-    }
-    joinArtists(artists) {
-        var artistsJoined = ''
-        artists.forEach((artist, i) => {
-            artistsJoined += artist.name
-            if (i !== artists.length - 1) {
-                artistsJoined += ', '
-            }
-        })
-        return artistsJoined
     }
     makeRequest(index, songData) {
         var { added } = this.state
@@ -67,7 +57,7 @@ class PlaylistNavBar extends Component {
                                 onClick={() => this.makeRequest(i, {
                                     songId: track.id,
                                     songName: track.name,
-                                    artists: this.joinArtists(track.artists),
+                                    artists: joinArtists(track.artists),
                                     album: track.album.name,
                                     albumArt: track.album.images[1].url
                                 })}
@@ -84,7 +74,7 @@ class PlaylistNavBar extends Component {
                                 </div>}
                             </div>
                             <p className={title}>{track.name}</p>
-                            <p className={artist}>{this.joinArtists(track.artists)}</p>
+                            <p className={artist}>{joinArtists(track.artists)}</p>
                         </div>
                     )
                 }
