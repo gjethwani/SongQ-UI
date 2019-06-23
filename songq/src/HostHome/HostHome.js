@@ -40,12 +40,13 @@ class HostHome extends Component {
                 // TODO: Error Handling
             })
     }
-    showPlaylists(roomCode, playlistName) {
-        window.location.href = `http://${getHostname()}/requests?roomCode=${roomCode}&playlistName=${playlistName}`
+    showPlaylists(roomCode, playlistName, playlistId) {
+        window.location.href = `http://${getHostname()}/requests?roomCode=${roomCode}&playlistName=${playlistName}&playlistId=${playlistId}`
     }
     render() {
         return(
                 <div className={overallContainer}>
+                    <PlaylistNavBar />
                     <hr className={lineDivider}/>
                     <div>
                     {
@@ -53,7 +54,7 @@ class HostHome extends Component {
                             <Card
                                 className={card}
                                 hoverable={true}
-                                onClick={() => this.showPlaylists(playlist.roomCode, playlist.playlistName)}
+                                onClick={() => this.showPlaylists(playlist.roomCode, playlist.playlistName, playlist.spotifyPlaylistId)}
                             >
                                 <Skeleton loading={this.state.loading} active>
                                     <Meta

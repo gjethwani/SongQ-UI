@@ -14,10 +14,16 @@ const {
 const itemSource = {
     beginDrag(props) {
         props.onShowAcceptChange(true)
-        return { id: props.request.id }
+        props.onShowRejectChange(true)
+        const { id, songId } = props.request
+        return { 
+            id,
+            songId,
+        }
     },
-    endDrag(props) {
+    endDrag(props, monitor, component) {
         props.onShowAcceptChange(false)
+        props.onShowRejectChange(false)
     }
 }
 

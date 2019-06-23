@@ -8,7 +8,8 @@ import GuestLogin from '../GuestLogin'
 const { welcomeScreenContainer, 
     welcomeScreenTextContainer, 
     loginSignupButton, 
-    welcomeScreenHeader
+    welcomeScreenHeader,
+    question
 } = styles
 
 class WelcomeScreen extends Component {
@@ -60,7 +61,7 @@ class WelcomeScreen extends Component {
                 />}
                 {this.state.showWelcome && <div className={welcomeScreenTextContainer}>
                     <h1 className={welcomeScreenHeader}>Thanks for hosting!</h1>
-                    <p>Are you new here?</p>
+                    <p className={question}>Are you new here?</p>
                     <button 
                         onClick={this.changeToLoginView}
                         className={loginSignupButton}>

@@ -5,7 +5,8 @@ const {
     hostOrGuestContainer,
     hostOrGuestTextContainer,
     welcomeHeader,
-    hostGuestButton
+    hostGuestButton,
+    question
 } = styles
 
 class HostOrGuest extends Component {
@@ -17,7 +18,7 @@ class HostOrGuest extends Component {
             <div className={hostOrGuestContainer}>
                 <div className={hostOrGuestTextContainer}>
                     <h1 className={welcomeHeader}>Welcome to SongQ</h1>
-                    <p>Are you a host or a guest?</p>
+                    <p className={question}>Are you a host or a guest?</p>
                     <button 
                         className={hostGuestButton}
                         onClick={this.props.changeToHostView}
