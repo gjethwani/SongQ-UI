@@ -56,6 +56,7 @@ class ViewPlaylist extends Component {
         })
     }
     serviceRequest(requestId, songId, accepted) {
+        document.getElementById(requestId).style.display = 'none'
         axios.post('http://localhost:5000/service-request', {
             requestId,
             accepted,
@@ -68,6 +69,7 @@ class ViewPlaylist extends Component {
             console.log(response.status)
         })
         .catch((err) => {
+            document.getElementById(requestId).style.display = 'block'
             console.log(err)
         })
     }
@@ -94,11 +96,13 @@ class ViewPlaylist extends Component {
                 <div className={container}>
                     {
                         this.state.requests.map((request, i) => 
-                            <Request
-                                request={request}
-                                onShowAcceptChange={this.onShowAcceptChange}
-                                onShowRejectChange={this.onShowRejectChange}
-                            />  
+                            <div id={request.id}>
+                                <Request
+                                    request={request}
+                                    onShowAcceptChange={this.onShowAcceptChange}
+                                    onShowRejectChange={this.onShowRejectChange}
+                                />  
+                            </div>
                         )
                     }
                 </div>

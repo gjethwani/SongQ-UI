@@ -3,7 +3,6 @@
     margin-bottom: 20px;
     border-radius: 20px;
     background: linear-gradient(239.6deg, #3C1778 24.44%, #574AE2 100.52%), #8E2DE2; 
-    color: white !important;
 }
 .card:hover {
     background: linear-gradient(239.6deg, #8E2DE2 24.44%, #574AE2 100.52%), #3C1778; 
@@ -19,6 +18,6 @@
     margin: auto;
 }
 
-div {
-    color: white !important;
+.text {
+    color: white;
 }

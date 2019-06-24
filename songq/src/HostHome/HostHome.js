@@ -9,7 +9,8 @@ import styles from './HostHome.module.css'
 const { 
     card,
     lineDivider,
-    overallContainer
+    overallContainer,
+    text
 } = styles
 
 const { Meta } = Card
@@ -58,8 +59,8 @@ class HostHome extends Component {
                             >
                                 <Skeleton loading={this.state.loading} active>
                                     <Meta
-                                        title={playlist.playlistName}
-                                        description={`Code: ${playlist.roomCode}`}
+                                        title={<p className={text}>{playlist.playlistName}</p>}
+                                        description={<p className={text}>{`Code: ${playlist.roomCode}`}</p>}
                                     />
                                 </Skeleton>
                             </Card>
