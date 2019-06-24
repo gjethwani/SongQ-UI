@@ -41,7 +41,7 @@ class GuestHome extends Component {
             loading: true,
             searchResults: []
         })
-        axios.post('http://localhost:5000/search-songs', {
+        axios.post(`${process.env.REACT_APP_BACK_END_URI}/search-songs`, {
             q
         }, {
             withCredentials: true,

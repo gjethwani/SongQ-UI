@@ -64,7 +64,7 @@ class GuestLogin extends Component {
         }
         roomCode = roomCode.join('')
         console.log(roomCode)
-        axios.post('http://localhost:5000/check-playlist-exists', {
+        axios.post(`${process.env.REACT_APP_BACK_END_URI}/check-playlist-exists`, {
             roomCode
         }, {
             withCredentials: true
@@ -73,7 +73,7 @@ class GuestLogin extends Component {
             const { playlistExists, playlistName } = response.data
             this.setState({ playlistName })
             if (playlistExists) {
-                axios.post('http://localhost:5000/guest-login', {}, {
+                axios.post(`${process.env.REACT_APP_BACK_END_URI}/guest-login`, {}, {
                     withCredentials: true
                 })
                 .then((response) => {

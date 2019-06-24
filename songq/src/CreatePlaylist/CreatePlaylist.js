@@ -38,7 +38,7 @@ class CreatePlaylist extends Component {
         this.onExistingPlaylistChange = this.onExistingPlaylistChange.bind(this)
     }
     componentDidMount() {
-        axios.post('http://localhost:5000/get-existing-playlists', {}, {
+        axios.post(`${process.env.REACT_APP_BACK_END_URI}/get-existing-playlists`, {}, {
             withCredentials: true
         })
         .then((response) => {
@@ -54,7 +54,7 @@ class CreatePlaylist extends Component {
     }
     createPlaylist() {
         var useExistingPlaylist = this.state.playlist === 'new' ? false : true
-        axios.post('http://localhost:5000/create-playlist', {
+        axios.post(`${process.env.REACT_APP_BACK_END_URI}/create-playlist`, {
             playlistName: this.state.playlistName,
             playlistIsByLocation: false,
             playlistIsPublic: this.state.playlistIsPublic,

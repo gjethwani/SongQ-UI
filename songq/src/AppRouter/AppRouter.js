@@ -10,6 +10,7 @@ import ViewPlaylist from '../ViewPlaylist'
 
 class AppRouter extends Component {
     render() {
+        console.log(process.env.REACT_APP_BACK_END_URI)
         return(
             <Router>
                 <Switch>

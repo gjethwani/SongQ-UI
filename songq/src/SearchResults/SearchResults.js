@@ -31,7 +31,7 @@ class PlaylistNavBar extends Component {
             ...songData,
             roomCode: this.props.roomCode
         }
-        axios.post('http://localhost:5000/make-request', requestData, {
+        axios.post(`${process.env.REACT_APP_BACK_END_URI}/make-request`, requestData, {
             withCredentials: true
         })
         .then((response) => {

@@ -4,6 +4,7 @@ import './index.css';
 import './main.css';
 import AppRouter from './AppRouter';
 import * as serviceWorker from './serviceWorker';
+require('dotenv').config()
 
 ReactDOM.render(<AppRouter />, document.getElementById('root'));
 

@@ -30,7 +30,7 @@ class HostHome extends Component {
         this.fetchPlaylists()
     }
     fetchPlaylists() {
-        axios.get('http://localhost:5000/get-playlists', {}, { withCredentials: true })
+        axios.get(`${process.env.REACT_APP_BACK_END_URI}/get-playlists`, {}, { withCredentials: true })
             .then((response) => {
                 this.setState({
                     playlists: response.data.playlists,

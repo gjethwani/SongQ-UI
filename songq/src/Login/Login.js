@@ -46,7 +46,7 @@ class Login extends Component {
         this.submitForm = this.submitForm.bind(this)
     }
     authenticateSpotify(refresh) {
-        var url = 'http://localhost:5000'
+        var url = `${process.env.REACT_APP_BACK_END_URI}`
         if (refresh) {
             url += '/spotify-refresh-token'
         } else {
@@ -61,7 +61,8 @@ class Login extends Component {
         this.setState({ password })
     }
     submitForm() {
-        axios.post('http://localhost:5000/login', {
+        console.log(`${process.env.REACT_APP_BACK_END_URI}/login`)
+        axios.post(`${process.env.REACT_APP_BACK_END_URI}/login`, {
             email: this.state.email,
             password: this.state.password
         }, {

@@ -94,14 +94,14 @@ class SignUp extends Component {
             })
             return
         }
-        axios.post('http://localhost:5000/sign-up', {
+        axios.post(`${process.env.REACT_APP_BACK_END_URI}/sign-up`, {
             email,
             password
         }, {
             withCredentials: true
         })
         .then((response) => {
-            window.location.href = 'http://localhost:5000/spotify-login'
+            window.location.href = `${process.env.REACT_APP_BACK_END_URI}/spotify-login`
         })
         .catch((error) => {
             console.log(error)

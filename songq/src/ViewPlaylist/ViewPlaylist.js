@@ -34,7 +34,7 @@ class ViewPlaylist extends Component {
             playlistName, 
             playlistId 
         })
-        axios.get(`http://localhost:5000/get-requests?roomCode=${roomCode}`, {}, {
+        axios.get(`${process.env.REACT_APP_BACK_END_URI}/get-requests?roomCode=${roomCode}`, {}, {
             withCredentials: true
         })
         .then((response) => {
@@ -57,7 +57,7 @@ class ViewPlaylist extends Component {
     }
     serviceRequest(requestId, songId, accepted) {
         document.getElementById(requestId).style.display = 'none'
-        axios.post('http://localhost:5000/service-request', {
+        axios.post(`${process.env.REACT_APP_BACK_END_URI}/service-request`, {
             requestId,
             accepted,
             playlistId: this.state.playlistId,
