@@ -61,7 +61,6 @@ class Login extends Component {
         this.setState({ password })
     }
     submitForm() {
-        console.log(`${process.env.REACT_APP_BACK_END_URI}/login`)
         axios.post(`${process.env.REACT_APP_BACK_END_URI}/login`, {
             email: this.state.email,
             password: this.state.password
