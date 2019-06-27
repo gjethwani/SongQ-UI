@@ -4,6 +4,7 @@ import axios from 'axios'
 import Input from 'muicss/lib/react/input'
 import { Button, Radio, Select } from 'antd'
 import { getHostname } from '../util'
+import { geolocated } from 'react-geolocated'
 import styles from './CreatePlaylist.module.css'
 import 'muicss/dist/css/mui.min.css'
 import 'antd/dist/antd.css'
@@ -28,7 +29,10 @@ class CreatePlaylist extends Component {
             playlistNameType: "new",
             existingPlaylists: [],
             existingPlaylistsLoading: true,
-            playlistId: ''
+            playlistId: '',
+            locationEnabled: false,
+            latitude: null,
+            longitude: null
         }
         axios.defaults.withCredentials = true
         this.onPublicChange = this.onPublicChange.bind(this)
@@ -36,6 +40,7 @@ class CreatePlaylist extends Component {
         this.createPlaylist = this.createPlaylist.bind(this)
         this.onPlaylistNameTypeChange = this.onPlaylistNameTypeChange.bind(this)
         this.onExistingPlaylistChange = this.onExistingPlaylistChange.bind(this)
+        this.onLocationEnabledChange = this.onLocationEnabledChange.bind(this)
     }
     componentDidMount() {
         axios.post(`${process.env.REACT_APP_BACK_END_URI}/get-existing-playlists`, {}, {
@@ -53,13 +58,21 @@ class CreatePlaylist extends Component {
         })
     }
     createPlaylist() {
-        var useExistingPlaylist = this.state.playlist === 'new' ? false : true
+        var useExistingPlaylist = this.state.playlistNameType === 'new' ? false : true
+        if (this.props.coords !== null) {
+            this.setState({
+                latitude: this.props.latitude,
+                longitude: this.props.longitude
+            })
+        }
         axios.post(`${process.env.REACT_APP_BACK_END_URI}/create-playlist`, {
             playlistName: this.state.playlistName,
-            playlistIsByLocation: false,
+            playlistIsByLocation: this.state.locationEnabled,
             playlistIsPublic: this.state.playlistIsPublic,
             useExistingPlaylist,
-            playlistId: this.state.playlistId
+            playlistId: this.state.playlistId,
+            latitude: this.state.latitude,
+            longitude: this.state.longitude
         }, {
             withCredentials: true
         })
@@ -85,6 +98,19 @@ class CreatePlaylist extends Component {
     }
     onPlaylistNameTypeChange(e) {
         this.setState({ playlistNameType: e.target.value })
+    }
+    onLocationEnabledChange(e) {
+        this.setState({ locationEnabled: e.target.value })
+        if (this.props.isGeolocationAvailable) {
+            if (this.props.isGeolocationEnabled) {
+                if (this.props.coords !== null) {
+                    this.setState({
+                        latitude: this.props.coords.latitude,
+                        longitude: this.props.coords.longitude
+                    })
+                }
+            }
+        }
     }
     render() {
         return(
@@ -134,6 +160,14 @@ class CreatePlaylist extends Component {
                         </div>
                     }
                     <br/>
+                    <h4>Would you like for people near you to see your playlist?</h4>     
+                    <Group
+                        onChange={this.onLocationEnabledChange}
+                        value={this.state.locationEnabled}
+                    >
+                        <Radio value={true}>Yes</Radio>
+                        <Radio value={false}>No</Radio>
+                    </Group>               
                     <Button 
                         onClick={this.createPlaylist}
                         type="primary"
@@ -147,4 +181,11 @@ class CreatePlaylist extends Component {
     }
 }
 
-export default CreatePlaylist
+// export default CreatePlaylist
+
+export default geolocated({
+    positionOptions: {
+      enableHighAccuracy: false,
+    },
+    userDecisionTimeout: 5000,
+  })(CreatePlaylist)

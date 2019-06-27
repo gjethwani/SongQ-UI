@@ -19,7 +19,7 @@ class GuestLogin extends Component {
             roomCode: ['-','-','-','-'],
             refs: [],
             playlistName: '',
-            error: ''
+            error: '',
         }
         this.onDigitChange = this.onDigitChange.bind(this)
         this.authenticateRoomCode = this.authenticateRoomCode.bind(this)
@@ -28,6 +28,7 @@ class GuestLogin extends Component {
             refs.push(React.createRef())
         })
         this.state.refs = refs
+        axios.defaults.withCredentials = true
     }
     onDigitChange(digit, value) {
         var { roomCode } = this.state
@@ -63,7 +64,6 @@ class GuestLogin extends Component {
             return
         }
         roomCode = roomCode.join('')
-        console.log(roomCode)
         axios.post(`${process.env.REACT_APP_BACK_END_URI}/check-playlist-exists`, {
             roomCode
         }, {
@@ -107,7 +107,7 @@ class GuestLogin extends Component {
                                 onChange={e => this.onDigitChange(i, e.target.value)}
                                 className={roomCodeInput}
                                 ref={this.state.refs[i]}
-                                style={i === 0 ? {'margin-left': '0'} : {}}
+                                style={i === 0 ? {'marginLeft': '0'} : {}}
                             />
                         )
                     }
@@ -116,6 +116,12 @@ class GuestLogin extends Component {
                         onClick={this.authenticateRoomCode}
                     >
                         JOIN THE PARTY
+                    </button>
+                    <button
+                        className={button}
+                        onClick={this.props.switchToLocationBased}
+                    >
+                        FIND PARTIES BY LOCATION
                     </button>
                     <p>{this.state.error}</p>
                 </div>

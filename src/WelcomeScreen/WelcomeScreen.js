@@ -5,6 +5,9 @@ import styles from './WelcomeScreen.module.css'
 import HostOrGuest from '../HostOrGuest'
 import SignUp from '../SignUp'
 import GuestLogin from '../GuestLogin'
+import PlaylistMap from '../PlaylistMap'
+import { geolocated } from 'react-geolocated'
+import axios from 'axios'
 const { welcomeScreenContainer, 
     welcomeScreenTextContainer, 
     loginSignupButton, 
@@ -20,12 +23,17 @@ class WelcomeScreen extends Component {
             showWelcome: false,
             showHostOrGuest: true, 
             showSignUp: false,
-            showGuestLogin: false
+            showGuestLogin: false,
+            showPlaylistMap: false,
+            latitude: null,
+            longitude: null,
+            nearbyPlaylists: [],
         }
         this.changeToLoginView = this.changeToLoginView.bind(this)
         this.changeToHostView = this.changeToHostView.bind(this)
         this.changeToSignUpView = this.changeToSignUpView.bind(this)
         this.changeToGuestLoginView = this.changeToGuestLoginView.bind(this)
+        this.switchToLocationBased = this.switchToLocationBased.bind(this)
     }
     changeToLoginView() {
         this.setState({ 
@@ -51,6 +59,33 @@ class WelcomeScreen extends Component {
             showGuestLogin: true
         })
     }
+    switchToLocationBased() {
+        if (this.props.isGeolocationAvailable) {
+            if (this.props.isGeolocationEnabled) {
+                if (this.props.coords !== null) {
+                    this.setState({
+                        latitude: this.props.coords.latitude,
+                        longitude: this.props.coords.longitude,
+                    }, () => {
+                        axios.get(`${process.env.REACT_APP_BACK_END_URI}/get-nearby-playlists?latitude=${this.state.latitude}&longitude=${this.state.longitude}`, {}, {
+                            withCredentials: true
+                        })
+                        .then((response) => {
+                            const { playlists } = response.data
+                            this.setState({ 
+                                showPlaylistMap: true,
+                                showGuestLogin: false,
+                                nearbyPlaylists: playlists,
+                            })
+                        })
+                        .catch((error) => {
+                            console.log(error)
+                        })
+                    })
+                }
+            }
+        }
+    }
     render() {
         return(
             <div className={welcomeScreenContainer}>
@@ -75,10 +110,22 @@ class WelcomeScreen extends Component {
                 </div>}
                 {this.state.showLogin && <Login/>}
                 {this.state.showSignUp && <SignUp/>}
-                {this.state.showGuestLogin && <GuestLogin/>}
+                {this.state.showGuestLogin && <GuestLogin
+                    switchToLocationBased={this.switchToLocationBased}
+                />}
+                {this.state.showPlaylistMap && <PlaylistMap 
+                    currLatitude={this.state.latitude}
+                    currLongitude={this.state.longitude}
+                    nearbyPlaylists={this.state.nearbyPlaylists}
+                />}
             </div>
         )
     }
 }
 
-export default WelcomeScreen
+export default geolocated({
+    positionOptions: {
+      enableHighAccuracy: false,
+    },
+    userDecisionTimeout: 5000,
+  })(WelcomeScreen)

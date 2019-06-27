@@ -1,0 +1,12 @@
+.marker {
+    background: linear-gradient(239.6deg, #3C1778 24.44%, #574AE2 100.52%), #8E2DE2; 
+    display: inline-block;
+    padding: 5px;
+    border-radius: 4px;
+    color: white;
+    cursor: pointer;
+}
+
+.marker:hover {
+    background: linear-gradient(239.6deg, #8E2DE2 24.44%, #574AE2 100.52%), #3C1778; 
+}

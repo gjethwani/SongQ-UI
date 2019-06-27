@@ -22,6 +22,12 @@ class PlaylistNavBar extends Component {
             added: []
         }
     }
+    componentWillReceiveProps(nextProps) {
+        if (nextProps.searchResults !== this.state.searchResults) {
+          this.setState({ added: [] });
+        }
+      }
+      
     makeRequest(index, songData) {
         var { added } = this.state
         if (added.includes(index)) {
