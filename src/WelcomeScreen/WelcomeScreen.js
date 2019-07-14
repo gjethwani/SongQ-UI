@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import { PageHeader } from 'antd'
 import Login from '../Login'
 import '../main.css'
 import styles from './WelcomeScreen.module.css'
@@ -7,12 +8,15 @@ import SignUp from '../SignUp'
 import GuestLogin from '../GuestLogin'
 import PlaylistMap from '../PlaylistMap'
 import { geolocated } from 'react-geolocated'
+import 'antd/dist/antd.css'
 import axios from 'axios'
 const { welcomeScreenContainer, 
     welcomeScreenTextContainer, 
     loginSignupButton, 
     welcomeScreenHeader,
-    question
+    question,
+    header,
+    welcomeScreenInnerContainer
 } = styles
 
 class WelcomeScreen extends Component {
@@ -34,30 +38,42 @@ class WelcomeScreen extends Component {
         this.changeToSignUpView = this.changeToSignUpView.bind(this)
         this.changeToGuestLoginView = this.changeToGuestLoginView.bind(this)
         this.switchToLocationBased = this.switchToLocationBased.bind(this)
+        this.changeToHostOrGuestView = this.changeToHostOrGuestView.bind(this)
+        this.back = this.back.bind(this)
+        this.setStateToFalseButOne = this.setStateToFalseButOne.bind(this)
+    }
+    setStateToFalseButOne(key) {
+        var { state } = this
+        Object.keys(state).forEach(v => state[v] = false)
+        state[key] = true
+        this.setState(state)
     }
     changeToLoginView() {
-        this.setState({ 
-            showLogin: true,
-            showWelcome: false
-        })
+        this.setStateToFalseButOne('showLogin')
     }
     changeToHostView() {
-        this.setState({
-            showWelcome: true,
-            showHostOrGuest: false
-        })
+        this.setStateToFalseButOne('showWelcome')
     }
     changeToSignUpView() {
-        this.setState({
-            showSignUp: true,
-            showWelcome: false 
-        })
+        this.setStateToFalseButOne('showSignUp')
     }
     changeToGuestLoginView() {
-        this.setState({
-            showHostOrGuest: false,
-            showGuestLogin: true
-        })
+        this.setStateToFalseButOne('showGuestLogin')
+    }
+    changeToHostOrGuestView() {
+        this.setStateToFalseButOne('showHostOrGuest')
+    }
+    back() {
+        if (this.state.showWelcome || 
+            this.state.showGuestLogin ||
+            this.state.showPlaylistMap ||
+            this.state.showGuestLogin
+        ) {
+            this.changeToHostOrGuestView()
+        }
+        if (this.state.showLogin || this.state.showSignUp) {
+            this.changeToHostView()
+        }
     }
     switchToLocationBased() {
         if (this.props.isGeolocationAvailable) {
@@ -89,24 +105,30 @@ class WelcomeScreen extends Component {
     render() {
         return(
             <div className={welcomeScreenContainer}>
+                <PageHeader 
+                    className={header}
+                    onBack={this.back}
+                ></PageHeader>
                 {this.state.showHostOrGuest && 
                     <HostOrGuest 
                     changeToHostView={this.changeToHostView} 
                     changeToGuestView={this.changeToGuestLoginView}
                 />}
                 {this.state.showWelcome && <div className={welcomeScreenTextContainer}>
-                    <h1 className={welcomeScreenHeader}>Thanks for hosting!</h1>
-                    <p className={question}>Are you new here?</p>
-                    <button 
-                        onClick={this.changeToLoginView}
-                        className={loginSignupButton}>
-                            LOG IN
-                    </button>
-                    <button
-                        className={loginSignupButton}
-                        onClick={this.changeToSignUpView}>
-                            SIGN UP
-                    </button>
+                    <div className={welcomeScreenInnerContainer}>
+                        <h1 className={welcomeScreenHeader}>Thanks for hosting!</h1>
+                        <p className={question}>Are you new here?</p>
+                        <button 
+                            onClick={this.changeToLoginView}
+                            className={loginSignupButton}>
+                                LOG IN
+                        </button>
+                        <button
+                            className={loginSignupButton}
+                            onClick={this.changeToSignUpView}>
+                                SIGN UP
+                        </button>
+                    </div>
                 </div>}
                 {this.state.showLogin && <Login/>}
                 {this.state.showSignUp && <SignUp/>}

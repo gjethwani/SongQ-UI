@@ -2,11 +2,15 @@ import React, { Component } from 'react'
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom'
 import { DragDropContext } from 'react-dnd'
 import HTML5Backend from 'react-dnd-html5-backend'
+import TouchBackend from 'react-dnd-touch-backend'
+import { isBrowser } from "react-device-detect"
 import WelcomeScreen from '../WelcomeScreen'
 import HostHome from '../HostHome'
 import CreatePlaylist from '../CreatePlaylist'
 import GuestHome from '../GuestHome'
 import ViewPlaylist from '../ViewPlaylist'
+
+const backend = isBrowser ? HTML5Backend : TouchBackend
 
 class AppRouter extends Component {
     render() {
@@ -45,4 +49,4 @@ class AppRouter extends Component {
     }
 }
 
-export default DragDropContext(HTML5Backend)(AppRouter)
+export default DragDropContext(backend)(AppRouter)

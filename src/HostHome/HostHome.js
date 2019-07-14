@@ -21,7 +21,7 @@ class HostHome extends Component {
         axios.defaults.withCredentials = true
         this.state = {
             loading: true,
-            playlists: ["placeholder"]
+            playlists: ["placeholder"],
         }
         this.fetchPlaylists = this.fetchPlaylists.bind(this)
         this.showPlaylists = this.showPlaylists.bind(this)
@@ -46,6 +46,7 @@ class HostHome extends Component {
     }
     render() {
         return(
+            <div>
                 <div className={overallContainer}>
                     <PlaylistNavBar />
                     <hr className={lineDivider}/>
@@ -68,6 +69,7 @@ class HostHome extends Component {
                     }
                     </div>
                 </div>
+            </div>
         )
     }
 }
