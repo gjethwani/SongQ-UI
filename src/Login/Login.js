@@ -68,7 +68,6 @@ class Login extends Component {
             withCredentials: true
         })
         .then((response) => {
-            console.log(response.data)
             var { needToSpotifyAuth, spotifyRefresh } = response.data
             if (needToSpotifyAuth) {
                 this.authenticateSpotify(spotifyRefresh)
