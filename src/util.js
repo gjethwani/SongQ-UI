@@ -4,10 +4,6 @@ const getHostname = () => {
     } else {
         return 'https://songq-ui.herokuapp.com'
     }
-    // } else if (window.location.hostname === 'songq-ui.herokuapp.com') {
-    //     return ''
-    // }
-    // return window.location.href === 'http://localhost' || window.location.href === 'localhost'
 }
 
 const joinArtists = (artists) => {

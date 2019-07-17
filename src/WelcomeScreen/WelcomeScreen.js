@@ -108,7 +108,7 @@ class WelcomeScreen extends Component {
                 <PageHeader 
                     className={header}
                     onBack={this.back}
-                ></PageHeader>
+                />
                 {this.state.showHostOrGuest && 
                     <HostOrGuest 
                     changeToHostView={this.changeToHostView} 

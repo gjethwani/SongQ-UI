@@ -10,7 +10,8 @@
     display: table;
     text-align: center;
     height: 100%;
-    width: 100%;
+    width: 90%;
+    margin: auto;
     color: white;
 }
 
@@ -36,8 +37,15 @@
 
 .header {
     background-color: rgba(0,0,0,0);
+    position: fixed;
 }
 
 .header div {
     color: white;
 }
+
+@media only screen and (max-width: 650px) {
+    .loginSignupButton {
+      width: 100%;
+    }
+  }

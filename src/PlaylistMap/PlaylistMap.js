@@ -6,7 +6,8 @@ import styles from './PlaylistMap.module.css'
 import '../main.css'
 import 'antd/dist/antd.css'
 const {
-    marker
+    marker,
+    map
 } = styles
 
 class PlaylistMap extends Component {
@@ -29,7 +30,7 @@ class PlaylistMap extends Component {
     render() {
         var { currLatitude, currLongitude } = this.props
         return(
-            <div style={{ height: '100vh', width: '100%' }}>
+            <div style={{ height: '100vh', width: '100%' }} className={map}>
                 <GoogleMapReact
                     bootstrapURLKeys={{ key: "AIzaSyCsW6xaXYfBDeuyzfgkGcPtHYL55hvGLTg" }}
                     defaultCenter={{

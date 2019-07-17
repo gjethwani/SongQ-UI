@@ -11,7 +11,8 @@ const {
     loginTextContainer,
     loginButton,
     header,
-    error
+    error,
+    input
 } = styles
 
 const Password = Input.Password
@@ -92,22 +93,22 @@ class Login extends Component {
                         placeholder='Email'
                         prefix={<Icon type="user" style={{ color: 'rgba(0,0,0,.25)' }} />}
                         style={{
-                            width: '30%',
                             margin: 'auto', 
                             display: 'block',
                             marginBottom: '20px'
                         }}
+                        className={input}
                         onChange={e => this.onEmailChange(e.target.value)}
                     />
                     <Password 
                         placeholder='Password'
                         prefix={<Icon type="lock" style={{ color: 'rgba(0,0,0,.25)' }} />}
                         style={{
-                            width: '30%',
                             margin: 'auto', 
                             display: 'block',
                             marginBottom: '20px'
                         }}
+                        className={input}
                         onChange={e => this.onPasswordChange(e.target.value)}
                     />
                     <button 

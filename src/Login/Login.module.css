@@ -8,6 +8,8 @@
 .loginTextContainer {
     display: table-cell;
     vertical-align: middle;
+    padding-left: 20px;
+    padding-right: 20px;
 }
 
 .loginButton {
@@ -26,3 +28,13 @@
     color: red;
     text-align: center;
 }
+
+.input {
+    width: 80% !important;
+}
+
+@media only screen and (max-width: 650px) {
+    .loginButton {
+        width: 100% !important;
+    }
+  }

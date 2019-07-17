@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Input, Icon, Tooltip } from 'antd'
+import { Input, Icon, Tooltip, Modal } from 'antd'
 import axios from 'axios'
 import '../main.css'
 import { getHostname } from '../util'
@@ -27,6 +27,9 @@ const validatePassword = (password) => {
     1 special character
     8 characters or longer 
     */
+    if (password === "") {
+        return false
+    }
     var re = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])(?=.{8,})/
     return re.test(String(password))
 }
@@ -37,12 +40,13 @@ class SignUp extends Component {
         super(props)
         this.state = {
             email: '',
-            validEmail: true,
+            validEmail: false,
             password: '',
-            validPassword: true,
+            validPassword: false,
             confirmPassword: '',
-            validConfirmPassword: true,
-            error: ''
+            validConfirmPassword: false,
+            error: '',
+            showModal: false
         }
         this.onEmailChange = this.onEmailChange.bind(this)
         this.onPasswordChange = this.onPasswordChange.bind(this)
@@ -81,6 +85,18 @@ class SignUp extends Component {
         })
     }
     authenticateSpotify() {
+        if (!this.state.validConfirmPassword || !this.state.validEmail || !this.state.validPassword) {
+            Modal.error({
+                title: "Error",
+                content: 
+                    <div>
+                        {!this.state.validEmail && <p>A valid email address is required</p>}
+                        {!this.state.validPassword && <p>Password needs to be 8 or more characters and have at least 1 uppercase letter, 1 lowercase letter, 1 number and 1 special character</p>}
+                        {!this.state.validConfirmPassword  && <p>Passwords do not match</p>}
+                    </div>
+            })
+            return
+        }
         const { email, password } = this.state
         if (!email) {
             this.setState({
@@ -115,57 +131,39 @@ class SignUp extends Component {
            <div className={overallContainer}>
                <div className={textContainer}>
                     <h2 className={header}>Tell us a bit about yourself</h2>
-                    <Tooltip
-                            title="A valid email address is required"
-                            placement="right"
-                            visible={!this.state.validEmail}
-                    >
-                            <Input
-                                placeholder='Email'
-                                prefix={<Icon type="user" style={{ color: 'rgba(0,0,0,.25)' }} />}
-                                style={{
-                                    width: '30%',
-                                    margin: 'auto', 
-                                    display: 'block',
-                                    marginBottom: '20px'
-                                }}
-                                onChange={e => this.onEmailChange(e.target.value)}
-                            />
-                    </Tooltip>
-                    <Tooltip
-                        title="Password does not match requirements"
-                        placement="right"
-                        visible={!this.state.validPassword}
-                >
-                        <Password 
-                            placeholder='Password'
-                            prefix={<Icon type="lock" style={{ color: 'rgba(0,0,0,.25)' }} />}
-                            style={{
-                                width: '30%',
-                                margin: 'auto', 
-                                display: 'block',
-                                marginBottom: '20px'
-                            }}
-                            onChange={e => this.onPasswordChange(e.target.value)}
-                        />
-                    </Tooltip>
-                    <Tooltip
-                        title="Passwords do not match"
-                        placement="right"
-                        visible={!this.state.validConfirmPassword}
-                    >
-                        <Password 
-                            placeholder='Confirm Password'
-                            prefix={<Icon type="lock" style={{ color: 'rgba(0,0,0,.25)' }} />}
-                            style={{
-                                width: '30%',
-                                margin: 'auto', 
-                                display: 'block',
-                                marginBottom: '20px'
-                            }}
-                            onChange={e => this.onConfirmPasswordChange(e.target.value)}
-                        />
-                    </Tooltip>
+                    <Input
+                        placeholder='Email'
+                        prefix={<Icon type="user" style={{ color: 'rgba(0,0,0,.25)' }} />}
+                        style={{
+                            width: '80%',
+                            margin: 'auto', 
+                            display: 'block',
+                            marginBottom: '20px'
+                        }}
+                        onChange={e => this.onEmailChange(e.target.value)}
+                    />
+                    <Password 
+                        placeholder='Password'
+                        prefix={<Icon type="lock" style={{ color: 'rgba(0,0,0,.25)' }} />}
+                        style={{
+                            width: '80%',
+                            margin: 'auto', 
+                            display: 'block',
+                            marginBottom: '20px'
+                        }}
+                        onChange={e => this.onPasswordChange(e.target.value)}
+                    />
+                    <Password 
+                        placeholder='Confirm Password'
+                        prefix={<Icon type="lock" style={{ color: 'rgba(0,0,0,.25)' }} />}
+                        style={{
+                            width: '80%',
+                            margin: 'auto', 
+                            display: 'block',
+                            marginBottom: '20px'
+                        }}
+                        onChange={e => this.onConfirmPasswordChange(e.target.value)}
+                    />
                     <button 
                         onClick={this.authenticateSpotify}
                         className={button}
