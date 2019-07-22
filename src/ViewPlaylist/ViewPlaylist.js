@@ -9,7 +9,7 @@ import 'antd/dist/antd.css'
 import styles from './ViewPlaylist.module.css'
 const { 
     container,
-    acceptDrop
+    requestContainer
 } = styles
 
 class ViewPlaylist extends Component {
@@ -96,7 +96,7 @@ class ViewPlaylist extends Component {
                 <div className={container}>
                     {
                         this.state.requests.map((request, i) => 
-                            <div id={request.id}>
+                            <div className={requestContainer} id={request.id}>
                                 <Request
                                     request={request}
                                     onShowAcceptChange={this.onShowAcceptChange}
