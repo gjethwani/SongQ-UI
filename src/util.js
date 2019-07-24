@@ -2,7 +2,7 @@ const getHostname = () => {
     if (window.location.hostname === 'localhost') {
         return 'localhost:3000'
     } else {
-        return 'https://songq-ui.herokuapp.com'
+        return 'songq-ui.herokuapp.com'
     }
 }
 
