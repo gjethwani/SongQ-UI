@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Input } from 'antd'
+import { Input, notification } from 'antd'
 import axios from 'axios'
 import { getHostname } from '../util'
 import '../main.css'
@@ -19,7 +19,6 @@ class GuestLogin extends Component {
             roomCode: ['-','-','-','-'],
             refs: [],
             playlistName: '',
-            error: '',
         }
         this.onDigitChange = this.onDigitChange.bind(this)
         this.authenticateRoomCode = this.authenticateRoomCode.bind(this)
@@ -58,8 +57,9 @@ class GuestLogin extends Component {
             }
         })
         if (badRoomCode) {
-            this.setState({
-                error: 'Invalid room code'
+            notification.error({
+                message: 'Invalid room code',
+                description: 'Please check whether the room code is correct'
             })
             return
         }
@@ -81,19 +81,23 @@ class GuestLogin extends Component {
                     window.location.href = `http://${getHostname()}/request-songs?playlistName=${this.state.playlistName}&roomCode=${this.state.roomCode.join('')}`
                 })
                 .catch(error => {
-                    this.setState({
-                        error: 'Could not connect with spotify'
+                    notification.error({
+                        message: 'Could not connect to spotify',
+                        description: 'Please try again later'
                     })
                 })
             } else {
-                this.setState({
-                    error: 'Playlist does not exist'
+                notification.error({
+                    message: 'Playlist does not exist',
+                    description: 'Please check whether the room code is correct',
                 })
             }
         })
         .catch((error) => {
-            // TODO: Error handling
-            console.log(error)
+            notification.error({
+                message: 'Network error',
+                description: 'Please try again later'
+            })
         })
     }
     render() {
@@ -123,7 +127,6 @@ class GuestLogin extends Component {
                     >
                         FIND PARTIES BY LOCATION
                     </button>
-                    <p>{this.state.error}</p>
                 </div>
             </div>
         )

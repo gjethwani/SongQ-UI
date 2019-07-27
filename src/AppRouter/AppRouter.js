@@ -14,7 +14,6 @@ const backend = isBrowser ? HTML5Backend : TouchBackend
 
 class AppRouter extends Component {
     render() {
-        console.log(process.env.REACT_APP_BACK_END_URI)
         return(
             <Router>
                 <Switch>

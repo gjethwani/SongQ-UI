@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Input, Icon } from 'antd'
+import { Input, Icon, notification } from 'antd'
 import { getHostname } from '../util.js'
 import axios from 'axios'
 import styles from './Login.module.css'
@@ -11,7 +11,6 @@ const {
     loginTextContainer,
     loginButton,
     header,
-    error,
     input
 } = styles
 
@@ -42,7 +41,6 @@ class Login extends Component {
         this.state = {
             email: '',
             password: '',
-            error: ''
         }
         this.submitForm = this.submitForm.bind(this)
     }
@@ -77,11 +75,19 @@ class Login extends Component {
             }
         })
         .catch((error) => {
-            console.log(error)
-            this.setState({error: `${error.status + JSON.stringify(error)}`})
-            // this.setState({
-            //     error: error.response.data.err.message
-            // })
+            const { status, data } = error.response
+            if (status === 401) {
+                notification.error({
+                    message: 'Login Error',
+                    description: data.err.message
+                })
+            } else {
+                notification.error({
+                    message: 'Network error',
+                    description: 'Please try again later'
+                })
+            }
+            
         })
     }
     render() {
@@ -117,7 +123,6 @@ class Login extends Component {
                     >
                         Submit
                     </button>
-                    {this.state.error && <p className={error}>{this.state.error}</p>}
                 </div>
             </div>
         )

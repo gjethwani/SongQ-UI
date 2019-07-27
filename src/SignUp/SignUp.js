@@ -1,8 +1,7 @@
 import React, { Component } from 'react'
-import { Input, Icon, Tooltip, Modal } from 'antd'
+import { Input, Icon, notification, Modal } from 'antd'
 import axios from 'axios'
 import '../main.css'
-import { getHostname } from '../util'
 import styles from './SignUp.module.css'
 const {
     overallContainer,
@@ -45,7 +44,6 @@ class SignUp extends Component {
             validPassword: false,
             confirmPassword: '',
             validConfirmPassword: false,
-            error: '',
             showModal: false
         }
         this.onEmailChange = this.onEmailChange.bind(this)
@@ -120,9 +118,9 @@ class SignUp extends Component {
             window.location.href = `${process.env.REACT_APP_BACK_END_URI}/spotify-login`
         })
         .catch((error) => {
-            console.log(error)
-            this.setState({
-                error: error.response.data.err.message
+            notification.error({
+                message: 'Network error',
+                description: 'Please try again later'
             })
         })
     }
