@@ -6,10 +6,8 @@ import styles from './WelcomeScreen.module.css'
 import HostOrGuest from '../HostOrGuest'
 import SignUp from '../SignUp'
 import GuestLogin from '../GuestLogin'
-import PlaylistMap from '../PlaylistMap'
-import { geolocated } from 'react-geolocated'
+import PlaylistMapContainer from '../PlaylistMapContainer'
 import 'antd/dist/antd.css'
-import axios from 'axios'
 const { welcomeScreenContainer, 
     welcomeScreenTextContainer, 
     loginSignupButton, 
@@ -76,31 +74,7 @@ class WelcomeScreen extends Component {
         }
     }
     switchToLocationBased() {
-        if (this.props.isGeolocationAvailable) {
-            if (this.props.isGeolocationEnabled) {
-                if (this.props.coords !== null) {
-                    this.setState({
-                        latitude: this.props.coords.latitude,
-                        longitude: this.props.coords.longitude,
-                    }, () => {
-                        axios.get(`${process.env.REACT_APP_BACK_END_URI}/get-nearby-playlists?latitude=${this.state.latitude}&longitude=${this.state.longitude}`, {}, {
-                            withCredentials: true
-                        })
-                        .then((response) => {
-                            const { playlists } = response.data
-                            this.setState({ 
-                                showPlaylistMap: true,
-                                showGuestLogin: false,
-                                nearbyPlaylists: playlists,
-                            })
-                        })
-                        .catch((error) => {
-                            console.log(error)
-                        })
-                    })
-                }
-            }
-        }
+        this.setStateToFalseButOne('showPlaylistMap')
     }
     render() {
         return(
@@ -135,19 +109,15 @@ class WelcomeScreen extends Component {
                 {this.state.showGuestLogin && <GuestLogin
                     switchToLocationBased={this.switchToLocationBased}
                 />}
-                {this.state.showPlaylistMap && <PlaylistMap 
+                {this.state.showPlaylistMap && <PlaylistMapContainer changeToGuestLoginView={this.changeToGuestLoginView} />}
+                {/* {this.state.showPlaylistMap && <PlaylistMap 
                     currLatitude={this.state.latitude}
                     currLongitude={this.state.longitude}
                     nearbyPlaylists={this.state.nearbyPlaylists}
-                />}
+                />} */}
             </div>
         )
     }
 }
 
-export default geolocated({
-    positionOptions: {
-      enableHighAccuracy: false,
-    },
-    userDecisionTimeout: 5000,
-  })(WelcomeScreen)
+export default WelcomeScreen

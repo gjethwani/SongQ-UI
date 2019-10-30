@@ -2,18 +2,18 @@ import React, { Component } from 'react'
 import GoogleMapReact from 'google-map-react'
 import axios from 'axios'
 import { getHostname } from '../util'
+import { notification } from 'antd'
 import styles from './PlaylistMap.module.css'
 import '../main.css'
 import 'antd/dist/antd.css'
+import { geolocated } from 'react-geolocated'
 const {
     marker,
     map
 } = styles
 
 class PlaylistMap extends Component {
-    constructor(props) {
-        super(props)
-    }
+    // componentWillUpdate(oldprop)
     goToPlaylist(name, roomCode) {
         axios.post(`${process.env.REACT_APP_BACK_END_URI}/guest-login`, {}, {
             withCredentials: true
@@ -28,14 +28,14 @@ class PlaylistMap extends Component {
         })
     }
     render() {
-        var { currLatitude, currLongitude } = this.props
+        const { latitude, longitude } = this.props.coords
         return(
             <div style={{ height: '100vh', width: '100%' }} className={map}>
                 <GoogleMapReact
                     bootstrapURLKeys={{ key: "AIzaSyCsW6xaXYfBDeuyzfgkGcPtHYL55hvGLTg" }}
                     defaultCenter={{
-                        lat: currLatitude,
-                        lng: currLongitude
+                        lat: latitude,
+                        lng: longitude
                     }}
                     defaultZoom={15}
                 >
@@ -51,8 +51,8 @@ class PlaylistMap extends Component {
                                     playlist.roomCode
                                 )}
                             >
-                                {playlist.playlistName
-                            }</p>
+                                {playlist.playlistName}
+                            </p>
                         </div>
                     )
                     }
@@ -62,4 +62,9 @@ class PlaylistMap extends Component {
     }
 }
 
-export default PlaylistMap
+export default geolocated({
+    positionOptions: {
+      enableHighAccuracy: false,
+    },
+    userDecisionTimeout: 5000,
+  })(PlaylistMap)
