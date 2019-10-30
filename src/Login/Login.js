@@ -81,20 +81,26 @@ class Login extends Component {
             }
         })
         .catch((error) => {
-            if (!error.response) {
-                notification.error({
+            if (error === undefined) {
+                return notification.error({
                     message: 'Something went wrong',
                     description: 'Please try again later'
                 })
             }
+            if (!error.response) {
+                return notification.error({
+                    message: 'Something went wrong',
+                    description: JSON.stringify(error)
+                })
+            }
             const { status, data } = error.response
             if (status === 401) {
-                notification.error({
+                return notification.error({
                     message: 'Login Error',
                     description: data.err.message
                 })
             } else {
-                notification.error({
+                return notification.error({
                     message: 'Network error',
                     description: 'Please try again later'
                 })

@@ -56,7 +56,6 @@ class ViewPlaylist extends Component {
         })
     }
     serviceRequest(requestId, songId, accepted) {
-        document.getElementById(requestId).style.display = 'none'
         axios.post(`${process.env.REACT_APP_BACK_END_URI}/service-request`, {
             requestId,
             accepted,
@@ -67,6 +66,7 @@ class ViewPlaylist extends Component {
         })
         .then((response) => {
             console.log(response.status)
+            document.getElementById(requestId).style.display = 'none'
         })
         .catch((err) => {
             document.getElementById(requestId).style.display = 'block'
@@ -79,7 +79,7 @@ class ViewPlaylist extends Component {
                 <GuestNavBar 
                     playlistName={this.state.playlistName}
                 />
-                {this.state.showAccept && 
+                {/* {this.state.showAccept && 
                     <AcceptRejectCircle 
                         serviceRequest={this.serviceRequest} 
                         playlistId={this.state.playlistId}
@@ -92,7 +92,7 @@ class ViewPlaylist extends Component {
                         playlistId={this.state.playlistId}
                         accept={false}
                     />
-                }
+                } */}
                 <div className={container}>
                     {
                         this.state.requests.map((request, i) => 
