@@ -1,0 +1,28 @@
+.welcomeScreenInnerContainer {
+    display: table-cell;
+    vertical-align: middle;
+}
+
+.welcomeScreenTextContainer {
+    display: table;
+    text-align: center;
+    height: 100%;
+    width: 90%;
+    margin: auto;
+    color: white;
+}
+
+.welcomeScreenHeader {
+    color: white;
+}
+
+.question {
+    color: white;
+}
+
+.loginSignupButton {
+    width: 40%;
+    display: block;
+    margin: auto;
+    margin-bottom: 20px;
+}

@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { Input, Icon, notification } from 'antd'
-import { getHostname } from '../util.js'
+import { getHostname, authenticateSpotify } from '../util.js'
 import axios from 'axios'
 import styles from './Login.module.css'
 import '../main.css'
@@ -16,23 +16,23 @@ const {
 
 const Password = Input.Password
 
-const validateEmail = (email) => {
-    var re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
-    return re.test(String(email).toLowerCase())
-}
+// const validateEmail = (email) => {
+//     var re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+//     return re.test(String(email).toLowerCase())
+// }
 
-const validatePassword = (password) => {
-    /*
-    Password requirements
-    1 lowercase
-    1 uppercase
-    1 numeric
-    1 special character
-    8 characters or longer 
-    */
-    var re = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])(?=.{8,})/
-    return re.test(String(password))
-}
+// const validatePassword = (password) => {
+//     /*
+//     Password requirements
+//     1 lowercase
+//     1 uppercase
+//     1 numeric
+//     1 special character
+//     8 characters or longer 
+//     */
+//     var re = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])(?=.{8,})/
+//     return re.test(String(password))
+// }
 
 class Login extends Component {
     constructor(props) {
@@ -44,15 +44,21 @@ class Login extends Component {
         }
         this.submitForm = this.submitForm.bind(this)
     }
-    authenticateSpotify(refresh) {
-        var url = `${process.env.REACT_APP_BACK_END_URI}`
-        if (refresh) {
-            url += '/spotify-refresh-token'
-        } else {
-            url += '/spotify-login'
-        }
-        window.location.href = url
-    }
+    // componentDidMount() {
+    //     axios.get(`${process.env.REACT_APP_BACK_END_URI}/authenticate-spotify?justSignedUp=false`, {}, {
+    //         withCredentials: true
+    //     })
+    //     .then((response) => {
+    //         const { isLoggedIn, needToSpotifyAuth, spotifyRefresh } = response.data
+    //         if (isLoggedIn) {
+    //             if (needToSpotifyAuth) {
+    //                 authenticateSpotify(spotifyRefresh)
+    //             } else {
+    //                 window.location.href = `http://${getHostname()}/home`
+    //             }
+    //         }
+    //     })
+    // }
     onEmailChange(email) {
         this.setState({ email })
     }
@@ -69,12 +75,18 @@ class Login extends Component {
         .then((response) => {
             var { needToSpotifyAuth, spotifyRefresh } = response.data
             if (needToSpotifyAuth) {
-                this.authenticateSpotify(spotifyRefresh)
+                authenticateSpotify(spotifyRefresh)
             } else {
                 window.location.href = `http://${getHostname()}/home`
             }
         })
         .catch((error) => {
+            if (!error.response) {
+                notification.error({
+                    message: 'Something went wrong',
+                    description: 'Please try again later'
+                })
+            }
             const { status, data } = error.response
             if (status === 401) {
                 notification.error({

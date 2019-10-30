@@ -17,6 +17,16 @@ const joinArtists = (artists) => {
     return artistsJoined
 }
 
+const authenticateSpotify = (refresh) => {
+    var url = `${process.env.REACT_APP_BACK_END_URI}`
+    if (refresh) {
+        url += '/spotify-refresh-token'
+    } else {
+        url += '/spotify-login'
+    }
+    window.location.href = url
+}
+
 const dndTypes = {
     REQUEST: 'request',
 }
@@ -24,5 +34,6 @@ const dndTypes = {
 module.exports = {
     getHostname,
     joinArtists,
+    authenticateSpotify,
     dndTypes
 }

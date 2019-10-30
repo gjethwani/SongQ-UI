@@ -6,35 +6,6 @@
     color: white !important;
 }
 
-.welcomeScreenTextContainer {
-    display: table;
-    text-align: center;
-    height: 100%;
-    width: 90%;
-    margin: auto;
-    color: white;
-}
-
-.welcomeScreenInnerContainer {
-    display: table-cell;
-    vertical-align: middle;
-}
-
-.loginSignupButton {
-    width: 40%;
-    display: block;
-    margin: auto;
-    margin-bottom: 20px;
-}
-
-.welcomeScreenHeader {
-    color: white;
-}
-
-.question {
-    color: white;
-}
-
 .header {
     background-color: rgba(0,0,0,0);
     position: fixed;

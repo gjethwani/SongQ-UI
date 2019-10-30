@@ -7,14 +7,11 @@ import HostOrGuest from '../HostOrGuest'
 import SignUp from '../SignUp'
 import GuestLogin from '../GuestLogin'
 import PlaylistMapContainer from '../PlaylistMapContainer'
+import LoginOrSignUp from '../LoginOrSignUp'
 import 'antd/dist/antd.css'
-const { welcomeScreenContainer, 
-    welcomeScreenTextContainer, 
-    loginSignupButton, 
-    welcomeScreenHeader,
-    question,
+const { 
+    welcomeScreenContainer, 
     header,
-    welcomeScreenInnerContainer
 } = styles
 
 class WelcomeScreen extends Component {
@@ -85,36 +82,22 @@ class WelcomeScreen extends Component {
                 />
                 {this.state.showHostOrGuest && 
                     <HostOrGuest 
-                    changeToHostView={this.changeToHostView} 
-                    changeToGuestView={this.changeToGuestLoginView}
+                        changeToHostView={this.changeToHostView} 
+                        changeToGuestView={this.changeToGuestLoginView}
                 />}
-                {this.state.showWelcome && <div className={welcomeScreenTextContainer}>
-                    <div className={welcomeScreenInnerContainer}>
-                        <h1 className={welcomeScreenHeader}>Thanks for hosting!</h1>
-                        <p className={question}>Are you new here?</p>
-                        <button 
-                            onClick={this.changeToLoginView}
-                            className={loginSignupButton}>
-                                LOG IN
-                        </button>
-                        <button
-                            className={loginSignupButton}
-                            onClick={this.changeToSignUpView}>
-                                SIGN UP
-                        </button>
-                    </div>
-                </div>}
+                {this.state.showWelcome && <LoginOrSignUp 
+                    changeToLoginView={this.changeToLoginView}
+                    changeToSignUpView={this.changeToSignUpView}
+                />}
                 {this.state.showLogin && <Login/>}
                 {this.state.showSignUp && <SignUp/>}
                 {this.state.showGuestLogin && <GuestLogin
                     switchToLocationBased={this.switchToLocationBased}
                 />}
-                {this.state.showPlaylistMap && <PlaylistMapContainer changeToGuestLoginView={this.changeToGuestLoginView} />}
-                {/* {this.state.showPlaylistMap && <PlaylistMap 
-                    currLatitude={this.state.latitude}
-                    currLongitude={this.state.longitude}
-                    nearbyPlaylists={this.state.nearbyPlaylists}
-                />} */}
+                {this.state.showPlaylistMap && 
+                    <PlaylistMapContainer 
+                        changeToGuestLoginView={this.changeToGuestLoginView} 
+                />}
             </div>
         )
     }
