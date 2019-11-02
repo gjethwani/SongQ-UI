@@ -33,7 +33,7 @@ class HostHome extends Component {
         axios.get(`${process.env.REACT_APP_BACK_END_URI}/get-playlists`, {}, { withCredentials: true })
             .then((response) => {
                 this.setState({
-                    playlists: response.data.playlists,
+                    playlists: response.data.playlists.reverse(),
                     loading: false
                 })
             })

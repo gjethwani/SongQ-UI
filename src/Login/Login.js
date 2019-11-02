@@ -44,21 +44,6 @@ class Login extends Component {
         }
         this.submitForm = this.submitForm.bind(this)
     }
-    // componentDidMount() {
-    //     axios.get(`${process.env.REACT_APP_BACK_END_URI}/authenticate-spotify?justSignedUp=false`, {}, {
-    //         withCredentials: true
-    //     })
-    //     .then((response) => {
-    //         const { isLoggedIn, needToSpotifyAuth, spotifyRefresh } = response.data
-    //         if (isLoggedIn) {
-    //             if (needToSpotifyAuth) {
-    //                 authenticateSpotify(spotifyRefresh)
-    //             } else {
-    //                 window.location.href = `http://${getHostname()}/home`
-    //             }
-    //         }
-    //     })
-    // }
     onEmailChange(email) {
         this.setState({ email })
     }
