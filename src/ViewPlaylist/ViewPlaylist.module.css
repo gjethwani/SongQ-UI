@@ -1,7 +1,7 @@
 .container {
     width: 80%;
     margin: auto;
-    margin-top: 40px;
+    margin-top: 15px;
     height: 100%;
     overflow: hidden; /* https://stackoverflow.com/questions/10062255/why-is-my-content-showing-outside-the-div */
     text-align: center;

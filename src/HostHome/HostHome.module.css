@@ -4,6 +4,25 @@
     border-radius: 20px;
     background: linear-gradient(239.6deg, #3C1778 24.44%, #574AE2 100.52%), #8E2DE2; 
 }
+
+.card div {
+    display: flex;
+    align-items: center;
+}
+
+.card div div div {
+    flex-direction: column;
+    margin-left: 10px;
+}
+
+.card div div div div {
+    width: 100%;
+}
+
+.card div div div div p {
+    width: 100%;
+}
+
 .card:hover {
     background: linear-gradient(239.6deg, #8E2DE2 24.44%, #574AE2 100.52%), #3C1778; 
 }
@@ -20,4 +39,8 @@
 
 .text {
     color: white;
+}
+
+.playlistImage {
+
 }

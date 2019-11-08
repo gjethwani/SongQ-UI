@@ -68,7 +68,12 @@ class GuestHome extends Component {
     render() {
         return(
             <div>
-                <GuestNavBar playlistName={this.state.playlistName} />
+                <GuestNavBar 
+                    playlistName={this.state.playlistName} 
+                    roomCode={this.state.roomCode}
+                    host={false} 
+                    homeButton={false}
+                />
                 <Input 
                     className={searchBar}
                     onChange={e => this.onSearchChange(e.target.value)}

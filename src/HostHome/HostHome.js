@@ -10,7 +10,8 @@ const {
     card,
     lineDivider,
     overallContainer,
-    text
+    text,
+    playlistImage
 } = styles
 
 const { Meta } = Card
@@ -57,7 +58,9 @@ class HostHome extends Component {
                                 className={card}
                                 hoverable={true}
                                 onClick={() => this.showPlaylists(playlist.roomCode, playlist.playlistName, playlist.spotifyPlaylistId)}
-                            >
+                                style={{'display': 'flex'}}
+                            >   
+                                {<img src={playlist.image ? playlist.image[2].url : `${process.env.PUBLIC_URL}/playlist-icon/playlist-icon-60.png`} />}
                                 <Skeleton loading={this.state.loading} active>
                                     <Meta
                                         title={<p className={text}>{playlist.playlistName}</p>}

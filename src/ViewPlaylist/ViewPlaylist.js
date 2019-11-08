@@ -3,7 +3,8 @@ import axios from 'axios'
 import queryString from 'query-string'
 import GuestNavBar from '../GuestNavBar'
 import Request from '../Request'
-import AcceptRejectCircle from '../AcceptRejectCircle'
+import { loseFocus } from '../util'
+import { PageHeader, Button, Icon } from 'antd'
 import '../main.css'
 import 'antd/dist/antd.css'
 import styles from './ViewPlaylist.module.css'
@@ -19,20 +20,18 @@ class ViewPlaylist extends Component {
             requests: [],
             playlistName: '', 
             playlistId: '',
-            showAccept: false,
-            showReject: false
+            roomCode: '',
+            gridView: true
         }
         axios.defaults.withCredentials = true
-        this.onShowAcceptChange = this.onShowAcceptChange.bind(this)
-        this.onShowRejectChange = this.onShowRejectChange.bind(this)
-        this.serviceRequest = this.serviceRequest.bind(this)
     }
     componentDidMount() {
         var rawQuery = queryString.parse(this.props.location.search)
         var { roomCode, playlistName, playlistId } = rawQuery
         this.setState({ 
             playlistName, 
-            playlistId 
+            playlistId,
+            roomCode
         })
         axios.get(`${process.env.REACT_APP_BACK_END_URI}/get-requests?roomCode=${roomCode}`, {}, {
             withCredentials: true
@@ -45,32 +44,29 @@ class ViewPlaylist extends Component {
             console.log(error)
         })
     }
-    onShowAcceptChange(val) {
-        this.setState({
-            showAccept: val
-        })
-    }
-    onShowRejectChange(val) {
-        this.setState({
-            showReject: val
-        })
-    }
-    serviceRequest(requestId, songId, accepted) {
-        axios.post(`${process.env.REACT_APP_BACK_END_URI}/service-request`, {
-            requestId,
-            accepted,
-            playlistId: this.state.playlistId,
-            songId
-        }, {
-            withCredentials: true
-        })
-        .then((response) => {
-            console.log(response.status)
-            document.getElementById(requestId).style.display = 'none'
-        })
-        .catch((err) => {
-            document.getElementById(requestId).style.display = 'block'
-            console.log(err)
+    serviceRequest = (requestId, songId, accepted) => {
+        const playlistId = this.state.playlistId
+        return new Promise(function(resolve, reject) {
+            axios.post(`${process.env.REACT_APP_BACK_END_URI}/service-request`, {
+                requestId,
+                accepted,
+                playlistId: playlistId,
+                songId
+            }, {
+                withCredentials: true
+            })
+            .then((response) => {
+                if (response.status !== 200) {
+                    reject()
+                } else {
+                    document.getElementById(requestId).style.display = 'none'
+                    resolve()
+                }
+            })
+            .catch((err) => {
+                document.getElementById(requestId).style.display = 'block'
+                reject()
+            })
         })
     }
     render() {
@@ -78,29 +74,39 @@ class ViewPlaylist extends Component {
             <div>
                 <GuestNavBar 
                     playlistName={this.state.playlistName}
+                    roomCode={this.state.roomCode}
+                    playlistId={this.state.playlistId}
+                    host={true}
+                    homeButton
                 />
-                {/* {this.state.showAccept && 
-                    <AcceptRejectCircle 
-                        serviceRequest={this.serviceRequest} 
-                        playlistId={this.state.playlistId}
-                        accept={true}
-                    />
-                }
-                {this.state.showReject && 
-                    <AcceptRejectCircle 
-                        serviceRequest={this.serviceRequest} 
-                        playlistId={this.state.playlistId}
-                        accept={false}
-                    />
-                } */}
                 <div className={container}>
+                    <PageHeader 
+                        title={"Requests"}
+                        style={{
+                            borderBottom: '2px solid rgb(235, 237, 240)',
+                            width: '100%',
+                            textAlignLast: 'left'
+                        }}
+                        // extra={[
+                        //     <Icon 
+                        //         type='appstore' 
+                        //         style={this.state.gridView ? {color: '#1690FF'} : {}}
+                        //     />,
+                        //     <Icon 
+                        //         type='bars' 
+                        //         style={this.state.gridView ? {} : {color: '#1690FF'}}
+                        //     />
+                        // ]}
+                    />
                     {
                         this.state.requests.map((request, i) => 
                             <div className={requestContainer} id={request.id}>
                                 <Request
+                                    key={i}
                                     request={request}
-                                    onShowAcceptChange={this.onShowAcceptChange}
-                                    onShowRejectChange={this.onShowRejectChange}
+                                    serviceRequest={this.serviceRequest}
+                                    popoverId={i}
+                                    gridView={this.state.gridView}
                                 />  
                             </div>
                         )

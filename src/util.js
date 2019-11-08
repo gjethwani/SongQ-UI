@@ -27,13 +27,13 @@ const authenticateSpotify = (refresh) => {
     window.location.href = url
 }
 
-const dndTypes = {
-    REQUEST: 'request',
+const loseFocus = () => {
+    document.activeElement.blur()
 }
 
 module.exports = {
     getHostname,
     joinArtists,
     authenticateSpotify,
-    dndTypes
+    loseFocus
 }
