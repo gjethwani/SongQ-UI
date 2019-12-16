@@ -59,7 +59,7 @@ class HostHome extends Component {
                                 onClick={() => this.showPlaylists(playlist.roomCode, playlist.playlistName, playlist.spotifyPlaylistId)}
                                 style={{'display': 'flex'}}
                             >   
-                                {<img src={playlist.image ? playlist.image[2].url : `${process.env.PUBLIC_URL}/playlist-icon/playlist-icon-60.png`} />}
+                                {<img src={playlist.image && playlist.image.length > 2 ? playlist.image[2].url : `${process.env.PUBLIC_URL}/playlist-icon/playlist-icon-60.png`} />}
                                 <Skeleton loading={this.state.loading} active>
                                     <Meta
                                         title={<p className={text}>{playlist.playlistName}</p>}
@@ -68,7 +68,7 @@ class HostHome extends Component {
                                 </Skeleton>
                             </Card>
                         )
-                    }
+                    }                
                     </div>
                 </div>
             </div>
