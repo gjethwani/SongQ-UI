@@ -12,7 +12,6 @@ const {
 } = styles
 
 class PlaylistMap extends Component {
-    // componentWillUpdate(oldprop)
     goToPlaylist(name, roomCode) {
         axios.post(`${process.env.REACT_APP_BACK_END_URI}/guest-login`, {}, {
             withCredentials: true

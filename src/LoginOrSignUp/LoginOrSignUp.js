@@ -15,9 +15,6 @@ const {
 class LoginOrSignUp extends Component {
     constructor(props) {
         super(props)
-        this.state = {
-            
-        }
     }
     componentDidMount = async () => {
         const response = await axios.post(`${process.env.REACT_APP_BACK_END_URI}/is-logged-in`, {}, {

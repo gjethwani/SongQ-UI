@@ -18,7 +18,6 @@ class GuestLogin extends Component {
         this.state = {
             roomCode: ['-','-','-','-'],
             refs: [],
-            playlistName: '',
         }
         this.onDigitChange = this.onDigitChange.bind(this)
         this.authenticateRoomCode = this.authenticateRoomCode.bind(this)
@@ -71,14 +70,13 @@ class GuestLogin extends Component {
         })
         .then((response) => {
             const { playlistExists, playlistName } = response.data
-            this.setState({ playlistName })
             if (playlistExists) {
                 axios.post(`${process.env.REACT_APP_BACK_END_URI}/guest-login`, {}, {
                     withCredentials: true
                 })
                 .then((response) => {
                     console.log(response.status)
-                    window.location.href = `http://${getHostname()}/request-songs?playlistName=${this.state.playlistName}&roomCode=${this.state.roomCode.join('')}`
+                    window.location.href = `http://${getHostname()}/request-songs?playlistName=${playlistName}&roomCode=${this.state.roomCode.join('')}`
                 })
                 .catch(error => {
                     notification.error({

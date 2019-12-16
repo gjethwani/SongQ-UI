@@ -13,9 +13,6 @@ const {
 class GuestNavBar extends Component {
     constructor(props) {
         super(props)
-        this.state = {
-
-        }
     }
     goHome() {
         window.location.href = `http://${getHostname()}/home`

@@ -11,7 +11,6 @@ const {
     lineDivider,
     overallContainer,
     text,
-    playlistImage
 } = styles
 
 const { Meta } = Card

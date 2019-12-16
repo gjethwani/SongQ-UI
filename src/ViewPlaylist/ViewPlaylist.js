@@ -105,7 +105,7 @@ class ViewPlaylist extends Component {
                                     key={i}
                                     request={request}
                                     serviceRequest={this.serviceRequest}
-                                    popoverId={i}
+                                    // popoverId={i}
                                     gridView={this.state.gridView}
                                 />  
                             </div>

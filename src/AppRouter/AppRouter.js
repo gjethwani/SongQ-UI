@@ -9,7 +9,6 @@ import CreatePlaylist from '../CreatePlaylist'
 import GuestHome from '../GuestHome'
 import ViewPlaylist from '../ViewPlaylist'
 
-const backend = isBrowser ? HTML5Backend : TouchBackend
 
 class AppRouter extends Component {
     render() {
