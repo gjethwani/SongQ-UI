@@ -1,8 +1,5 @@
 import React, { Component } from 'react'
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom'
-import HTML5Backend from 'react-dnd-html5-backend'
-import TouchBackend from 'react-dnd-touch-backend'
-import { isBrowser } from "react-device-detect"
 import WelcomeScreen from '../WelcomeScreen'
 import HostHome from '../HostHome'
 import CreatePlaylist from '../CreatePlaylist'

@@ -43,7 +43,6 @@ class PlaylistNavBar extends Component {
         .then((response) => {
             added.push(index)
             this.setState({ added })
-            console.log(response.status)
         })
         .catch((error) => {
             console.log(error)

@@ -11,14 +11,12 @@
 }
 
 .roomCodeInput {
-    width: 20%;
-    margin-left: 6%;
-    height: 15%;
     background: rgba(255, 255, 255, 0.3);
     border-radius: 4px;
-    font-size: 10em;
     text-align: center;
     color: white;
+    font-size: 100px;
+    height: 110px;
 }
 
 .button {

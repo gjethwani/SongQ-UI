@@ -10,9 +10,6 @@ const {
 } = styles
 
 class HostOrGuest extends Component {
-    constructor(props) {
-        super(props)
-    }
     render() {
         return(
             <div className={hostOrGuestContainer}>

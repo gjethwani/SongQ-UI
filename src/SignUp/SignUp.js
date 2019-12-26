@@ -114,10 +114,10 @@ class SignUp extends Component {
         }, {
             withCredentials: true
         })
-        .then((response) => {
+        .then(() => {
             window.location.href = `${process.env.REACT_APP_BACK_END_URI}/spotify-login`
         })
-        .catch((error) => {
+        .catch(() => {
             notification.error({
                 message: 'Network error',
                 description: 'Please try again later'

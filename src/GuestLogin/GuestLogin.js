@@ -16,53 +16,25 @@ class GuestLogin extends Component {
     constructor(props) {
         super(props)
         this.state = {
-            roomCode: ['-','-','-','-'],
+            roomCode: '',
             refs: [],
         }
-        this.onDigitChange = this.onDigitChange.bind(this)
-        this.authenticateRoomCode = this.authenticateRoomCode.bind(this)
-        var refs = []
-        this.state.roomCode.map(() => {
-            refs.push(React.createRef())
-        })
-        this.state.refs = refs
         axios.defaults.withCredentials = true
     }
-    onDigitChange(digit, value) {
-        var { roomCode } = this.state
-        var currDigit = roomCode[digit]
-        if (value === '') {
-            value = '-'
-            if (digit > 0) {
-                this.state.refs[digit - 1].current.focus()
-            }
-        } else if (currDigit !== '-') {
-            return
-        } else {
-            if (digit < 3) {
-                this.state.refs[digit + 1].current.focus()
-            }
+    onRoomCodeChange = (roomCode) => {
+        if (roomCode.length < 5)  {
+            this.setState({ roomCode })
         }
-        roomCode[digit] = value
-        this.setState({ roomCode })
     }
-    authenticateRoomCode() {
+    authenticateRoomCode = () => {
         var { roomCode } = this.state
-        var badRoomCode = false
-        roomCode.map((r) => {
-            if (r === '-') {
-                badRoomCode = true
-                return
-            }
-        })
-        if (badRoomCode) {
+        if (roomCode.length < 4) {
             notification.error({
                 message: 'Invalid room code',
                 description: 'Please check whether the room code is correct'
             })
             return
         }
-        roomCode = roomCode.join('')
         axios.post(`${process.env.REACT_APP_BACK_END_URI}/check-playlist-exists`, {
             roomCode
         }, {
@@ -75,8 +47,7 @@ class GuestLogin extends Component {
                     withCredentials: true
                 })
                 .then((response) => {
-                    console.log(response.status)
-                    window.location.href = `http://${getHostname()}/request-songs?playlistName=${playlistName}&roomCode=${this.state.roomCode.join('')}`
+                    window.location.href = `http://${getHostname()}/request-songs?playlistName=${playlistName}&roomCode=${this.state.roomCode}`
                 })
                 .catch(error => {
                     notification.error({
@@ -102,17 +73,11 @@ class GuestLogin extends Component {
         return(
             <div className={container}>
                 <div className={textContainer}>
-                    {
-                        this.state.roomCode.map((_, i) => 
-                            <Input
-                                value={this.state.roomCode[i] === '-'? '' : this.state.roomCode[i]}
-                                onChange={e => this.onDigitChange(i, e.target.value)}
-                                className={roomCodeInput}
-                                ref={this.state.refs[i]}
-                                style={i === 0 ? {'marginLeft': '0'} : {}}
-                            />
-                        )
-                    }
+                    <Input
+                        value={this.state.roomCode}
+                        onChange={e => this.onRoomCodeChange(e.target.value)}
+                        className={roomCodeInput}
+                    />
                     <button 
                         className={button}
                         onClick={this.authenticateRoomCode}

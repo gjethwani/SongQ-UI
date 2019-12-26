@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Card, Skeleton } from 'antd'
+import { Card, Skeleton, notification } from 'antd'
 import PlaylistNavBar from '../PlaylistNavBar'
 import { getHostname } from '../util'
 import axios from 'axios'
@@ -38,7 +38,15 @@ class HostHome extends Component {
                 })
             })
             .catch((error) => {
-                // TODO: Error Handling
+                if (error.response.status === 401) {
+                    window.location.href = `http://${getHostname()}/`
+                } else {
+                    notification.error({
+                        message: 'Something went wrong',
+                        description: 'Please try again'
+                    })
+                }
+                
             })
     }
     showPlaylists(roomCode, playlistName, playlistId) {
@@ -58,8 +66,14 @@ class HostHome extends Component {
                                 hoverable={true}
                                 onClick={() => this.showPlaylists(playlist.roomCode, playlist.playlistName, playlist.spotifyPlaylistId)}
                                 style={{'display': 'flex'}}
+                                key={i}
                             >   
-                                {<img src={playlist.image && playlist.image.length > 2 ? playlist.image[2].url : `${process.env.PUBLIC_URL}/playlist-icon/playlist-icon-60.png`} />}
+                                {   
+                                    <img 
+                                        src={playlist.image && playlist.image.length > 2 ? playlist.image[2].url : `${process.env.PUBLIC_URL}/playlist-icon/playlist-icon-60.png`}
+                                        alt='Playlist Thumbnail'
+                                    />
+                                }
                                 <Skeleton loading={this.state.loading} active>
                                     <Meta
                                         title={<p className={text}>{playlist.playlistName}</p>}
