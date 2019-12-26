@@ -1,5 +1,4 @@
 import React, { Component } from 'react'
-import GoogleMapReact from 'google-map-react'
 import axios from 'axios'
 import PlaylistMap from '../PlaylistMap'
 import { notification } from 'antd'

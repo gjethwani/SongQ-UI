@@ -34,7 +34,7 @@ class GuestHome extends Component {
         this.setState({ playlistName, roomCode })
     }
     onSearchChange(q) {
-        if (cancel != undefined) {
+        if (cancel !== undefined) {
             cancel();
         }
         this.setState({

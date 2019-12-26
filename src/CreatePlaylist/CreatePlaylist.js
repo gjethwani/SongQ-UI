@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import CreateNavBar from '../CreateNavBar'
 import axios from 'axios'
 import Input from 'muicss/lib/react/input'
-import { Button, Radio, Select } from 'antd'
+import { Button, Radio, Select, notification } from 'antd'
 import { getHostname } from '../util'
 import { geolocated } from 'react-geolocated'
 import styles from './CreatePlaylist.module.css'
@@ -76,10 +76,18 @@ class CreatePlaylist extends Component {
         }, {
             withCredentials: true
         })
-        .then((response) => {
+        .then(() => {
             window.location.href = `http://${getHostname()}/home`
         })
         .catch((error) => {
+            if (error.response.status === 400) {
+                if (error.response.data.err === 'playlist already used') {
+                    notification.error({
+                        message: 'Invalid playlist',
+                        description: 'You have already used that playlist for another party'
+                    })
+                }
+            }
             console.log(error)
         })
     }

@@ -12,6 +12,9 @@ class PlaylistNavBar extends Component {
     createPlaylist() {
         window.location.href = `http://${getHostname()}/create-playlist`
     }
+    switchToGuest() {
+        window.location.href = `http://${getHostname()}?mode=guest`
+    }
     render() {
         return(
             <PageHeader
@@ -23,7 +26,13 @@ class PlaylistNavBar extends Component {
                         key="1"
                         onClick={this.createPlaylist}
                     >
-                        Create
+                        Create Playlist
+                    </Button>,
+                    <Button 
+                        key="2"
+                        onClick={this.switchToGuest}
+                    >
+                        Swtich to Guest
                     </Button>,
                 ]}
             />

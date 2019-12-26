@@ -8,6 +8,9 @@ import SignUp from '../SignUp'
 import GuestLogin from '../GuestLogin'
 import PlaylistMapContainer from '../PlaylistMapContainer'
 import LoginOrSignUp from '../LoginOrSignUp'
+import { getHostname, authenticateSpotify } from '../util.js'
+import queryString from 'query-string'
+import axios from 'axios'
 import 'antd/dist/antd.css'
 const { 
     welcomeScreenContainer, 
@@ -28,37 +31,52 @@ class WelcomeScreen extends Component {
             longitude: null,
             nearbyPlaylists: [],
         }
-        this.changeToLoginView = this.changeToLoginView.bind(this)
-        this.changeToHostView = this.changeToHostView.bind(this)
-        this.changeToSignUpView = this.changeToSignUpView.bind(this)
-        this.changeToGuestLoginView = this.changeToGuestLoginView.bind(this)
-        this.switchToLocationBased = this.switchToLocationBased.bind(this)
-        this.changeToHostOrGuestView = this.changeToHostOrGuestView.bind(this)
-        this.back = this.back.bind(this)
-        this.setStateToFalseButOne = this.setStateToFalseButOne.bind(this)
     }
-    setStateToFalseButOne(key) {
+    componentDidMount = () => {
+        var rawQuery = queryString.parse(this.props.location.search)
+        let { mode } = rawQuery
+        if (mode === 'guest') {
+            this.changeToGuestLoginView()
+        } else {
+            this.checkIfLoggedIn()
+        }
+    }
+    checkIfLoggedIn = async () => {
+        const response = await axios.post(`${process.env.REACT_APP_BACK_END_URI}/is-logged-in`, {}, {
+            withCredentials: true
+        })
+        const { isLoggedIn, needToSpotifyAuth, spotifyRefresh } = response.data
+        if (isLoggedIn) {
+            if (needToSpotifyAuth) {
+                authenticateSpotify(spotifyRefresh)
+            } else {
+                window.location.href = `http://${getHostname()}/home`
+            }
+        }
+    }
+    setStateToFalseButOne = (key) => {
         var { state } = this
         Object.keys(state).forEach(v => state[v] = false)
         state[key] = true
         this.setState(state)
     }
-    changeToLoginView() {
+    changeToLoginView = () => {
         this.setStateToFalseButOne('showLogin')
     }
-    changeToHostView() {
+    changeToHostView = () => {
         this.setStateToFalseButOne('showWelcome')
     }
-    changeToSignUpView() {
+    changeToSignUpView = () => {
         this.setStateToFalseButOne('showSignUp')
     }
-    changeToGuestLoginView() {
+    changeToGuestLoginView = () => {
         this.setStateToFalseButOne('showGuestLogin')
     }
-    changeToHostOrGuestView() {
+    changeToHostOrGuestView = () => {
+        this.checkIfLoggedIn()
         this.setStateToFalseButOne('showHostOrGuest')
     }
-    back() {
+    back = () => {
         if (this.state.showWelcome || 
             this.state.showGuestLogin ||
             this.state.showPlaylistMap ||
@@ -70,7 +88,7 @@ class WelcomeScreen extends Component {
             this.changeToHostView()
         }
     }
-    switchToLocationBased() {
+    switchToLocationBased = () => {
         this.setStateToFalseButOne('showPlaylistMap')
     }
     render() {
