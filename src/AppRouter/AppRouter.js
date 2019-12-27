@@ -5,41 +5,70 @@ import HostHome from '../HostHome'
 import CreatePlaylist from '../CreatePlaylist'
 import GuestHome from '../GuestHome'
 import ViewPlaylist from '../ViewPlaylist'
-
+import { getHostname } from '../util'
 
 class AppRouter extends Component {
     render() {
-        return(
-            <Router>
-                <Switch>
-                    <Route exact path='/' render={(props) => 
-                        <WelcomeScreen 
-                            {...props} 
-                        /> }
+        const lockedPlaylist = JSON.parse(localStorage.getItem('lockedPlaylist'))
+        if (lockedPlaylist) {
+            const { host, roomCode, playlistName, playlistId } = lockedPlaylist
+            if (host) {
+                return (
+                    <ViewPlaylist
+                        fromProps
+                        roomCode={roomCode}
+                        playlistName={playlistName}
+                        playlistId={playlistId}
+                        locked
                     />
-                    <Route exact path='/home' render={(props) => 
-                        <HostHome 
-                            {...props} 
-                        /> }
+                )
+            } else {
+                return (
+                    <GuestHome
+                        fromProps
+                        roomCode={roomCode}
+                        playlistName={playlistName}
+                        locked
                     />
-                    <Route exact path='/create-playlist' render={(props) =>
-                        <CreatePlaylist
-                            {...props}
-                        /> }
-                    />
-                    <Route exact path='/request-songs' render={(props) =>
-                        <GuestHome
-                            {...props}
-                        /> }
-                    />
-                    <Route exact path='/requests' render={(props) =>
-                        <ViewPlaylist
-                            {...props}
-                        /> }
-                    />
-                </Switch>
-            </Router>
-        )
+                )
+            }
+        } else {
+            return(
+                <Router>
+                    <Switch>
+                        <Route exact path='/' render={(props) => 
+                            <WelcomeScreen 
+                                {...props} 
+                            /> }
+                        />
+                        <Route exact path='/home' render={(props) => 
+                            <HostHome 
+                                {...props} 
+                            /> }
+                        />
+                        <Route exact path='/create-playlist' render={(props) =>
+                            <CreatePlaylist
+                                {...props}
+                            /> }
+                        />
+                        <Route exact path='/request-songs' render={(props) =>
+                            <GuestHome
+                                {...props}
+                                fromProps={false}
+                                locked={false}
+                            /> }
+                        />
+                        <Route exact path='/requests' render={(props) =>
+                            <ViewPlaylist
+                                {...props}
+                                fromProps={false}
+                                locked={false}
+                            /> }
+                        />
+                    </Switch>
+                </Router>
+            )
+        }
     }
 }
 

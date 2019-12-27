@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import axios from 'axios'
-import PlaylistMap from '../PlaylistMap'
+import PlaylistList from '../PlaylistList'
 import { notification } from 'antd'
 import '../main.css'
 import 'antd/dist/antd.css'
@@ -48,8 +48,6 @@ class PlaylistMapContainer extends Component {
                     message: 'Please enable geolocation on your browser',
                 })
                 this.props.changeToGuestLoginView()
-            } else {
-                setTimeout(this.couldNotDetermineLocation, 3000);
             }
         } else {
             notification.error({
@@ -61,9 +59,9 @@ class PlaylistMapContainer extends Component {
     }
     render() {
         return(
-            <PlaylistMap 
-                coords={this.state.coords}
-                nearbyPlaylists={this.state.playlists}
+            <PlaylistList
+                playlists={this.state.playlists}
+                loading={false}
             />
         )
     }

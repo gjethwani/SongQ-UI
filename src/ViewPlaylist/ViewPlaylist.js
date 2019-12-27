@@ -25,8 +25,17 @@ class ViewPlaylist extends Component {
         axios.defaults.withCredentials = true
     }
     componentDidMount() {
-        var rawQuery = queryString.parse(this.props.location.search)
-        var { roomCode, playlistName, playlistId } = rawQuery
+        let playlistName, playlistId, roomCode
+        if (this.props.fromProps) {
+            playlistName = this.props.playlistName
+            playlistId = this.props.playlistId
+            roomCode = this.props.roomCode
+        } else {
+            let rawQuery = queryString.parse(this.props.location.search)
+            playlistName = rawQuery.playlistName
+            playlistId = rawQuery.playlistId
+            roomCode = rawQuery.roomCode
+        }
         this.setState({ 
             playlistName, 
             playlistId,
@@ -36,7 +45,7 @@ class ViewPlaylist extends Component {
             withCredentials: true
         })
         .then((response) => {
-            var { requests } = response.data
+            let { requests } = response.data
             this.setState({ requests })
         })
         .catch((error) => {
@@ -76,7 +85,7 @@ class ViewPlaylist extends Component {
                     roomCode={this.state.roomCode}
                     playlistId={this.state.playlistId}
                     host={true}
-                    homeButton
+                    locked={this.props.locked}
                 />
                 <div className={container}>
                     <PageHeader 

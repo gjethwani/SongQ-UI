@@ -29,8 +29,15 @@ class GuestHome extends Component {
         this.onSearchChange = this.onSearchChange.bind(this)
     }
     componentDidMount() {
-        var rawQuery = queryString.parse(this.props.location.search)
-        var { playlistName, roomCode } = rawQuery
+        let playlistName, roomCode
+        if (this.props.fromProps) {
+            playlistName = this.props.playlistName
+            roomCode = this.props.roomCode
+        } else {
+            var rawQuery = queryString.parse(this.props.location.search)
+            playlistName = rawQuery.playlistName
+            roomCode = rawQuery.roomCode
+        }
         this.setState({ playlistName, roomCode })
     }
     onSearchChange(q) {
@@ -71,8 +78,8 @@ class GuestHome extends Component {
                 <GuestNavBar 
                     playlistName={this.state.playlistName} 
                     roomCode={this.state.roomCode}
-                    host={false} 
-                    homeButton={false}
+                    host={false}
+                    locked={this.props.locked}
                 />
                 <Input 
                     className={searchBar}
