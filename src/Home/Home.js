@@ -1,7 +1,9 @@
 import { useEffect } from 'react'
 import {
     extraContainer,
-    checkButton
+    checkButton,
+    header,
+    queueActivatedText
 } from './Home.module.css'
 import { PageHeader, Switch, List } from 'antd'
 import 'antd/dist/antd.css'
@@ -12,6 +14,7 @@ const Home = () => {
     const [userId, setUserId] = useState(null)
     const [queueActivated, setQueueActivated] = useState(false)
     const [code, setCode] = useState('')
+    const [requests, setRequests] = useState([])
     useEffect(() => {
         axios.get('http://localhost:5000/get-user-details', { withCredentials: true })
             .then(response => {
@@ -19,6 +22,8 @@ const Home = () => {
                 setQueueActivated(user.queueActivated)
                 setCode(user.code)
                 setUserId(user.userId)
+                setRequests(user.requests)
+                console.log(user)
             })
             .catch(err => {
                 console.log(err)
@@ -37,15 +42,26 @@ const Home = () => {
         <div>
             <PageHeader
                 title='Welcome!'
+                className={header}
                 extra={[
                     <div className={extraContainer}>
-                        <p>{queueActivated ? `Code: ${code}` : `Queue Disabled`}</p>
+                        <p className={queueActivatedText}>{queueActivated ? `Code: ${code}` : `Queue Disabled`}</p>
                         <Switch 
                             checked={queueActivated} 
                             className={checkButton} 
                             onChange={onCheckedButtonChange} />
                     </div>
                 ]}
+            />
+            <List 
+                dataSource={requests}
+                renderItem={item => (
+                    <List.Item>
+                        <List.Item.Meta 
+                            title={item.songId}
+                        />
+                    </List.Item>
+                )}
             />
         </div>
     )

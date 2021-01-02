@@ -1,7 +1,16 @@
 .extraContainer {
-    display: flex
+    display: flex;
 }
 
 .checkButton {
     margin-left: 0.5rem
+}
+
+.header {
+    background: linear-gradient(239.6deg, #3C1778 24.44%, #574AE2 100.52%), #8E2DE2;
+    color: white
+}
+
+.queueActivatedText {
+    margin-bottom: 0;
 }
