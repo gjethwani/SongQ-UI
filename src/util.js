@@ -2,7 +2,7 @@ const getEnv = () => {
     if (window.location.hostname === 'localhost') {
         return 'local'
     }
-    if (window.location.hostname === 'songq-ui.herokuapp.com') {
+    if (window.location.hostname === 'api.songq.io') {
         return 'production'
     }
 }
