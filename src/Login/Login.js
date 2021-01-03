@@ -4,11 +4,12 @@ import {
     welcome
 } from './Login.module.css'
 import { Button } from 'antd'
+import { getURL } from '../util'
 import 'antd/dist/antd.css'
 
 const Login = () => {
     const login = () => {
-        window.location.href = 'http://localhost:5000/spotify-login'
+        window.location.href = `${getURL()}/spotify-login`
     }
     return (
         <div className={loginContainer}>

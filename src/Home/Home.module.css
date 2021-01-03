@@ -8,7 +8,11 @@
 
 .header {
     background: linear-gradient(239.6deg, #3C1778 24.44%, #574AE2 100.52%), #8E2DE2;
-    color: white
+    color: white !important;
+}
+
+.header span {
+    color: white !important;
 }
 
 .queueActivatedText {
