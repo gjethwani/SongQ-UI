@@ -21,7 +21,6 @@ const joinArtists = artistsRaw => {
 const GuestHome = () => {
     const [query, setQuery] = useState('')
     const [tracks, setTracks] = useState([])
-    const [requested, setRequested] = useState([])
     const { userId } = useParams()
     const albumArtIndex = 0
     useEffect(() => {

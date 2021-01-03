@@ -1,5 +1,18 @@
+const getEnv = () => {
+    if (window.location.hostname === 'localhost') {
+        return 'local'
+    }
+    if (window.location.hostname === 'songq-ui.herokuapp.com') {
+        return 'production'
+    }
+}
+
 const getURL = () => {
-    return `${window.location.protocol}//${window.location.hostname}:5000`
+    if (getEnv() === 'production') {
+        return `${window.location.protocol}//songq-backend.herokuapp.com`
+    } else {
+        return `${window.location.protocol}//localhost:5000`
+    }
 }
 
 module.exports = {
