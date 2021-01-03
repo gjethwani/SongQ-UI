@@ -2,7 +2,7 @@ const getEnv = () => {
     if (window.location.hostname === 'localhost') {
         return 'local'
     }
-    if (window.location.hostname === 'api.songq.io') {
+    if (window.location.hostname === 'songq.io') {
         return 'production'
     }
 }
