@@ -4,9 +4,6 @@ const getEnv = () => {
     } else {
         return 'production'
     }
-    // if (window.location.hostname === 'songq.io' || window.location.hostname === 'www.songq.io') {
-    //     return 'production'
-    // }
 }
 
 const getURL = () => {
