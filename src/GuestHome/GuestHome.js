@@ -1,4 +1,4 @@
-import { PageHeader, Input, Card, Button } from 'antd'
+import { PageHeader, Input, Card, Button, notification } from 'antd'
 import { header, trackContainer, track, cardExtras } from './GuestHome.module.css'
 import { useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
@@ -26,6 +26,10 @@ const GuestHome = () => {
     useEffect(() => {
         axios.post(`${getURL()}/guest-login`, {}, { withCredentials: true })
             .catch(err => {
+                notification['error']({
+                    message: 'Server Error',
+                    description: 'Cannot connect to Spotify'
+                })
                 console.log(err)
             })
     })
@@ -37,6 +41,10 @@ const GuestHome = () => {
                 setTracks(items)
             })
             .catch(err => {
+                notification['error']({
+                    message: 'Could Not Search',
+                    description: 'Error searching for tracks'
+                })
                 console.log(err)
             })
     }
@@ -59,6 +67,10 @@ const GuestHome = () => {
             document.getElementById(`${track.id}_check`).style.marginBottom = '1rem'
         })
         .catch(err => {
+            notification['error']({
+                message: 'Could not make request',
+                description: 'Error making request'
+            })
             console.log(err)
         })
     }

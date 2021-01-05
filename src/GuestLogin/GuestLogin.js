@@ -2,7 +2,7 @@ import {
     guestLoginContainer,
     flexContainer
 } from './GuestLogin.module.css'
-import { Input, Button } from 'antd'
+import { Input, Button, notification } from 'antd'
 import 'antd/dist/antd.css'
 import { useState } from 'react'
 import { getURL } from '../util'
@@ -17,6 +17,10 @@ const GuestLogin = () => {
                 window.location.href = `/queue/${userId}`
             })
             .catch(err => {
+                notification['error']({
+                    message: 'Server Error',
+                    description: 'Please try again later'
+                })
                 console.log(err)
             })
     }
