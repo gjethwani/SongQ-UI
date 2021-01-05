@@ -16,6 +16,7 @@ const Home = () => {
     const [queueActivated, setQueueActivated] = useState(false)
     const [code, setCode] = useState('')
     const [requests, setRequests] = useState([])
+    const [userName, setUserName] = useState('')
     useEffect(() => {
         axios.get(`${getURL()}/get-user-details`, { withCredentials: true })
             .then(response => {
@@ -24,11 +25,12 @@ const Home = () => {
                 setCode(user.code)
                 setUserId(user.userId)
                 setRequests(user.requests)
+                setUserName(user.name)
             })
             .catch(err => {
                 console.log(err)
             })
-    })
+    }, [])
     const onCheckedButtonChange = activated => {
         axios.patch(`${getURL()}/change-queue-activation`, { userId, activated }, { withCredentials: true })
             .then(() => {
@@ -80,7 +82,7 @@ const Home = () => {
             render: track => (
                 <List.Item>
                     <List.Item.Meta 
-                        avatar={<img src={track.albumArt} style={{ width: '64px' }}/>}
+                        avatar={<img alt='album art' src={track.albumArt} style={{ width: '64px' }}/>}
                         title={track.songName}
                         description={track.artists}
                     />
@@ -106,7 +108,7 @@ const Home = () => {
     return (
         <div>
             <PageHeader
-                title='Welcome!'
+                title={(userName !== '' && userName !== undefined) ? `Welcome, ${userName}!` : `Welcome!`}
                 className={header}
                 extra={[
                     <div className={extraContainer}>

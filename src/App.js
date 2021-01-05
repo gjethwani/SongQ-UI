@@ -5,7 +5,8 @@ import GuestHome from './GuestHome'
 import {
     BrowserRouter as Router,
     Switch,
-    Route
+    Route,
+    Redirect
   } from "react-router-dom"
 import {
   container
@@ -15,18 +16,21 @@ const App = () => {
   return (
     <Router className={container}>
         <Switch>
-            <Route path='/login'>
-              <Login />
-            </Route>
-            <Route path='/home'>
-              <Home />
-            </Route>
-            <Route path='/code'>
-              <GuestLogin />
-            </Route>
-            <Route path='/queue/:userId'>
-              <GuestHome />
-            </Route>
+          <Route exact path='/'>
+            <Redirect to='/home' />
+          </Route>
+          <Route exact path='/login'>
+            <Login />
+          </Route>
+          <Route exact path='/home'>
+            <Home />
+          </Route>
+          <Route exact path='/code'>
+            <GuestLogin />
+          </Route>
+          <Route exact path='/queue/:userId'>
+            <GuestHome />
+          </Route>
         </Switch>
     </Router>
   );
