@@ -1,6 +1,6 @@
 import { PageHeader, Card, Button, notification } from 'antd'
 import Input from 'muicss/lib/react/input'
-import { header, trackContainer, track, cardExtras, searchBox } from './GuestHome.module.css'
+import { header, trackContainer, track, cardExtras, searchBox, inactive } from './GuestHome.module.css'
 import { useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
 import axios from 'axios'
@@ -23,9 +23,22 @@ const joinArtists = artistsRaw => {
 const GuestHome = () => {
     const [tracks, setTracks] = useState([])
     const [userName, setUserName]  = useState('')
+    const [queueActivated, setQueueActivated] = useState(false)
     const { userId } = useParams()
     const albumArtIndex = 0
     useEffect(() => {
+        axios.post(`${getURL()}/is-queue-active`, { userId  }, { withCredentials: true })
+            .then(response => {
+                const { queueActivated } = response.data
+                setQueueActivated(queueActivated)
+            })
+            .catch(err => {
+                notification['error']({
+                    message: 'Server Error',
+                    description: 'Cannot connect to server'
+                })
+                console.log(err)
+            })
         axios.post(`${getURL()}/guest-login`, {}, { withCredentials: true })
             .catch(err => {
                 notification['error']({
@@ -91,32 +104,36 @@ const GuestHome = () => {
                 title={userName !== '' ? `Welcome to ${userName}'s queue!` : `Welcome to the queue!`}
                 className={header}
             />
-            <Input
-                label='Search for songs'
-                onChange={e => onSearchChanged(e.target.value)}
-                className={searchBox}
-                floatingLabel
-            />
-            <div className={trackContainer}>
-                {
-                    tracks.map(t => 
-                        <Card 
-                            hoverable
-                            className={track}
-                            actions={[
-                                <Button id={`${t.id}_button`} className={cardExtras} style={{ marginBottom: '1rem', marginTop: '1rem'}} onClick={() => makeRequest(t)}>Request</Button>,
-                                <CheckCircleTwoTone id={`${t.id}_check`} className={cardExtras} style={{ display: 'none' }} twoToneColor="#52c41a"/>
-                            ]}
-                            cover={<img alt="albumArt" src={t.album.images[albumArtIndex].url} />}
-                        >
-                            <Card.Meta 
-                                title={t.name}
-                                description={joinArtists(t.artists)}
-                            />
-                        </Card>
-                    )
-                }
-            </div>
+            {!queueActivated && <h3 className={inactive}>Queue is not active</h3>}
+            {queueActivated && 
+            <div>
+                <Input
+                    label='Search for songs'
+                    onChange={e => onSearchChanged(e.target.value)}
+                    className={searchBox}
+                    floatingLabel
+                />
+                <div className={trackContainer}>
+                    {
+                        tracks.map(t => 
+                            <Card 
+                                hoverable
+                                className={track}
+                                actions={[
+                                    <Button id={`${t.id}_button`} className={cardExtras} style={{ marginBottom: '1rem', marginTop: '1rem'}} onClick={() => makeRequest(t)}>Request</Button>,
+                                    <CheckCircleTwoTone id={`${t.id}_check`} className={cardExtras} style={{ display: 'none' }} twoToneColor="#52c41a"/>
+                                ]}
+                                cover={<img alt="albumArt" src={t.album.images[albumArtIndex].url} />}
+                            >
+                                <Card.Meta 
+                                    title={t.name}
+                                    description={joinArtists(t.artists)}
+                                />
+                            </Card>
+                        )
+                    }
+                </div>
+            </div>}
         </div>
     )
 }
