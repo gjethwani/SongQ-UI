@@ -1,5 +1,6 @@
 .extraContainer {
     display: flex;
+    align-items: center
 }
 
 .checkButton {
@@ -17,4 +18,31 @@
 
 .queueActivatedText {
     margin-bottom: 0;
+    margin-left: 0.5rem
+}
+
+.sortByText {
+    margin-left: 16px;
+    margin-right: 0.5rem;
+}
+
+.radioButtons {
+    margin-top: 0.5rem;
+    margin-bottom: 0.5rem;
+}
+
+.approveButton { 
+    color: green;
+    border-color: green; 
+    margin-right: 0.5rem;
+}
+
+.sortContainer {
+    width: 71%;
+    display: inline-block;
+}
+
+.serviceAllContainer {
+    width: 29%;
+    display: inline-block;
 }

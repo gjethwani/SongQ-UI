@@ -1,11 +1,13 @@
-import { PageHeader, Input, Card, Button, notification } from 'antd'
-import { header, trackContainer, track, cardExtras } from './GuestHome.module.css'
+import { PageHeader, Card, Button, notification } from 'antd'
+import Input from 'muicss/lib/react/input'
+import { header, trackContainer, track, cardExtras, searchBox } from './GuestHome.module.css'
 import { useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
 import axios from 'axios'
 import { CheckCircleTwoTone } from '@ant-design/icons'
 import { getURL } from '../util'
 import 'antd/dist/antd.css'
+import 'muicss/dist/css/mui.min.css'
 
 const joinArtists = artistsRaw => {
     let result = ''
@@ -19,8 +21,8 @@ const joinArtists = artistsRaw => {
 }
 
 const GuestHome = () => {
-    const [query, setQuery] = useState('')
     const [tracks, setTracks] = useState([])
+    const [userName, setUserName]  = useState('')
     const { userId } = useParams()
     const albumArtIndex = 0
     useEffect(() => {
@@ -32,9 +34,18 @@ const GuestHome = () => {
                 })
                 console.log(err)
             })
-    })
+        axios.get(`${getURL()}/get-user-name?userId=${userId}`)
+            .then(response => {
+                const { name } = response.data
+                if (name) {
+                    setUserName(name)
+                }
+            })
+            .catch(err => {
+                console.log(err)
+            })
+    }, [])
     const onSearchChanged = query => {
-        setQuery(query)
         axios.post(`${getURL()}/search-songs`, { q: query}, { withCredentials: true })
             .then(response => {
                 const { items } = response.data.results.tracks
@@ -77,13 +88,14 @@ const GuestHome = () => {
     return (
         <div>
             <PageHeader
-                title='Welcome to the queue!'
+                title={userName !== '' ? `Welcome to ${userName}'s queue!` : `Welcome to the queue!`}
                 className={header}
             />
-            <Input 
-                placeholder='Search for songs'
-                value={query}
+            <Input
+                label='Search for songs'
                 onChange={e => onSearchChanged(e.target.value)}
+                className={searchBox}
+                floatingLabel
             />
             <div className={trackContainer}>
                 {
