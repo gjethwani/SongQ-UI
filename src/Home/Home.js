@@ -36,6 +36,7 @@ const Home = () => {
     const [userName, setUserName] = useState('')
     const [sortKey, setSortKey] = useState('oldest')
     const [loading, setLoading] = useState([])
+    const [autoAccept, setAutoAccept] = useState(false) 
     const requestsRef = useRef(requests)
     const sortKeyRef = useRef(sortKey)
     const errorHandle = err => {
@@ -71,6 +72,7 @@ const Home = () => {
                 setUserId(user.userId)
                 setRequests(user.requests)
                 setUserName(user.name)
+                setAutoAccept(user.autoAccept)
             })
             .catch(err => {
                 errorHandle(err)
@@ -89,10 +91,17 @@ const Home = () => {
                 const client = new W3CWebSocket(`ws://${window.location.hostname === 'localhost' ? `localhost:5000` : 'api.songq.io'}/connect?id=${id}`)
                 client.onmessage = message => {
                     const { data } = message
+                    console.log(data)
                     if (data.substring(0, 12) === 'new-request:') {
                         const newRequest = JSON.parse(data.substring(12, data.length))
                         setRequests([...requestsRef.current, newRequest])
                         sortBy(sortKeyRef.current)
+                    } else if (data.substring(0, 12) === 'aew-request:') {
+                        const newRequest = JSON.parse(data.substring(12, data.length))
+                        notification['success']({
+                            message: 'Succesfully auto queued',
+                            description: `${newRequest.songName} by ${newRequest.artists} succesfully auto queued!`
+                        })
                     }
                 }
             })
@@ -166,9 +175,17 @@ const Home = () => {
                 setLoading([...loading])
             })
     }
+    const wait = (ms) => {
+        const start = Date.now()
+        let now = start
+        while (now - start < ms) {
+          now = Date.now()
+        }
+    }
     const approveRejectAll = accepted => {
         requests.forEach(r => {
             approveReject(r._id, accepted)
+            wait(250)
         })
     }
     const sortAlphabetically = (e1, e2, key) => {
@@ -213,6 +230,30 @@ const Home = () => {
             message: 'Copied Succesfully',
             description: 'Link copied to clipboard'
         })
+    }
+    const onAutoAcceptChange = autoAcceptNew => {
+        axios.post(`${getURL()}/change-auto-accept`, { autoAccept: autoAcceptNew }, { withCredentials: true })
+            .then(() => {
+                setAutoAccept(autoAcceptNew)
+                if (autoAcceptNew) {
+                    approveRejectAll(true)
+                }
+            })
+            .catch(err => {
+                if (err.response) {
+                    if (err.response.data) {
+                        if (err.response.data.err) {
+                            if (err.response.data.err === 'queue inactive') {
+                                notification['error']({
+                                    message: 'Please open Spotify',
+                                    description: 'Cannot activate auto accept if no player is active'
+                                })
+                            }
+                        }
+                    }
+                }
+                console.log(err)
+            })
     }
     const columns = [
         {
@@ -270,10 +311,17 @@ const Home = () => {
                             <Button shape='round' ghost icon={<CopyOutlined />}>Copy Queue Link to Clipboard</Button>
                         </CopyToClipboard>
                         {turnOnCode ? <p className={queueActivatedText}>{queueActivated ? `Code: ${code}` : `Queue Disabled`}</p> : ''}
+                        Queue Active:
                         <Switch 
                             checked={queueActivated} 
                             className={checkButton} 
-                            onChange={onCheckedButtonChange} />
+                            onChange={onCheckedButtonChange} 
+                        />
+                        Auto Accept:
+                        <Switch
+                            checked={autoAccept}
+                            onChange={onAutoAcceptChange}
+                        />
                     </div>
                 ]}
             />

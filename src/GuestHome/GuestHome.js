@@ -24,6 +24,7 @@ const GuestHome = () => {
     const [tracks, setTracks] = useState([])
     const [userName, setUserName]  = useState('')
     const [queueActivated, setQueueActivated] = useState(false)
+    const [requested, setRequested] = useState([])
     const { userId } = useParams()
     const albumArtIndex = 0
     useEffect(() => {
@@ -84,11 +85,8 @@ const GuestHome = () => {
             withCredentials: true
         })
         .then(() => {
-            document.getElementById(`${track.id}_button`).style.display = 'none'
-            document.getElementById(`${track.id}_button`).style.margin = 0
-            document.getElementById(`${track.id}_check`).style.display = 'block'
-            document.getElementById(`${track.id}_check`).style.marginTop = '1rem'
-            document.getElementById(`${track.id}_check`).style.marginBottom = '1rem'
+            requested.push(track.id)
+            setRequested([...requested])
         })
         .catch(err => {
             notification['error']({
@@ -119,10 +117,12 @@ const GuestHome = () => {
                             <Card 
                                 hoverable
                                 className={track}
-                                actions={[
-                                    <Button id={`${t.id}_button`} className={cardExtras} style={{ marginBottom: '1rem', marginTop: '1rem'}} onClick={() => makeRequest(t)}>Request</Button>,
-                                    <CheckCircleTwoTone id={`${t.id}_check`} className={cardExtras} style={{ display: 'none' }} twoToneColor="#52c41a"/>
-                                ]}
+                                key={t.id}
+                                actions={
+                                    requested.includes(t.id) ? 
+                                        [<CheckCircleTwoTone className={cardExtras} twoToneColor="#52c41a"/>] :
+                                        [<Button className={cardExtras} style={{ marginBottom: '1rem', marginTop: '1rem'}} onClick={() => makeRequest(t)}>Request</Button>]
+                                }
                                 cover={<img alt="albumArt" src={t.album.images[albumArtIndex].url} />}
                             >
                                 <Card.Meta 
