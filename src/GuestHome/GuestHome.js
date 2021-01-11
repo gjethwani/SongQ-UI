@@ -27,6 +27,8 @@ const GuestHome = () => {
     const [requested, setRequested] = useState([])
     const { userId } = useParams()
     const albumArtIndex = 0
+    let CancelToken = axios.CancelToken
+    let cancel
     useEffect(() => {
         axios.post(`${getURL()}/is-queue-active`, { userId  }, { withCredentials: true })
             .then(response => {
@@ -60,16 +62,23 @@ const GuestHome = () => {
             })
     }, [])
     const onSearchChanged = query => {
-        axios.post(`${getURL()}/search-songs`, { q: query}, { withCredentials: true })
+        if (query === '') {
+            return
+        }
+        if (cancel !== undefined) {
+            cancel()
+        }
+        axios.post(`${getURL()}/search-songs`, { q: query}, { 
+            withCredentials: true,
+            cancelToken: new CancelToken(c => {
+                cancel = c
+            })
+        })
             .then(response => {
                 const { items } = response.data.results.tracks
                 setTracks(items)
             })
             .catch(err => {
-                notification['error']({
-                    message: 'Could Not Search',
-                    description: 'Error searching for tracks'
-                })
                 console.log(err)
             })
     }

@@ -164,43 +164,63 @@ const Home = () => {
         })
         return result
     }
-    const approveReject = (requestId, accepted) => {
-        const elementId = `${requestId}_${accepted ? 'approve' : 'rejected' }`
-        loading.push(elementId)
-        setLoading([...loading])
-        axios.post(`${getURL()}/service-request`, { requestId, accepted }, { withCredentials: true })
-            .then(() => {
-                for (let i = 0; i < requests.length; i++) {
-                    const r = requests[i]
-                    if (r._id === requestId) {
-                        requests.splice(i, 1)
-                        setRequests([...requests])
+    const approveReject = (requestId, accepted, showNotification) => {
+        return new Promise((resolve, reject) => {
+            const elementId = `${requestId}_${accepted ? 'approve' : 'rejected' }`
+            loading.push(elementId)
+            setLoading([...loading])
+            axios.post(`${getURL()}/service-request`, { requestId, accepted }, { withCredentials: true })
+                .then(() => {
+                    for (let i = 0; i < requests.length; i++) {
+                        const r = requests[i]
+                        if (r._id === requestId) {
+                            requests.splice(i, 1)
+                            setRequests([...requests])
+                            resolve()
+                        }
                     }
-                }
-            })
-            .catch((err) => {
-                if (err.response) {
-                    if (err.response.data) {
-                        if (err.response.data.err && err.response.data.err === 'no queue') {
-                            notification['error']({
-                                message: 'No queue found',
-                                description: 'Please make sure your queue is active'
-                            })
+                })
+                .catch((err) => {
+                    if (err.response) {
+                        if (err.response.data) {
+                            if (err.response.data.err && err.response.data.err === 'no queue') {
+                                if (showNotification) {
+                                    notification['error']({
+                                        message: 'No queue found',
+                                        description: 'Please make sure your queue is active'
+                                    })
+                                } else {
+                                    reject('no queue')
+                                }
+                                
+                            } else {
+                                if (showNotification) {
+                                    errorHandle(err)
+                                } else {
+                                    reject(err)
+                                }
+                            }
                         } else {
-                            errorHandle(err)
+                            if (showNotification) {
+                                errorHandle(err)
+                            } else {
+                                reject(err)
+                            }
                         }
                     } else {
-                        errorHandle(err)
+                        if (showNotification) {
+                            errorHandle(err)
+                        } else {
+                            reject(err)
+                        }
                     }
-                } else {
-                    errorHandle(err)
-                }
-                console.log(err.response)
-            })
-            .finally(() => {
-                loading.splice(elementId, 1)
-                setLoading([...loading])
-            })
+                    console.log(err.response)
+                })
+                .finally(() => {
+                    loading.splice(elementId, 1)
+                    setLoading([...loading])
+                })
+        })
     }
     const wait = (ms) => {
         const start = Date.now()
@@ -210,17 +230,54 @@ const Home = () => {
         }
     }
     const approveRejectAll = accepted => {
-        const serviced = []
-        requests.forEach(r => {
-            if (serviced.includes(r.songId)) {
-                approveReject(r._id, false)
-            } else {
-                approveReject(r._id, accepted)
-                serviced.push(r.songId)
-            }
-            wait(250)
-        })
+        axios.post(`${getURL()}/service-all`, { accepted }, { withCredentials: true})
+            .then(response => {
+                console.log(response)
+            })
+            .catch(err => {
+                console.log(err)
+            })
     }
+    // const approveRejectAll = async accepted => {
+    //     const approveRejectErrorHandler = err => {
+    //         if (err === 'no queue') {
+    //             notification['error']({
+    //                 message: 'No queue found',
+    //                 description: 'Please make sure your queue is active'
+    //             })
+    //         } else {
+    //             errorHandle(err)
+    //         }
+    //     }
+    //     const serviced = []
+    //     let toBreak = false
+    //     for (let i = 0; i < requests.length; i++) {
+    //         const r = requests[i]
+    //         console.log(requests)
+    //         if (serviced.includes(r.songId)) {
+    //             try {
+    //                 await approveReject(r._id, false, false)
+    //             }
+    //             catch(err) {
+    //                 approveRejectErrorHandler(err)
+    //                 toBreak = true
+    //             }
+    //         } else {
+    //             try {
+    //                 await approveReject(r._id, accepted, false)
+    //             }
+    //             catch(err) {
+    //                 approveRejectErrorHandler(err)
+    //                 toBreak = true
+    //             }
+    //             serviced.push(r.songId)
+    //         }
+    //         if (toBreak) {
+    //             break
+    //         }
+    //         wait(250)
+    //     }
+    // }
     const sortAlphabetically = (e1, e2, key) => {
         if(e1[key].toLowerCase() < e2[key].toLowerCase()) { return -1 }
         if(e1[key].toLowerCase() > e2[key].toLowerCase()) { return 1 }
@@ -326,7 +383,7 @@ const Home = () => {
                 <div>
                     <Button 
                         className={approveButton} 
-                        onClick={() => approveReject(requestId, true)}
+                        onClick={() => approveReject(requestId, true, true)}
                         id={`${requestId}_approve`}
                         loading={loading.includes(`${requestId}_approve`)}
                     >
@@ -334,7 +391,7 @@ const Home = () => {
                     </Button>
                     <Button 
                         danger 
-                        onClick={() => approveReject(requestId, false)}
+                        onClick={() => approveReject(requestId, false, true)}
                         id={`${requestId}_reject`}
                         loading={loading.includes(`${requestId}_reject`)}
                     >
@@ -381,7 +438,7 @@ const Home = () => {
                     <Radio.Button value='artists'>Artists</Radio.Button>
                 </Radio.Group>
             </div>
-            <div className={serviceAllContainer}>
+            {/* <div className={serviceAllContainer}>
                 <Button 
                     className={approveButton} 
                     onClick={() => approveRejectAll(true)}
@@ -396,7 +453,7 @@ const Home = () => {
                 >
                     Reject All
                 </Button>
-            </div>
+            </div> */}
             
             <Table columns={columns} dataSource={generateData()} />
         </div>

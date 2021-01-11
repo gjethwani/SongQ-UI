@@ -1,6 +1,7 @@
 import Login from './Login'
 import Home from './Home'
 import GuestHome from './GuestHome'
+import FooterComponent from './FooterComponent'
 import {
     BrowserRouter as Router,
     Switch,
@@ -29,7 +30,10 @@ const App = () => {
             <Route exact path='/queue/:userId'>
               <GuestHome />
             </Route>
+            <Route exact path='/terms-and-condition.html' onEnter={() => window.location.reload()} />
+            <Route exact path='/privacy-policy.html' onEnter={() => window.location.reload()} />
           </Switch>
+          <FooterComponent />
       </Router>
     </HttpsRedirect>
   );
