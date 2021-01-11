@@ -91,11 +91,9 @@ const Home = () => {
                 const client = new W3CWebSocket(`ws://${window.location.hostname === 'localhost' ? `localhost:5000` : 'api.songq.io'}/connect?id=${id}`)
                 client.onmessage = message => {
                     const { data } = message
-                    console.log(data)
                     if (data.substring(0, 12) === 'new-request:') {
                         const newRequest = JSON.parse(data.substring(12, data.length))
-                        setRequests([...requestsRef.current, newRequest])
-                        sortBy(sortKeyRef.current)
+                        setRequests([...requestsRef.current, newRequest].sort(getSortComparator(sortKeyRef.current)))
                     } else if (data.substring(0, 12) === 'aew-request:') {
                         const newRequest = JSON.parse(data.substring(12, data.length))
                         notification['success']({
@@ -110,6 +108,33 @@ const Home = () => {
             })
         
     }, [])
+    const formatRequests = requests => {
+        const formatted = []
+        requests.forEach(request => {
+            if (formatted.length === 0) {
+                formatted.push({
+                    ...request,
+                    votes: request.votes ? request.votes : 1
+                })
+            } else {
+                let found = false
+                for (let i = 0; i < formatted.length; i++) {
+                    if (formatted[i].songId === request.songId) {
+                        formatted[i].votes += 1
+                        found = true
+                        break
+                    }
+                }
+                if (!found) {
+                    formatted.push({
+                        ...request,
+                        votes: request.votes ? request.votes : 1
+                    })
+                }
+            }
+        })
+        return formatted
+    }
     const onCheckedButtonChange = activated => {
         axios.patch(`${getURL()}/change-queue-activation`, { userId, activated }, { withCredentials: true })
             .then(() => {
@@ -123,7 +148,8 @@ const Home = () => {
     const generateData = () => {
         const result = []
         let i = 1
-        requests.forEach(r => {
+        const formattedRequests = formatRequests(requests)
+        formattedRequests.forEach(r => {
             result.push({
                 key: `${i}`,
                 track: {
@@ -131,6 +157,7 @@ const Home = () => {
                     albumArt: r.albumArt,
                     artists: r.artists
                 },
+                votes: r.votes,
                 approveOrReject: r._id
             })
             i++
@@ -183,8 +210,14 @@ const Home = () => {
         }
     }
     const approveRejectAll = accepted => {
+        const serviced = []
         requests.forEach(r => {
-            approveReject(r._id, accepted)
+            if (serviced.includes(r.songId)) {
+                approveReject(r._id, false)
+            } else {
+                approveReject(r._id, accepted)
+                serviced.push(r.songId)
+            }
             wait(250)
         })
     }
@@ -196,7 +229,7 @@ const Home = () => {
     const sortDate = (e1, e2, key) => {
         return new Date(e1[key]) - new Date(e2[key])
     }
-    const sortBy = sortKey => {
+    const getSortComparator = sortKey => {
         let sortComparator
         switch (sortKey) {
             case 'newest':
@@ -222,6 +255,10 @@ const Home = () => {
             default:
                 sortComparator = () => 0
         }
+        return sortComparator
+    }
+    const sortBy = sortKey => {
+        const sortComparator = getSortComparator(sortKey)
         const newRequests = requestsRef.current.sort(sortComparator)
         setRequests(() => [...newRequests])
     }
@@ -260,7 +297,7 @@ const Home = () => {
             title: 'Track',
             dataIndex: 'track',
             key: 'track',
-            width: '70%',
+            width: '50%',
             render: track => (
                 <List.Item>
                     <List.Item.Meta 
@@ -272,9 +309,19 @@ const Home = () => {
             ),
         },
         {
+            title: 'Votes',
+            dataIndex: 'votes',
+            key: 'votes',
+            width: '20%',
+            render: votes => (
+                <p>{`${votes}`}</p>
+            )
+        },
+        {
             title: 'Approve Or Reject',
             dataIndex: 'approveOrReject',
             key: 'approveOrReject',
+            width: '30%',
             render: requestId => (
                 <div>
                     <Button 
