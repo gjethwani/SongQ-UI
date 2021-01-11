@@ -1,6 +1,5 @@
 import Login from './Login'
 import Home from './Home'
-import GuestLogin from './GuestLogin'
 import GuestHome from './GuestHome'
 import {
     BrowserRouter as Router,
@@ -26,9 +25,6 @@ const App = () => {
             </Route>
             <Route exact path='/home'>
               <Home />
-            </Route>
-            <Route exact path='/code'>
-              <GuestLogin />
             </Route>
             <Route exact path='/queue/:userId'>
               <GuestHome />
