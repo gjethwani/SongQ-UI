@@ -5,6 +5,7 @@
 
 .header span {
     color: white !important;
+    white-space: normal;
 }
 
 .trackContainer {
@@ -33,4 +34,8 @@
 .inactive {
     text-align: center;
     margin-top: 1rem;
+}
+
+.cardExtras {
+    border-radius: 32px
 }

@@ -60,7 +60,7 @@ const GuestHome = () => {
             .catch(err => {
                 console.log(err)
             })
-    }, [])
+    })
     const onSearchChanged = query => {
         if (query === '') {
             return

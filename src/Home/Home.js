@@ -1,6 +1,5 @@
 import { useEffect } from 'react'
 import {
-    extraContainer,
     checkButton,
     header,
     queueActivatedText,
@@ -8,7 +7,8 @@ import {
     radioButtons,
     approveButton,
     sortContainer,
-    serviceAllContainer
+    serviceAllContainer,
+    rejectButton
 } from './Home.module.css'
 import { 
     PageHeader, 
@@ -19,7 +19,7 @@ import {
     notification, 
     Radio
 } from 'antd'
-import { CopyOutlined } from '@ant-design/icons'
+import { CopyOutlined, CheckOutlined, CloseOutlined } from '@ant-design/icons'
 import { CopyToClipboard } from 'react-copy-to-clipboard'
 import 'antd/dist/antd.css'
 import axios from 'axios'
@@ -107,7 +107,7 @@ const Home = () => {
                 console.log(err)
             })
         
-    }, [])
+    })
     const formatRequests = requests => {
         const formatted = []
         requests.forEach(request => {
@@ -332,17 +332,16 @@ const Home = () => {
                         onClick={() => approveReject(requestId, true)}
                         id={`${requestId}_approve`}
                         loading={loading.includes(`${requestId}_approve`)}
-                    >
-                        Approve
-                    </Button>
+                        icon={<CheckOutlined />}
+                    />
                     <Button 
+                        className={rejectButton}
                         danger 
                         onClick={() => approveReject(requestId, false)}
                         id={`${requestId}_reject`}
                         loading={loading.includes(`${requestId}_reject`)}
-                    >
-                        Reject
-                    </Button>
+                        icon={<CloseOutlined />}
+                    />
                 </div>
             )
         }
@@ -353,25 +352,31 @@ const Home = () => {
                 title={(userName !== '' && userName !== undefined) ? `Welcome, ${userName}!` : `Welcome!`}
                 className={header}
                 extra={[
-                    <div className={extraContainer}>
-                        <CopyToClipboard 
-                            text={`${window.location.protocol}//${window.location.hostname}${window.location.hostname === 'localhost' ? `:${window.location.port}` : ''}/queue/${userId}`}
-                            onCopy={() => showCopyNotification()}
-                        >
-                            <Button shape='round' ghost icon={<CopyOutlined />}>Copy Queue Link to Clipboard</Button>
-                        </CopyToClipboard>
+                    <div>
+                        <div>
+                            <CopyToClipboard 
+                                text={`${window.location.protocol}//${window.location.hostname}${window.location.hostname === 'localhost' ? `:${window.location.port}` : ''}/queue/${userId}`}
+                                onCopy={() => showCopyNotification()}
+                            >
+                                <Button shape='round' ghost icon={<CopyOutlined />}>Copy Link</Button>
+                            </CopyToClipboard>
+                        </div>
                         {turnOnCode ? <p className={queueActivatedText}>{queueActivated ? `Code: ${code}` : `Queue Disabled`}</p> : ''}
-                        Queue Active:
-                        <Switch 
-                            checked={queueActivated} 
-                            className={checkButton} 
-                            onChange={onCheckedButtonChange} 
-                        />
-                        Auto Accept:
-                        <Switch
-                            checked={autoAccept}
-                            onChange={onAutoAcceptChange}
-                        />
+                        <div>
+                            Queue Active:
+                            <Switch 
+                                checked={queueActivated} 
+                                className={checkButton} 
+                                onChange={onCheckedButtonChange} 
+                            />
+                        </div>
+                        <div>
+                            Auto Accept:
+                            <Switch
+                                checked={autoAccept}
+                                onChange={onAutoAcceptChange}
+                            />
+                        </div>
                     </div>
                 ]}
             />
@@ -393,6 +398,7 @@ const Home = () => {
                     Approve All
                 </Button>
                 <Button 
+                    className={rejectButton}
                     danger 
                     onClick={() => approveRejectAll(false)}
                     loading={loading.includes('reject_all')}
