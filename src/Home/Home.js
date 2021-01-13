@@ -100,7 +100,7 @@ const Home = () => {
                     const { data } = message
                     if (data.substring(0, 12) === 'new-request:') {
                         const newRequest = JSON.parse(data.substring(12, data.length))
-                        setRequests([...requestsRef.current, newRequest].sort(getSortComparator(sortKeyRef.current)))
+                        setRequests(formatRequests([...requestsRef.current, newRequest]).sort(getSortComparator(sortKeyRef.current)))
                     } else if (data.substring(0, 12) === 'aew-request:') {
                         const newRequest = JSON.parse(data.substring(12, data.length))
                         approveReject(newRequest._id, true)                        

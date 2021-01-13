@@ -1,6 +1,18 @@
-import { PageHeader, Card, Button, notification } from 'antd'
+import { 
+    PageHeader, 
+    Button, 
+    notification, 
+    List, 
+    Table 
+} from 'antd'
 import Input from 'muicss/lib/react/input'
-import { header, trackContainer, track, cardExtras, searchBox, inactive } from './GuestHome.module.css'
+import { 
+    header, 
+    cardExtras, 
+    searchBox, 
+    inactive 
+} from './GuestHome.module.css'
+import { albumArt } from '../Home/Home.module.css'
 import { useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
 import axios from 'axios'
@@ -26,6 +38,7 @@ const GuestHome = () => {
     const [queueActivated, setQueueActivated] = useState(false)
     const [requested, setRequested] = useState([])
     const [recentRequests, setRecentRequests] = useState([])
+    const [currQuery, setQuery] = useState('')
     const { userId } = useParams()
     const albumArtIndex = 0
     let CancelToken = axios.CancelToken
@@ -59,7 +72,6 @@ const GuestHome = () => {
                 axios.get(`${getURL()}/get-recently-approved?userId=${userId}`, { withCredentials: true })
                     .then(response => {
                         const { requests } = response.data
-                        console.log(requests)
                         setRecentRequests(requests)
                     })
                     .catch(err => {
@@ -76,6 +88,7 @@ const GuestHome = () => {
         
     }, [])
     const onSearchChanged = query => {
+        setQuery(query)
         if (query === '') {
             return
         }
@@ -100,10 +113,10 @@ const GuestHome = () => {
         axios.post(`${getURL()}/make-request`, {
             userId,
             songId: track.id,
-            songName: track.name,
-            artists: joinArtists(track.artists),
-            album: track.album.name,
-            albumArt: track.album.images[albumArtIndex].url
+            songName: track.songName,
+            artists: track.artists,
+            album: track.album,
+            albumArt: track.albumArt
         }, {
             withCredentials: true
         })
@@ -117,6 +130,85 @@ const GuestHome = () => {
                 description: 'Error making request'
             })
             console.log(err)
+        })
+    }
+    const generateData = () => {
+        const toReturn = []
+        if (currQuery === '') {
+            for (let i = 0; i < recentRequests.length; i++) {
+                const r = recentRequests[i]
+                toReturn.push({
+                    key: `${i}`,
+                    track: {
+                        songName: r.songName,
+                        albumArt: r.albumArt,
+                        artists: r.artists
+                    }
+                })
+            }
+        } else {
+            for (let i = 0; i < tracks.length; i++) {
+                const t = tracks[i]
+                const songInfo = {
+                    songName: t.name,
+                    albumArt: t.album.images[albumArtIndex].url,
+                    artists: joinArtists(t.artists)
+                }
+                songInfo.id = t.id
+                toReturn.push({
+                    key: `${i}`,
+                    track: songInfo,
+                    request: {
+                        id: t.id,
+                        album: t.album.name,
+                        ...songInfo
+                    }
+                })
+            }
+        }
+        return toReturn
+    }
+    const columns = [
+        {
+            title: 'Track',
+            dataIndex: 'track',
+            key: 'track',
+            width: '70%',
+            render: track => (
+                <List.Item>
+                    <List.Item.Meta 
+                        avatar={
+                            <img 
+                                alt='album art' 
+                                src={track.albumArt} 
+                                className={albumArt}
+                        />}
+                        title={track.songName}
+                        description={track.artists}
+                    />
+                </List.Item>
+            ),
+        }
+    ]
+    if (currQuery !== '') {
+        columns.push({
+            title: 'Request',
+            dataIndex: 'request',
+            key: 'request',
+            width: '30%',
+            render: track => (
+                requested.includes(track.id) ? 
+                    <CheckCircleTwoTone 
+                        className={cardExtras} 
+                        twoToneColor="#52c41a"/> :
+                    <Button 
+                        className={cardExtras} 
+                        style={{ marginBottom: '1rem', marginTop: '1rem'}} 
+                        onClick={() => makeRequest(track)}
+                    >
+                        Request
+                    </Button>
+            )
         })
     }
     return (
@@ -134,28 +226,10 @@ const GuestHome = () => {
                     className={searchBox}
                     floatingLabel
                 />
-                <div className={trackContainer}>
-                    {
-                        tracks.map(t => 
-                            <Card 
-                                hoverable
-                                className={track}
-                                key={t.id}
-                                actions={
-                                    requested.includes(t.id) ? 
-                                        [<CheckCircleTwoTone className={cardExtras} twoToneColor="#52c41a"/>] :
-                                        [<Button className={cardExtras} style={{ marginBottom: '1rem', marginTop: '1rem'}} onClick={() => makeRequest(t)}>Request</Button>]
-                                }
-                                cover={<img alt="albumArt" src={t.album.images[albumArtIndex].url} />}
-                            >
-                                <Card.Meta 
-                                    title={t.name}
-                                    description={joinArtists(t.artists)}
-                                />
-                            </Card>
-                        )
-                    }
-                </div>
+                <h2 style={{ textAlign: 'center'}}>
+                    {currQuery === '' ? 'Recently Played' : 'Search Results'}
+                </h2>
+                <Table columns={columns} dataSource={generateData()}/>
             </div>}
         </div>
     )
