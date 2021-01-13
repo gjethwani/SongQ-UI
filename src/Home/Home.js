@@ -8,8 +8,12 @@ import {
     approveButton,
     sortContainer,
     serviceAllContainer,
-    rejectButton
+    rejectButton,
+    optionsContainer,
+    optionContainer,
+    approveRejectAllContainer,
 } from './Home.module.css'
+import { isMobile } from 'react-device-detect'
 import { 
     PageHeader, 
     Switch, 
@@ -234,6 +238,7 @@ const Home = () => {
     }
     const getSortComparator = sortKey => {
         let sortComparator
+        console.log(sortKey)
         switch (sortKey) {
             case 'newest':
                 sortComparator = (r1, r2) => {
@@ -255,6 +260,11 @@ const Home = () => {
                     return sortAlphabetically(r1, r2, 'artists')
                 }
                 break
+            case 'votes':
+                sortComparator = (r1, r2) => {
+                    return r2.votes - r1.votes
+                }
+                break
             default:
                 sortComparator = () => 0
         }
@@ -262,7 +272,7 @@ const Home = () => {
     }
     const sortBy = sortKey => {
         const sortComparator = getSortComparator(sortKey)
-        const newRequests = requestsRef.current.sort(sortComparator)
+        const newRequests = formatRequests(requestsRef.current).sort(sortComparator)
         setRequests(() => [...newRequests])
     }
     const showCopyNotification = () => {
@@ -362,51 +372,63 @@ const Home = () => {
                             </CopyToClipboard>
                         </div>
                         {turnOnCode ? <p className={queueActivatedText}>{queueActivated ? `Code: ${code}` : `Queue Disabled`}</p> : ''}
-                        <div>
-                            Queue Active:
-                            <Switch 
-                                checked={queueActivated} 
-                                className={checkButton} 
-                                onChange={onCheckedButtonChange} 
-                            />
-                        </div>
-                        <div>
-                            Auto Accept:
-                            <Switch
-                                checked={autoAccept}
-                                onChange={onAutoAcceptChange}
-                            />
-                        </div>
                     </div>
                 ]}
             />
+            <div className={optionsContainer}>
+                <div className={optionContainer}>
+                    Queue Active:
+                    <Switch 
+                        checked={queueActivated} 
+                        className={checkButton} 
+                        onChange={onCheckedButtonChange} 
+                    />
+                </div>
+                <div className={optionContainer}>
+                    Auto Accept:
+                    <Switch
+                        checked={autoAccept}
+                        onChange={onAutoAcceptChange}
+                    />
+                </div>
+
+                <div className={serviceAllContainer}>
+                    <div 
+                        className={approveRejectAllContainer}
+                        style={isMobile ? { marginRight : '0rem' } : {}}
+                    >
+                        <Button 
+                            className={approveButton} 
+                            onClick={() => approveRejectAll(true)}
+                            loading={loading.includes('approve_all')}
+                            style={isMobile ? { padding :'4px 10px'} : {}}
+                        >
+                            Approve All
+                        </Button>
+                    </div>
+                    <div className={approveRejectAllContainer}>
+                        <Button 
+                            className={rejectButton}
+                            danger 
+                            onClick={() => approveRejectAll(false)}
+                            loading={loading.includes('reject_all')}
+                            style={isMobile ? { padding :'4px 10px' } : { }}
+                        >
+                            Reject All
+                        </Button>
+                    </div>
+                </div>
+            </div>
             <div className={sortContainer}>
                 <span className={sortByText}>Sort By:</span>
                 <Radio.Group value={sortKey} onChange={e => setSortKey(e.target.value)} className={radioButtons}>
-                <Radio.Button value='oldest'>Oldest</Radio.Button>
+                    <Radio.Button value='oldest'>Oldest</Radio.Button>
                     <Radio.Button value='newest'>Newest</Radio.Button>
                     <Radio.Button value='title'>Title</Radio.Button>
                     <Radio.Button value='artists'>Artists</Radio.Button>
+                    <Radio.Button value='votes'>Votes</Radio.Button>
                 </Radio.Group>
             </div>
-            <div className={serviceAllContainer}>
-                <Button 
-                    className={approveButton} 
-                    onClick={() => approveRejectAll(true)}
-                    loading={loading.includes('approve_all')}
-                >
-                    Approve All
-                </Button>
-                <Button 
-                    className={rejectButton}
-                    danger 
-                    onClick={() => approveRejectAll(false)}
-                    loading={loading.includes('reject_all')}
-                >
-                    Reject All
-                </Button>
-            </div>
-            
             <Table columns={columns} dataSource={generateData()} />
         </div>
     )

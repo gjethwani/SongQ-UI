@@ -29,6 +29,7 @@
 .radioButtons {
     margin-top: 0.5rem;
     margin-bottom: 0.5rem;
+    width: 100%;
 }
 
 .approveButton { 
@@ -39,15 +40,33 @@
 }
 
 .sortContainer {
-    width: 71%;
+    width: 100%;
     display: inline-block;
+    text-align: center;
+    margin-top: 1rem;
 }
 
 .serviceAllContainer {
-    width: 29%;
+    width: 50%;
     display: inline-block;
 }
 
 .rejectButton {
     border-radius: 32px;
+}
+
+.optionsContainer {
+    display: flex;
+    width: 100%;
+    flex-direction: row;
+    margin-top: 1rem;
+}
+
+.optionContainer {
+    width: 25%;
+}
+
+.approveRejectAllContainer {
+    display:inline-block;
+    width:50%
 }

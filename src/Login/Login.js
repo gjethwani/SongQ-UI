@@ -15,7 +15,8 @@ const Login = () => {
         <div className={loginContainer}>
             <div className={flexContainer}>
                 <h1 className={welcome}>Welcome to SongQ</h1>
-                <Button ghost shape="round" onClick={login}>LOGIN</Button>
+                <Button ghost shape="round" onClick={login}>Sign in with Spotify</Button>
+                <p className={welcome}>Sign in with your Spotify account to access your queue</p>
             </div>
         </div>
     )

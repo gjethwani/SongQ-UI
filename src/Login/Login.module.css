@@ -17,5 +17,8 @@
 
 .welcome {
     flex: 1;
-    color: white
+    color: white;
+    margin-bottom: 4rem;
+    margin-top: 1rem;
+    text-align: center;
 }
