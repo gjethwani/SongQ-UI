@@ -100,10 +100,11 @@ const Home = () => {
                         setRequests([...requestsRef.current, newRequest].sort(getSortComparator(sortKeyRef.current)))
                     } else if (data.substring(0, 12) === 'aew-request:') {
                         const newRequest = JSON.parse(data.substring(12, data.length))
-                        notification['success']({
-                            message: 'Succesfully auto queued',
-                            description: `${newRequest.songName} by ${newRequest.artists} succesfully auto queued!`
-                        })
+                        approveReject(newRequest._id, true)                        
+                        // notification['success']({
+                        //     message: 'Succesfully auto queued',
+                        //     description: `${newRequest.songName} by ${newRequest.artists} succesfully auto queued!`
+                        // })
                     }
                 }
             })
@@ -188,6 +189,10 @@ const Home = () => {
                         break
                     }
                 }
+                notification['success']({
+                    message: 'Succesfully queued',
+                    description: `Track succesfully queued`
+                })
             })
             .catch((err) => {
                 if (err.response) {
@@ -238,7 +243,6 @@ const Home = () => {
     }
     const getSortComparator = sortKey => {
         let sortComparator
-        console.log(sortKey)
         switch (sortKey) {
             case 'newest':
                 sortComparator = (r1, r2) => {
