@@ -12,6 +12,7 @@ import {
     optionsContainer,
     optionContainer,
     approveRejectAllContainer,
+    albumArt
 } from './Home.module.css'
 import { isMobile } from 'react-device-detect'
 import { 
@@ -92,7 +93,9 @@ const Home = () => {
         axios.post(`${getURL()}/can-create-ws-connection`, {}, { withCredentials: true })
             .then(response => {
                 const { id } = response.data
-                const client = new W3CWebSocket(`ws://${window.location.hostname === 'localhost' ? `localhost:5000` : 'api.songq.io'}/connect?id=${id}`)
+                const client = new W3CWebSocket(
+                    `${window.location.protocol === 'https:' ? 'wss:' : 'ws:'}//${window.location.hostname === 'localhost' ? `localhost:5000` : 'api.songq.io'}/connect?id=${id}`
+                )
                 client.onmessage = message => {
                     const { data } = message
                     if (data.substring(0, 12) === 'new-request:') {
@@ -101,10 +104,6 @@ const Home = () => {
                     } else if (data.substring(0, 12) === 'aew-request:') {
                         const newRequest = JSON.parse(data.substring(12, data.length))
                         approveReject(newRequest._id, true)                        
-                        // notification['success']({
-                        //     message: 'Succesfully auto queued',
-                        //     description: `${newRequest.songName} by ${newRequest.artists} succesfully auto queued!`
-                        // })
                     }
                 }
             })
@@ -318,7 +317,12 @@ const Home = () => {
             render: track => (
                 <List.Item>
                     <List.Item.Meta 
-                        avatar={<img alt='album art' src={track.albumArt} style={{ width: '64px' }}/>}
+                        avatar={
+                            <img 
+                                alt='album art' 
+                                src={track.albumArt} 
+                                className={albumArt}
+                        />}
                         title={track.songName}
                         description={track.artists}
                     />

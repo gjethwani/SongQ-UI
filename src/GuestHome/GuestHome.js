@@ -25,24 +25,47 @@ const GuestHome = () => {
     const [userName, setUserName]  = useState('')
     const [queueActivated, setQueueActivated] = useState(false)
     const [requested, setRequested] = useState([])
+    const [recentRequests, setRecentRequests] = useState([])
     const { userId } = useParams()
     const albumArtIndex = 0
     let CancelToken = axios.CancelToken
     let cancel
     useEffect(() => {
-        axios.post(`${getURL()}/is-queue-active`, { userId  }, { withCredentials: true })
-            .then(response => {
-                const { queueActivated } = response.data
-                setQueueActivated(queueActivated)
-            })
-            .catch(err => {
-                notification['error']({
-                    message: 'Server Error',
-                    description: 'Cannot connect to server'
-                })
-                console.log(err)
-            })
         axios.post(`${getURL()}/guest-login`, {}, { withCredentials: true })
+            .then(() => {
+                axios.post(`${getURL()}/is-queue-active`, { userId  }, { withCredentials: true })
+                    .then(response => {
+                        const { queueActivated } = response.data
+                        setQueueActivated(queueActivated)
+                    })
+                    .catch(err => {
+                        notification['error']({
+                            message: 'Server Error',
+                            description: 'Cannot connect to server'
+                        })
+                        console.log(err)
+                    })
+                
+                axios.get(`${getURL()}/get-user-name?userId=${userId}`, { withCredentials: true })
+                    .then(response => {
+                        const { name } = response.data
+                        if (name) {
+                            setUserName(name)
+                        }
+                    })
+                    .catch(err => {
+                        console.log(err)
+                    })
+                axios.get(`${getURL()}/get-recently-approved?userId=${userId}`, { withCredentials: true })
+                    .then(response => {
+                        const { requests } = response.data
+                        console.log(requests)
+                        setRecentRequests(requests)
+                    })
+                    .catch(err => {
+                        console.log(err)
+                    })
+            })
             .catch(err => {
                 notification['error']({
                     message: 'Server Error',
@@ -50,17 +73,8 @@ const GuestHome = () => {
                 })
                 console.log(err)
             })
-        axios.get(`${getURL()}/get-user-name?userId=${userId}`)
-            .then(response => {
-                const { name } = response.data
-                if (name) {
-                    setUserName(name)
-                }
-            })
-            .catch(err => {
-                console.log(err)
-            })
-    })
+        
+    }, [])
     const onSearchChanged = query => {
         if (query === '') {
             return
