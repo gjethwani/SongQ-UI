@@ -85,6 +85,10 @@ const Home = () => {
                 setRequests(user.requests)
                 setUserName(user.name)
                 setAutoAccept(user.autoAccept)
+                const script = document.createElement('script')
+                script.async = true
+                script.src = "https://sdk.scdn.co/spotify-player.js"
+                document.appendChild(script)
             })
             .catch(err => {
                 errorHandle(err)
