@@ -1,10 +1,7 @@
-.checkButton {
-    margin-left: 0.5rem
-}
-
 .header {
     background: linear-gradient(239.6deg, #3C1778 24.44%, #574AE2 100.52%), #8E2DE2;
     color: white !important;
+    margin-bottom: 0.5rem;
 }
 
 .header span {
@@ -16,17 +13,6 @@
     margin-left: 0.5rem
 }
 
-.sortByText {
-    margin-left: 16px;
-    margin-right: 0.5rem;
-}
-
-.radioButtons {
-    margin-top: 0.5rem;
-    margin-bottom: 0.5rem;
-    width: 100%;
-}
-
 .approveButton { 
     color: green;
     border-color: green; 
@@ -34,26 +20,8 @@
     border-radius: 32px;
 }
 
-.sortContainer {
-    width: 100%;
-    display: inline-block;
-    text-align: center;
-    margin-top: 1rem;
-}
-
 .rejectButton {
     border-radius: 32px;
-}
-
-.optionsContainer {
-    display: flex;
-    width: 100%;
-    flex-direction: row;
-    margin-top: 1rem;
-}
-
-.optionContainer {
-    width: 25%;
 }
 
 .albumArt {
@@ -64,4 +32,26 @@
 
 .menuItem {
     margin-top: 0.5rem;
+}
+
+.activeButton span {
+    color: black !important
+}
+
+.requestsTable {
+    margin-top: 16px;
+}
+
+.requestsTable ul {
+    padding-right: 16px;
+}
+
+.sortByText {
+    padding-left: 16px;
+    margin-top: 16px;
+}
+
+.inactiveText {
+    padding: 16px;
+    text-align: center;
 }

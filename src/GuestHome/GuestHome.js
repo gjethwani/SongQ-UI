@@ -214,7 +214,7 @@ const GuestHome = () => {
     return (
         <div>
             <PageHeader
-                title={userName !== '' ? `Welcome to ${userName}'s queue!` : `Welcome to the queue!`}
+                title={userName !== '' ? `${userName}'s queue` : `Welcome to the queue!`}
                 className={header}
             />
             {!queueActivated && <h3 className={inactive}>Queue is not active</h3>}

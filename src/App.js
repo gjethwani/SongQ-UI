@@ -33,7 +33,7 @@ const App = () => {
             <Route exact path='/terms-and-condition.html' onEnter={() => window.location.reload()} />
             <Route exact path='/privacy-policy.html' onEnter={() => window.location.reload()} />
           </Switch>
-          <FooterComponent transparentBackground={window.location.pathname === '/login'} />
+          {window.location.pathname === '/login' ? <FooterComponent transparentBackground={window.location.pathname === '/login'} /> : ''}
       </Router>
     </HttpsRedirect>
   );

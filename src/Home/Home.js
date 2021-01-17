@@ -1,17 +1,15 @@
 import { useEffect } from 'react'
 import {
-    checkButton,
     header,
     queueActivatedText,
-    sortByText,
-    radioButtons,
     approveButton,
-    sortContainer,
     rejectButton,
-    optionsContainer,
-    optionContainer,
     albumArt,
-    menuItem
+    menuItem,
+    activeButton,
+    requestsTable,
+    sortByText,
+    inactiveText
 } from './Home.module.css'
 import { isMobile } from 'react-device-detect'
 import { 
@@ -21,13 +19,16 @@ import {
     List, 
     Button, 
     notification, 
-    Radio,
-    Drawer
+    Drawer,
+    Dropdown,
+    Menu
 } from 'antd'
 import { 
     CheckOutlined, 
     CloseOutlined, 
-    SettingOutlined 
+    SettingOutlined,
+    DownOutlined,
+    UpOutlined
 } from '@ant-design/icons'
 import { CopyToClipboard } from 'react-copy-to-clipboard'
 import 'antd/dist/antd.css'
@@ -47,6 +48,7 @@ const Home = () => {
     const [loading, setLoading] = useState([])
     const [autoAccept, setAutoAccept] = useState(false)
     const [menuVisible, setMenuVisible] = useState(false)
+    const [dropdownVisible, setDropdownVisible] = useState(false)
     const requestsRef = useRef(requests)
     const sortKeyRef = useRef(sortKey)
     const errorHandle = err => {
@@ -377,6 +379,25 @@ const Home = () => {
             )
         }
     ]
+    const menu = (
+        <Menu>
+            <Menu.Item onClick={() => setSortKey('oldest')}>
+                Oldest
+            </Menu.Item>
+            <Menu.Item onClick={() => setSortKey('newest')}>
+                Newest
+            </Menu.Item>
+            <Menu.Item onClick={() => setSortKey('title')}>
+                Title
+            </Menu.Item>
+            <Menu.Item onClick={() => setSortKey('artists')}>
+                Artists
+            </Menu.Item>
+            <Menu.Item onClick={() => setSortKey('votes')}>
+                Votes
+            </Menu.Item>
+        </Menu>
+    )
     return (
         <div>
             <Drawer 
@@ -421,6 +442,15 @@ const Home = () => {
                 extra={[
                     <div>
                         <div>
+                            <Button
+                                ghost={!queueActivated}
+                                className={!queueActivated ? '' : activeButton}
+                                shape='round'
+                                onClick={() => onCheckedButtonChange(!queueActivated)}
+                                style={{ marginRight: '0.5rem'}}
+                            >
+                                {queueActivated ? 'Active' : 'Inactive'}
+                            </Button>
                             <CopyToClipboard 
                                 text={`${window.location.protocol}//${window.location.hostname}${window.location.hostname === 'localhost' ? `:${window.location.port}` : ''}/queue/${userId}`}
                                 onCopy={() => showCopyNotification()}
@@ -435,30 +465,17 @@ const Home = () => {
                             />
                         </div>
                         {turnOnCode ? <p className={queueActivatedText}>{queueActivated ? `Code: ${code}` : `Queue Disabled`}</p> : ''}
-                    </div>
+                    </div>,
                 ]}
             />
-            <div className={optionsContainer}>
-                <div className={optionContainer}>
-                    Queue Active:
-                    <Switch 
-                        checked={queueActivated} 
-                        className={checkButton} 
-                        onChange={onCheckedButtonChange} 
-                    />
-                </div>
-            </div>
-            <div className={sortContainer}>
-                <span className={sortByText}>Sort By:</span>
-                <Radio.Group value={sortKey} onChange={e => setSortKey(e.target.value)} className={radioButtons}>
-                    <Radio.Button value='oldest'>Oldest</Radio.Button>
-                    <Radio.Button value='newest'>Newest</Radio.Button>
-                    <Radio.Button value='title'>Title</Radio.Button>
-                    <Radio.Button value='artists'>Artists</Radio.Button>
-                    <Radio.Button value='votes'>Votes</Radio.Button>
-                </Radio.Group>
-            </div>
-            <Table columns={columns} dataSource={generateData()} />
+            {queueActivated ? <div>
+                <Dropdown overlay={menu} trigger={'click'} onVisibleChange={visible => setDropdownVisible(visible)}>
+                    <span className={sortByText}>Sort by {dropdownVisible ? <UpOutlined /> : <DownOutlined />}</span>
+                </Dropdown>
+            </div> : ''}
+            {queueActivated ? 
+                <Table columns={columns} dataSource={generateData()} className={requestsTable}/> : 
+                <p className={inactiveText}>Activate your queue by clicking the 'Inactive' button above to see requests</p>}
         </div>
     )
 }
