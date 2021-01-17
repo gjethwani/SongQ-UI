@@ -44,6 +44,7 @@ const GuestHome = () => {
     let CancelToken = axios.CancelToken
     let cancel
     useEffect(() => {
+        document.title = 'Welcome to SongQ!'
         axios.post(`${getURL()}/guest-login`, {}, { withCredentials: true })
             .then(() => {
                 axios.post(`${getURL()}/is-queue-active`, { userId  }, { withCredentials: true })

@@ -3,11 +3,15 @@ import {
     flexContainer,
     welcome
 } from './Login.module.css'
+import { useEffect } from 'react'
 import { Button } from 'antd'
 import { getURL } from '../util'
 import 'antd/dist/antd.css'
 
 const Login = () => {
+    useEffect(() => {
+        document.title = 'Welcome to SongQ!'
+    })
     const login = () => {
         window.location.href = `${getURL()}/spotify-login`
     }
