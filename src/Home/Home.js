@@ -31,7 +31,6 @@ import axios from 'axios'
 import { getURL } from '../util'
 import { useState, useRef } from 'react'
 import { w3cwebsocket as W3CWebSocket } from "websocket"
-import addNotification from 'react-push-notification'
 
 const Home = () => {
     const turnOnCode = false
@@ -102,13 +101,6 @@ const Home = () => {
                     if (data.substring(0, 12) === 'new-request:') {
                         const newRequest = JSON.parse(data.substring(12, data.length))
                         setRequests(formatRequests([...requestsRef.current, newRequest]).sort(getSortComparator(sortKeyRef.current)))
-                        addNotification({
-                            title: 'New Request',
-                            subtitle: 'Go to songq.io to approve or reject requests',
-                            message: `${newRequest.songName} by ${newRequest.artists} was requested`,
-                            theme: 'darkblue',
-                            native: true
-                        });
                     } else if (data.substring(0, 12) === 'aew-request:') {
                         const newRequest = JSON.parse(data.substring(12, data.length))
                         notification['success']({
