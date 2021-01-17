@@ -198,17 +198,14 @@ const GuestHome = () => {
             key: 'request',
             width: '30%',
             render: track => (
-                requested.includes(track.id) ? 
-                    <CheckCircleTwoTone 
-                        className={cardExtras} 
-                        twoToneColor="#52c41a"/> :
-                    <Button 
-                        className={cardExtras} 
-                        style={{ marginBottom: '1rem', marginTop: '1rem', border: 'none'}} 
-                        onClick={() => makeRequest(track)}
-                    >
-                        <PlusOutlined />
-                    </Button>
+                <Button 
+                    className={cardExtras} 
+                    style={{ marginBottom: '1rem', marginTop: '1rem', border: 'none'}} 
+                    onClick={() => makeRequest(track)}
+                    disabled={requested.includes(track.id)}
+                >
+                    {requested.includes(track.id) ? <CheckCircleTwoTone className={cardExtras} twoToneColor="#52c41a"/> : <PlusOutlined />}
+                </Button>
             )
         })
     }
