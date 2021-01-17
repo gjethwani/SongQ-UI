@@ -12,11 +12,11 @@ import {
     searchBox, 
     inactive 
 } from './GuestHome.module.css'
-import { albumArt } from '../Home/Home.module.css'
+import { albumArt, requestsTable } from '../Home/Home.module.css'
 import { useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
 import axios from 'axios'
-import { CheckCircleTwoTone } from '@ant-design/icons'
+import { CheckCircleTwoTone, PlusOutlined } from '@ant-design/icons'
 import { getURL } from '../util'
 import 'antd/dist/antd.css'
 import 'muicss/dist/css/mui.min.css'
@@ -204,10 +204,10 @@ const GuestHome = () => {
                         twoToneColor="#52c41a"/> :
                     <Button 
                         className={cardExtras} 
-                        style={{ marginBottom: '1rem', marginTop: '1rem'}} 
+                        style={{ marginBottom: '1rem', marginTop: '1rem', border: 'none'}} 
                         onClick={() => makeRequest(track)}
                     >
-                        Request
+                        <PlusOutlined />
                     </Button>
             )
         })
@@ -227,10 +227,10 @@ const GuestHome = () => {
                     className={searchBox}
                     floatingLabel
                 />
-                <h2 style={{ textAlign: 'center'}}>
+                <h2 style={{ textAlign: 'center', fontVariant: 'tabular-nums', fontWeight: 'bold'}}>
                     {currQuery === '' ? 'Recently Played' : 'Search Results'}
                 </h2>
-                <Table columns={columns} dataSource={generateData()}/>
+                <Table columns={columns} dataSource={generateData()} className={requestsTable} />
             </div>}
         </div>
     )
