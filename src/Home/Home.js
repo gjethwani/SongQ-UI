@@ -7,12 +7,11 @@ import {
     radioButtons,
     approveButton,
     sortContainer,
-    serviceAllContainer,
     rejectButton,
     optionsContainer,
     optionContainer,
-    approveRejectAllContainer,
-    albumArt
+    albumArt,
+    menuItem
 } from './Home.module.css'
 import { isMobile } from 'react-device-detect'
 import { 
@@ -22,9 +21,14 @@ import {
     List, 
     Button, 
     notification, 
-    Radio
+    Radio,
+    Drawer
 } from 'antd'
-import { CopyOutlined, CheckOutlined, CloseOutlined } from '@ant-design/icons'
+import { 
+    CheckOutlined, 
+    CloseOutlined, 
+    SettingOutlined 
+} from '@ant-design/icons'
 import { CopyToClipboard } from 'react-copy-to-clipboard'
 import 'antd/dist/antd.css'
 import axios from 'axios'
@@ -41,7 +45,8 @@ const Home = () => {
     const [userName, setUserName] = useState('')
     const [sortKey, setSortKey] = useState('oldest')
     const [loading, setLoading] = useState([])
-    const [autoAccept, setAutoAccept] = useState(false) 
+    const [autoAccept, setAutoAccept] = useState(false)
+    const [menuVisible, setMenuVisible] = useState(false)
     const requestsRef = useRef(requests)
     const sortKeyRef = useRef(sortKey)
     const errorHandle = err => {
@@ -374,6 +379,42 @@ const Home = () => {
     ]
     return (
         <div>
+            <Drawer 
+                visible={menuVisible}
+                title="Menu"
+                onClose={() => setMenuVisible(false)}
+            >
+                <div className={menuItem}>
+                    Auto Accept:
+                    <Switch
+                        checked={autoAccept}
+                        onChange={onAutoAcceptChange}
+                    />
+                </div>
+                <div className={menuItem}>
+                    <Button
+                        className={approveButton} 
+                        onClick={() => approveRejectAll(true)}
+                        loading={loading.includes('approve_all')}
+                        style={isMobile ? { padding :'4px 10px'} : {}}
+                        disabled={autoAccept}
+                    >
+                        Approve All
+                    </Button>
+                </div>
+                <div className={menuItem}>
+                    <Button 
+                        className={rejectButton}
+                        danger 
+                        onClick={() => approveRejectAll(false)}
+                        loading={loading.includes('reject_all')}
+                        style={isMobile ? { padding :'4px 10px' } : {}}
+                        disabled={autoAccept}
+                    >
+                        Reject All
+                    </Button>
+                </div>
+            </Drawer>
             <PageHeader
                 title={(userName !== '' && userName !== undefined) ? `Welcome, ${userName}!` : `Welcome!`}
                 className={header}
@@ -384,8 +425,14 @@ const Home = () => {
                                 text={`${window.location.protocol}//${window.location.hostname}${window.location.hostname === 'localhost' ? `:${window.location.port}` : ''}/queue/${userId}`}
                                 onCopy={() => showCopyNotification()}
                             >
-                                <Button shape='round' ghost icon={<CopyOutlined />}>Copy Link</Button>
+                                <Button shape='round' ghost>Copy Link</Button>
                             </CopyToClipboard>
+                            <Button 
+                                ghost 
+                                icon={<SettingOutlined />} 
+                                style={{border: 'none'}} 
+                                onClick={() => setMenuVisible(!menuVisible)} 
+                            />
                         </div>
                         {turnOnCode ? <p className={queueActivatedText}>{queueActivated ? `Code: ${code}` : `Queue Disabled`}</p> : ''}
                     </div>
@@ -399,40 +446,6 @@ const Home = () => {
                         className={checkButton} 
                         onChange={onCheckedButtonChange} 
                     />
-                </div>
-                <div className={optionContainer}>
-                    Auto Accept:
-                    <Switch
-                        checked={autoAccept}
-                        onChange={onAutoAcceptChange}
-                    />
-                </div>
-
-                <div className={serviceAllContainer}>
-                    <div 
-                        className={approveRejectAllContainer}
-                        style={isMobile ? { marginRight : '0rem' } : {}}
-                    >
-                        <Button 
-                            className={approveButton} 
-                            onClick={() => approveRejectAll(true)}
-                            loading={loading.includes('approve_all')}
-                            style={isMobile ? { padding :'4px 10px'} : {}}
-                        >
-                            Approve All
-                        </Button>
-                    </div>
-                    <div className={approveRejectAllContainer}>
-                        <Button 
-                            className={rejectButton}
-                            danger 
-                            onClick={() => approveRejectAll(false)}
-                            loading={loading.includes('reject_all')}
-                            style={isMobile ? { padding :'4px 10px' } : { }}
-                        >
-                            Reject All
-                        </Button>
-                    </div>
                 </div>
             </div>
             <div className={sortContainer}>
