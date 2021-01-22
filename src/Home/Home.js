@@ -21,14 +21,16 @@ import {
     notification, 
     Drawer,
     Dropdown,
-    Menu
+    Menu,
+    Spin
 } from 'antd'
 import { 
     CheckOutlined, 
     CloseOutlined, 
     SettingOutlined,
     DownOutlined,
-    UpOutlined
+    UpOutlined,
+    LoadingOutlined
 } from '@ant-design/icons'
 import { CopyToClipboard } from 'react-copy-to-clipboard'
 import 'antd/dist/antd.css'
@@ -46,6 +48,10 @@ const Home = () => {
     const [userName, setUserName] = useState('')
     const [sortKey, setSortKey] = useState('oldest')
     const [loading, setLoading] = useState([])
+    const [pageLoading, setPageLoading] = useState(true)
+    const [autoAcceptLoading, setAutoAcceptLoading] = useState(false)
+    const [approveAllLoading, setApproveAllLoading] = useState(false)
+    const [rejectAllLoading, setRejectAllLoading] = useState(false)
     const [autoAccept, setAutoAccept] = useState(false)
     const [menuVisible, setMenuVisible] = useState(false)
     const [dropdownVisible, setDropdownVisible] = useState(false)
@@ -76,6 +82,7 @@ const Home = () => {
         }
     }
     useEffect(() => {
+        setPageLoading(true)
         document.title = 'Welcome to SongQ!'
         axios.get(`${getURL()}/get-user-details`, { withCredentials: true })
             .then(response => {
@@ -90,6 +97,9 @@ const Home = () => {
             .catch(err => {
                 errorHandle(err)
                 console.log(err)
+            })
+            .finally(() => {
+                setPageLoading(false)
             })
     }, [queueActivated])
     useEffect(() => { requestsRef.current = requests }, [requests])
@@ -228,8 +238,14 @@ const Home = () => {
             })
     }
     const approveRejectAll = accepted => {
+        if (accepted) {
+            setApproveAllLoading(true)
+        } else {
+            setRejectAllLoading(true)
+        }
         axios.post(`${getURL()}/service-all`, { accepted }, { withCredentials: true})
             .then(() => {
+                setPageLoading(false)
                 setRequests([])
             })
             .catch(err => {
@@ -246,6 +262,13 @@ const Home = () => {
                     }
                 }
                 errorHandle(err)
+            })
+            .finally(() => {
+                if (accepted) {
+                    setApproveAllLoading(false)
+                } else {
+                    setRejectAllLoading(false)
+                }
             })
     }     
     const sortAlphabetically = (e1, e2, key) => {
@@ -301,6 +324,7 @@ const Home = () => {
         })
     }
     const onAutoAcceptChange = autoAcceptNew => {
+        setAutoAcceptLoading(true)
         axios.post(`${getURL()}/change-auto-accept`, { autoAccept: autoAcceptNew }, { withCredentials: true })
             .then(() => {
                 setAutoAccept(autoAcceptNew)
@@ -322,6 +346,9 @@ const Home = () => {
                     }
                 }
                 console.log(err)
+            })
+            .finally(() => {
+                setAutoAcceptLoading(false)
             })
     }
     const columns = [
@@ -401,82 +428,86 @@ const Home = () => {
     )
     return (
         <div>
-            <Drawer 
-                visible={menuVisible}
-                title="Menu"
-                onClose={() => setMenuVisible(false)}
-            >
-                <div className={menuItem}>
-                    Auto Accept:
-                    <Switch
-                        checked={autoAccept}
-                        onChange={onAutoAcceptChange}
-                    />
-                </div>
-                <div className={menuItem}>
-                    <Button
-                        className={approveButton} 
-                        onClick={() => approveRejectAll(true)}
-                        loading={loading.includes('approve_all')}
-                        style={isMobile ? { padding :'4px 10px'} : {}}
-                        disabled={autoAccept}
-                    >
-                        Approve All
-                    </Button>
-                </div>
-                <div className={menuItem}>
-                    <Button 
-                        className={rejectButton}
-                        danger 
-                        onClick={() => approveRejectAll(false)}
-                        loading={loading.includes('reject_all')}
-                        style={isMobile ? { padding :'4px 10px' } : {}}
-                        disabled={autoAccept}
-                    >
-                        Reject All
-                    </Button>
-                </div>
-            </Drawer>
-            <PageHeader
-                title={(userName !== '' && userName !== undefined) ? `Welcome, ${userName}!` : `Welcome!`}
-                className={header}
-                extra={[
-                    <div>
+            <Spin spinning={pageLoading} indicator={<LoadingOutlined spin />}>
+                <Drawer 
+                    visible={menuVisible}
+                    title="Menu"
+                    onClose={() => setMenuVisible(false)}
+                >
+                    <div className={menuItem}>
+                        Auto Accept:
+                        <Switch
+                            checked={autoAccept}
+                            onChange={onAutoAcceptChange}
+                            style={{ marginLeft: '5px', marginRight: '5px'}}
+                            loading={autoAcceptLoading}
+                        />
+                    </div>
+                    <div className={menuItem}>
+                        <Button
+                            className={approveButton} 
+                            onClick={() => approveRejectAll(true)}
+                            loading={approveAllLoading}
+                            style={isMobile ? { padding :'4px 10px'} : {}}
+                            disabled={autoAccept}
+                        >
+                            Approve All
+                        </Button>
+                    </div>
+                    <div className={menuItem}>
+                        <Button 
+                            className={rejectButton}
+                            danger 
+                            onClick={() => approveRejectAll(false)}
+                            loading={rejectAllLoading}
+                            style={isMobile ? { padding :'4px 10px' } : {}}
+                            disabled={autoAccept}
+                        >
+                            Reject All
+                        </Button>
+                    </div>
+                </Drawer>
+                <PageHeader
+                    title={(userName !== '' && userName !== undefined) ? `Welcome, ${userName}!` : `Welcome!`}
+                    className={header}
+                    extra={[
                         <div>
-                            <Button
-                                ghost={!queueActivated}
-                                className={!queueActivated ? '' : activeButton}
-                                shape='round'
-                                onClick={() => onCheckedButtonChange(!queueActivated)}
-                                style={{ marginRight: '0.5rem'}}
-                            >
-                                {queueActivated ? 'Active' : 'Inactive'}
-                            </Button>
-                            <CopyToClipboard 
-                                text={`${window.location.protocol}//${window.location.hostname}${window.location.hostname === 'localhost' ? `:${window.location.port}` : ''}/queue/${userId}`}
-                                onCopy={() => showCopyNotification()}
-                            >
-                                <Button shape='round' ghost>Copy Link</Button>
-                            </CopyToClipboard>
-                            <Button 
-                                ghost 
-                                icon={<SettingOutlined />} 
-                                style={{border: 'none'}} 
-                                onClick={() => setMenuVisible(!menuVisible)} 
-                            />
-                        </div>
-                        {turnOnCode ? <p className={queueActivatedText}>{queueActivated ? `Code: ${code}` : `Queue Disabled`}</p> : ''}
-                    </div>,
-                ]}
-            />
-            {queueActivated ? <div>
-                <Dropdown overlay={menu} trigger={'click'} onVisibleChange={visible => setDropdownVisible(visible)}>
-                    <span className={sortByText}>Sort by {dropdownVisible ? <UpOutlined /> : <DownOutlined />}</span>
-                </Dropdown>
-            </div> : ''}
-            {queueActivated ? 
-                <Table columns={columns} dataSource={generateData()} className={requestsTable}/> : 
-                <p className={inactiveText}>Activate your queue by clicking the 'Inactive' button above to see requests</p>}
+                            <div>
+                                <Button
+                                    ghost={!queueActivated}
+                                    className={!queueActivated ? '' : activeButton}
+                                    shape='round'
+                                    onClick={() => onCheckedButtonChange(!queueActivated)}
+                                    style={{ marginRight: '0.5rem'}}
+                                >
+                                    {queueActivated ? 'Active' : 'Inactive'}
+                                </Button>
+                                <CopyToClipboard 
+                                    text={`${window.location.protocol}//${window.location.hostname}${window.location.hostname === 'localhost' ? `:${window.location.port}` : ''}/queue/${userId}`}
+                                    onCopy={() => showCopyNotification()}
+                                >
+                                    <Button shape='round' ghost>Copy Link</Button>
+                                </CopyToClipboard>
+                                <Button 
+                                    ghost 
+                                    icon={<SettingOutlined />} 
+                                    style={{border: 'none'}} 
+                                    onClick={() => setMenuVisible(!menuVisible)} 
+                                />
+                            </div>
+                            {turnOnCode ? <p className={queueActivatedText}>{queueActivated ? `Code: ${code}` : `Queue Disabled`}</p> : ''}
+                        </div>,
+                    ]}
+                />
+                {queueActivated ? <div>
+                    <Dropdown overlay={menu} trigger={'click'} onVisibleChange={visible => setDropdownVisible(visible)}>
+                        <span className={sortByText}>Sort by {dropdownVisible ? <UpOutlined /> : <DownOutlined />}</span>
+                    </Dropdown>
+                </div> : ''}
+                {queueActivated ? 
+                    <Table columns={columns} dataSource={generateData()} className={requestsTable}/> : 
+                    <p className={inactiveText}>Activate your queue by clicking the 'Inactive' button above to see requests</p>}
+            </Spin>
         </div>
     )
 }
