@@ -14,6 +14,9 @@ const getURL = () => {
     }
 }
 
+const logoUrl = './SongQ-Logo-1.png'
+
 module.exports = {
-    getURL
+    getURL,
+    logoUrl
 }

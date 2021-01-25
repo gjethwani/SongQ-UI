@@ -9,7 +9,9 @@ import {
     activeButton,
     requestsTable,
     sortByText,
-    inactiveText
+    inactiveText,
+    logo,
+    welcomeContainer
 } from './Home.module.css'
 import { isMobile } from 'react-device-detect'
 import { 
@@ -35,7 +37,7 @@ import {
 import { CopyToClipboard } from 'react-copy-to-clipboard'
 import 'antd/dist/antd.css'
 import axios from 'axios'
-import { getURL } from '../util'
+import { getURL, logoUrl } from '../util'
 import { useState, useRef } from 'react'
 import { w3cwebsocket as W3CWebSocket } from "websocket"
 
@@ -468,7 +470,11 @@ const Home = () => {
                     </div>
                 </Drawer>
                 <PageHeader
-                    title={(userName !== '' && userName !== undefined) ? `Welcome, ${userName}!` : `Welcome!`}
+                    title={
+                    <div className={welcomeContainer}>
+                        <img className={logo} src={logoUrl}/>
+                        <span>{(userName !== '' && userName !== undefined) ? `Welcome, ${userName}!` : `Welcome!`}</span>
+                    </div>}
                     className={header}
                     extra={[
                         <div>
