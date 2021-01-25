@@ -40,6 +40,8 @@ const GuestHome = () => {
     const [requested, setRequested] = useState([])
     const [recentRequests, setRecentRequests] = useState([])
     const [currQuery, setQuery] = useState('')
+    const [pageLoading, setPageLoading] = useState(true)
+    const [requestsLoading, setRequestsLoading] = useState([])
     const { userId } = useParams()
     const albumArtIndex = 0
     let CancelToken = axios.CancelToken
@@ -87,6 +89,9 @@ const GuestHome = () => {
                 })
                 console.log(err)
             })
+            .finally(() => {
+                setPageLoading(false)
+            })
         
     }, [])
     const onSearchChanged = query => {
@@ -97,6 +102,7 @@ const GuestHome = () => {
         if (cancel !== undefined) {
             cancel()
         }
+        setPageLoading(true)
         axios.post(`${getURL()}/search-songs`, { q: query}, { 
             withCredentials: true,
             cancelToken: new CancelToken(c => {
@@ -110,8 +116,13 @@ const GuestHome = () => {
             .catch(err => {
                 console.log(err)
             })
+            .finally(() => {
+                setPageLoading(false)
+            })
     }
     const makeRequest = track => {
+        requestsLoading.push(track.id)
+        setRequestsLoading([...requestsLoading])
         axios.post(`${getURL()}/make-request`, {
             userId,
             songId: track.id,
@@ -132,6 +143,10 @@ const GuestHome = () => {
                 description: 'Error making request'
             })
             console.log(err)
+        })
+        .finally(() => {
+            requestsLoading.splice(track.id, 1)
+            setRequestsLoading([...requestsLoading])
         })
     }
     const generateData = () => {
@@ -204,18 +219,15 @@ const GuestHome = () => {
                     style={{ marginBottom: '1rem', marginTop: '1rem', border: 'none'}} 
                     onClick={() => makeRequest(track)}
                     disabled={requested.includes(track.id)}
+                    loading={requestsLoading.includes(track.id)}
                 >
-                    {requested.includes(track.id) ? <CheckCircleTwoTone className={cardExtras} twoToneColor="#52c41a"/> : <PlusOutlined />}
+                    {requestsLoading.includes(track.id) ? '' : (requested.includes(track.id) ? <CheckCircleTwoTone className={cardExtras} twoToneColor="#52c41a"/> : <PlusOutlined />)}
                 </Button>
             )
         })
     }
     return (
         <div>
-            {/* <PageHeader
-                title={userName !== '' ? `${userName}'s queue` : `Welcome to the queue!`}
-                className={header}
-            /> */}
             <PageHeader 
                 title={
                 <div className={welcomeContainer}>
@@ -224,20 +236,22 @@ const GuestHome = () => {
                 </div>}
                 className={header}
             />
-            {!queueActivated && <h3 className={inactive}>Queue is not active</h3>}
-            {queueActivated && 
-            <div>
-                <Input
-                    label='Search for songs'
-                    onChange={e => onSearchChanged(e.target.value)}
-                    className={searchBox}
-                    floatingLabel
-                />
-                <h2 style={{ textAlign: 'center', fontVariant: 'tabular-nums', fontWeight: 'bold'}}>
-                    {currQuery === '' ? 'Recently Played' : 'Search Results'}
-                </h2>
-                <Table columns={columns} dataSource={generateData()} className={requestsTable} />
-            </div>}
+            <Spin spinning={pageLoading} indicator={<LoadingOutlined spin />}>
+                {!queueActivated && <h3 className={inactive}>Queue is not active</h3>}
+                {queueActivated && 
+                    <div>
+                        <Input
+                            label='Search for songs'
+                            onChange={e => onSearchChanged(e.target.value)}
+                            className={searchBox}
+                            floatingLabel
+                        />
+                        <h2 style={{ textAlign: 'center', fontVariant: 'tabular-nums', fontWeight: 'bold'}}>
+                            {currQuery === '' ? 'Recently Played' : 'Search Results'}
+                        </h2>
+                        <Table columns={columns} dataSource={generateData()} className={requestsTable} />
+                    </div>}
+            </Spin>
         </div>
     )
 }

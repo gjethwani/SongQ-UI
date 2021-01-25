@@ -511,7 +511,11 @@ const Home = () => {
                     </Dropdown>
                 </div> : ''}
                 {queueActivated ? 
-                    <Table columns={columns} dataSource={generateData()} className={requestsTable}/> : 
+                    <Table 
+                        columns={columns} 
+                        dataSource={generateData()} 
+                        className={requestsTable}
+                        locale={{ emptyText: 'No Requests'}}/> : 
                     <p className={inactiveText}>Activate your queue by clicking the 'Inactive' button above to see requests</p>}
             </Spin>
         </div>
