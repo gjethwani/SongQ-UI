@@ -13,12 +13,12 @@ import {
     searchBox, 
     inactive 
 } from './GuestHome.module.css'
-import { albumArt, requestsTable } from '../Home/Home.module.css'
+import { albumArt, requestsTable, welcomeContainer, logo } from '../Home/Home.module.css'
 import { useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
 import axios from 'axios'
 import { CheckCircleTwoTone, PlusOutlined, LoadingOutlined } from '@ant-design/icons'
-import { getURL } from '../util'
+import { getURL, logoUrl } from '../util'
 import 'antd/dist/antd.css'
 import 'muicss/dist/css/mui.min.css'
 
@@ -212,8 +212,16 @@ const GuestHome = () => {
     }
     return (
         <div>
-            <PageHeader
+            {/* <PageHeader
                 title={userName !== '' ? `${userName}'s queue` : `Welcome to the queue!`}
+                className={header}
+            /> */}
+            <PageHeader 
+                title={
+                <div className={welcomeContainer}>
+                    <img className={logo} src={logoUrl}/>
+                    <span>{userName !== '' ? `${userName}'s queue` : `Welcome to the queue!`}</span>
+                </div>}
                 className={header}
             />
             {!queueActivated && <h3 className={inactive}>Queue is not active</h3>}

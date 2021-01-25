@@ -14,7 +14,8 @@ const getURL = () => {
     }
 }
 
-const logoUrl = './SongQ-Logo-1.png'
+// const logoUrl = './SongQ-Logo-1.png'
+const logoUrl = `${window.location.protocol}//${window.location.hostname}${window.location.hostname === 'localhost' ? `:${window.location.port}` : ''}/SongQ-Logo-1.png`
 
 module.exports = {
     getURL,
