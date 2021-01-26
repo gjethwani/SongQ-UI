@@ -40,10 +40,9 @@ const Tour = props => {
     const [cookies, setCookie] = useCookies()
     const [currStep, setCurrStep] = useState(0)
     const [modalVisible, setModalVisible] = useState(false)
+    const { tourShown } = cookies
     useEffect(() => {
-        const { tourShown } = cookies
         if (!tourShown) {
-            setCookie('tourShown', true)
             setModalVisible(true)
         }
         if (props.showTourClicked) {
@@ -53,6 +52,7 @@ const Tour = props => {
     })
     const nextStep = () => {
         if (currStep === steps.length-1) {
+            setCookie('tourShown', true)
             setModalVisible(false)
         } else {
             setCurrStep(currStep + 1)
@@ -62,6 +62,10 @@ const Tour = props => {
         if (currStep > 0) {
             setCurrStep(currStep - 1)
         }
+    }
+    const onModalCancel = () => {
+        setModalVisible(false)
+        setCookie('tourShown', true)
     }
     const getFooter = () => {
         const footer = [
@@ -82,7 +86,7 @@ const Tour = props => {
             visible={modalVisible} 
             footer={getFooter()}
             className={modal}
-            onCancel={() => setModalVisible(false)}
+            onCancel={() => onModalCancel()}
         >
             <Steps current={currStep} status='wait'>
                 {steps.map(item =>{
