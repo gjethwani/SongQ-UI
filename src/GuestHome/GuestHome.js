@@ -18,7 +18,7 @@ import { useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
 import axios from 'axios'
 import { CheckCircleTwoTone, PlusOutlined, LoadingOutlined } from '@ant-design/icons'
-import { getURL, logoUrl } from '../util'
+import { getURL, logoUrl, featureFlags } from '../util'
 import { isMobile } from 'react-device-detect'
 import 'antd/dist/antd.css'
 import 'muicss/dist/css/mui.min.css'
@@ -44,6 +44,7 @@ const GuestHome = () => {
     const [pageLoading, setPageLoading] = useState(true)
     const [requestsLoading, setRequestsLoading] = useState([])
     const { userId } = useParams()
+    const { queueActiveButtonFeatureEnabled } = featureFlags
     const albumArtIndex = 0
     let CancelToken = axios.CancelToken
     let cancel
@@ -51,7 +52,8 @@ const GuestHome = () => {
         document.title = 'Welcome to SongQ!'
         axios.post(`${getURL()}/guest-login`, {}, { withCredentials: true })
             .then(() => {
-                axios.post(`${getURL()}/is-queue-active`, { userId  }, { withCredentials: true })
+                if (queueActiveButtonFeatureEnabled) {
+                    axios.post(`${getURL()}/is-queue-active`, { userId  }, { withCredentials: true })
                     .then(response => {
                         const { queueActivated } = response.data
                         setQueueActivated(queueActivated)
@@ -63,7 +65,7 @@ const GuestHome = () => {
                         })
                         console.log(err)
                     })
-                
+                }
                 axios.get(`${getURL()}/get-user-name?userId=${userId}`, { withCredentials: true })
                     .then(response => {
                         const { name } = response.data
@@ -238,8 +240,8 @@ const GuestHome = () => {
                 className={header}
             />
             <Spin spinning={pageLoading} indicator={<LoadingOutlined spin />}>
-                {!queueActivated && <h3 className={inactive}>Queue is not active</h3>}
-                {queueActivated && 
+                {!queueActivated && queueActiveButtonFeatureEnabled && <h3 className={inactive}>Queue is not active</h3>}
+                {(queueActivated || !queueActiveButtonFeatureEnabled) && 
                     <div>
                         <Input
                             label='Search for songs'
