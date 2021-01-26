@@ -373,10 +373,19 @@ const Home = () => {
     }
     const columns = [
         {
+            title: 'Votes',
+            dataIndex: 'votes',
+            key: 'votes',
+            width: '10%',
+            render: votes => (
+                <p>{`${votes}`}</p>
+            )
+        },
+        {
             title: 'Track',
             dataIndex: 'track',
             key: 'track',
-            width: '50%',
+            width: '60%',
             render: track => (
                 <List.Item>
                     <List.Item.Meta 
@@ -391,15 +400,6 @@ const Home = () => {
                     />
                 </List.Item>
             ),
-        },
-        {
-            title: 'Votes',
-            dataIndex: 'votes',
-            key: 'votes',
-            width: '20%',
-            render: votes => (
-                <p>{`${votes}`}</p>
-            )
         },
         {
             title: 'Approve Or Reject',
