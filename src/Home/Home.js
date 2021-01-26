@@ -584,7 +584,7 @@ const Home = () => {
                                 >
                                     {queueActivated ? 'Active' : 'Inactive'}
                                 </Button>}
-                                <Popover visible={currTourStep === 0 && tourVisible} placement='left' content={tourSteps[0].content} title={tourSteps[0].title}>
+                                <Popover visible={currTourStep === 0 && tourVisible} placement={isMobile ? 'bottom' : 'left'} content={tourSteps[0].content} title={tourSteps[0].title}>
                                     <CopyToClipboard 
                                         text={`${currUrl}/queue/${userId}`}
                                         onCopy={() => showCopyNotification()}
