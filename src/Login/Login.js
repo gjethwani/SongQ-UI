@@ -5,13 +5,24 @@ import {
     logo
 } from './Login.module.css'
 import { useEffect } from 'react'
-import { Button } from 'antd'
+import { Button, notification } from 'antd'
 import { getURL, logoUrl } from '../util'
 import 'antd/dist/antd.css'
 
 const Login = () => {
+    const getQuery = () => {
+        return new URLSearchParams(window.location.search)
+    }
     useEffect(() => {
         document.title = 'Welcome to SongQ!'
+        const query = getQuery()
+        const err = query.get('err')
+        if (err === 'nopremium') {
+            notification['error']({
+                message: 'Cannot Login',
+                description: 'You need Spotify Premium to use SongQ'
+            })
+        }
     })
     const login = () => {
         window.location.href = `${getURL()}/spotify-login`

@@ -16,7 +16,13 @@ const getURL = () => {
 
 const logoUrl = `${window.location.protocol}//${window.location.hostname}${window.location.hostname === 'localhost' ? `:${window.location.port}` : ''}/logo.png`
 
+const featureFlags = {
+    turnOnCodeFeatureEnabled: false,
+    queueActiveButtonFeatureEnabled: false
+}
+
 module.exports = {
     getURL,
-    logoUrl
+    logoUrl,
+    featureFlags
 }

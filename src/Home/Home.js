@@ -11,7 +11,8 @@ import {
     sortByText,
     inactiveText,
     logo,
-    welcomeContainer
+    welcomeContainer,
+    welcomeText
 } from './Home.module.css'
 import { isMobile } from 'react-device-detect'
 import { 
@@ -24,7 +25,8 @@ import {
     Drawer,
     Dropdown,
     Menu,
-    Spin
+    Spin,
+    Avatar
 } from 'antd'
 import { 
     CheckOutlined, 
@@ -32,17 +34,18 @@ import {
     MenuOutlined,
     DownOutlined,
     UpOutlined,
-    LoadingOutlined
+    LoadingOutlined,
+    UserOutlined
 } from '@ant-design/icons'
 import { CopyToClipboard } from 'react-copy-to-clipboard'
 import 'antd/dist/antd.css'
 import axios from 'axios'
-import { getURL, logoUrl } from '../util'
+import { getURL, logoUrl, featureFlags } from '../util'
 import { useState, useRef } from 'react'
 import { w3cwebsocket as W3CWebSocket } from "websocket"
 
 const Home = () => {
-    const turnOnCode = false
+    const { turnOnCodeFeatureEnabled, queueActiveButtonFeatureEnabled } = featureFlags
     const [userId, setUserId] = useState(null)
     const [queueActivated, setQueueActivated] = useState(false)
     const [code, setCode] = useState('')
@@ -57,6 +60,7 @@ const Home = () => {
     const [autoAccept, setAutoAccept] = useState(false)
     const [menuVisible, setMenuVisible] = useState(false)
     const [dropdownVisible, setDropdownVisible] = useState(false)
+    const [profilePicture, setProfilePicture] = useState('')
     const requestsRef = useRef(requests)
     const sortKeyRef = useRef(sortKey)
     const errorHandle = err => {
@@ -95,6 +99,7 @@ const Home = () => {
                 setRequests(user.requests)
                 setUserName(user.name)
                 setAutoAccept(user.autoAccept)
+                setProfilePicture(user.profilePicture)
             })
             .catch(err => {
                 errorHandle(err)
@@ -353,6 +358,19 @@ const Home = () => {
                 setAutoAcceptLoading(false)
             })
     }
+    const getDrawerTitle = () => {
+        if (profilePicture === '' || profilePicture === undefined) {
+            return <div>
+                <Avatar icon={<UserOutlined />} />
+                <span className={welcomeText}>{(userName !== '' && userName !== undefined) ? `Welcome, ${userName}!` : `Welcome!`}</span>
+            </div>
+        } else {
+            return <div>
+                <Avatar src={profilePicture} />
+                <span className={welcomeText}>{(userName !== '' && userName !== undefined) ? `Welcome, ${userName}!` : `Welcome!`}</span>
+            </div>
+        }
+    }
     const columns = [
         {
             title: 'Track',
@@ -433,7 +451,7 @@ const Home = () => {
             <Spin spinning={pageLoading} indicator={<LoadingOutlined spin />}>
                 <Drawer 
                     visible={menuVisible}
-                    title="Menu"
+                    title={ getDrawerTitle()}
                     onClose={() => setMenuVisible(false)}
                 >
                     <div className={menuItem}>
@@ -473,13 +491,13 @@ const Home = () => {
                     title={
                     <div className={welcomeContainer}>
                         <img className={logo} src={logoUrl} style={isMobile ? { width: '40%'} : {}}/>
-                        <span>{(userName !== '' && userName !== undefined) ? `Welcome, ${userName}!` : `Welcome!`}</span>
+                        {/* <span>{(userName !== '' && userName !== undefined) ? `Welcome, ${userName}!` : `Welcome!`}</span> */}
                     </div>}
                     className={header}
                     extra={[
                         <div>
                             <div>
-                                <Button
+                                {queueActiveButtonFeatureEnabled && <Button
                                     ghost={!queueActivated}
                                     className={!queueActivated ? '' : activeButton}
                                     shape='round'
@@ -487,7 +505,7 @@ const Home = () => {
                                     style={{ marginRight: '0.5rem'}}
                                 >
                                     {queueActivated ? 'Active' : 'Inactive'}
-                                </Button>
+                                </Button>}
                                 <CopyToClipboard 
                                     text={`${window.location.protocol}//${window.location.hostname}${window.location.hostname === 'localhost' ? `:${window.location.port}` : ''}/queue/${userId}`}
                                     onCopy={() => showCopyNotification()}
@@ -501,7 +519,7 @@ const Home = () => {
                                     onClick={() => setMenuVisible(!menuVisible)} 
                                 />
                             </div>
-                            {turnOnCode ? <p className={queueActivatedText}>{queueActivated ? `Code: ${code}` : `Queue Disabled`}</p> : ''}
+                            {turnOnCodeFeatureEnabled ? <p className={queueActivatedText}>{queueActivated ? `Code: ${code}` : `Queue Disabled`}</p> : ''}
                         </div>,
                     ]}
                 />
@@ -516,7 +534,7 @@ const Home = () => {
                         dataSource={generateData()} 
                         className={requestsTable}
                         locale={{ emptyText: 'No Requests'}}/> : 
-                    <p className={inactiveText}>Activate your queue by clicking the 'Inactive' button above to see requests</p>}
+                    (queueActiveButtonFeatureEnabled && <p className={inactiveText}>Activate your queue by clicking the 'Inactive' button above to see requests</p>)}
             </Spin>
         </div>
     )

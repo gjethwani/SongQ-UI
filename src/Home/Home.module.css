@@ -65,3 +65,8 @@
     display: flex;
     flex-direction: column
 }
+
+.welcomeText {
+    font-size: 11px;
+    margin-left: 0.5rem
+}
