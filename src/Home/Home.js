@@ -26,7 +26,8 @@ import {
     Dropdown,
     Menu,
     Spin,
-    Avatar
+    Avatar,
+    Popover
 } from 'antd'
 import { 
     CheckOutlined, 
@@ -43,7 +44,7 @@ import axios from 'axios'
 import { getURL, logoUrl, featureFlags, currUrl } from '../util'
 import { useState, useRef } from 'react'
 import { w3cwebsocket as W3CWebSocket } from "websocket"
-import Tour from '../Tour'
+import { useCookies } from 'react-cookie'
 
 const Home = () => {
     const { turnOnCodeFeatureEnabled, queueActiveButtonFeatureEnabled } = featureFlags
@@ -62,7 +63,9 @@ const Home = () => {
     const [menuVisible, setMenuVisible] = useState(false)
     const [dropdownVisible, setDropdownVisible] = useState(false)
     const [profilePicture, setProfilePicture] = useState('')
-    const [showTourClicked, setShowTourClicked] = useState(false)
+    const [cookies, setCookie] = useCookies()
+    const [currTourStep, setCurrTourStep] = useState(0)
+    const [tourVisible, setTourVisible] = useState(false)
     const requestsRef = useRef(requests)
     const sortKeyRef = useRef(sortKey)
     const errorHandle = err => {
@@ -102,6 +105,10 @@ const Home = () => {
                 setUserName(user.name)
                 setAutoAccept(user.autoAccept)
                 setProfilePicture(user.profilePicture)
+                const { tourShown } = cookies
+                if (!tourShown) {
+                    setTourVisible(true)
+                }
             })
             .catch(err => {
                 errorHandle(err)
@@ -112,6 +119,18 @@ const Home = () => {
             })
     }, [queueActivated])
     useEffect(() => { requestsRef.current = requests }, [requests])
+    useEffect(() => { 
+        if (currTourStep === 2) {
+            setMenuVisible(true)
+        } else {
+            if (menuVisible) {
+                setMenuVisible(false)
+            }
+        }
+        if (tourVisible === false) {
+            setMenuVisible(false)
+        }
+    } , [currTourStep, tourVisible])
     useEffect(() => {
         sortKeyRef.current = sortKey
         sortBy(sortKey) 
@@ -151,6 +170,19 @@ const Home = () => {
             })
         
     })
+    const nextTourStep = () => {
+        if (currTourStep === tourSteps.length-1) {
+            setCookie('tourShown', true)
+            setTourVisible(false)
+        } else {
+            setCurrTourStep(currTourStep + 1)
+        }
+    }
+    const previousTourStep = () => {
+        if (currTourStep > 0) {
+            setCurrTourStep(currTourStep - 1)
+        }
+    }
     const formatRequests = requests => {
         const formatted = []
         requests.forEach(request => {
@@ -448,58 +480,92 @@ const Home = () => {
             </Menu.Item>
         </Menu>
     )
+    const tourSteps = [
+        {
+            index: 0,
+            title: 'Queue Link',
+            content: <div>
+                <p>You can use the 'Copy Link' button to get a shareable link where people will be able to request tracks for your queue</p>
+                <Button onClick={() => setTourVisible(false)}>Skip Tour</Button>
+                <Button type='primary' onClick={() => nextTourStep()}>Next</Button>
+            </div>
+        },
+        {
+            index: 1,
+            title: 'Requests',
+            content: <div>
+                <p>Your requests will show up here, where you can see the details about the request andhow many votes it has.</p>
+                <p>You can use the green and red buttons to approve or reject the track. On approval, the track will be added to your Spotify queue.</p>
+                <Button onClick={() => setTourVisible(false)}>Skip Tour</Button>
+                <Button onClick={() => previousTourStep()}>Previous</Button>
+                <Button type='primary' onClick={() => nextTourStep()}>Next</Button>
+            </div>
+        },
+        {
+            index: 2,
+            title: 'Extra Actions',
+            content: <div>
+                <p>You can perform other actions located in the menu</p>
+                <p>Enable auto accept to automatically approve any request that comes in</p>
+                <p>Use the 'Approve All' and 'Reject All' buttons to service all of your current requests</p>
+                <Button onClick={() => previousTourStep()}>Previous</Button>
+                <Button type='primary' onClick={() => nextTourStep()}>Finish</Button>
+            </div>
+        }
+    ]
     return (
         <div>
             <Spin spinning={pageLoading} indicator={<LoadingOutlined spin />}>
-                <Tour showTourClicked={showTourClicked} setShowTourClicked={stc => setShowTourClicked(stc)} />
-                <Drawer 
-                    visible={menuVisible}
-                    title={ getDrawerTitle()}
-                    onClose={() => setMenuVisible(false)}
-                    footer={
-                    <Button 
-                        ghost 
-                        type='primary'
-                        shape='round' 
-                        style={{ marginLeft: '14px'}}
-                        onClick={() => setShowTourClicked(true)}
-                    >
-                        Show Me Around
-                    </Button>}
-                >
-                    <div className={menuItem}>
-                        Auto Accept:
-                        <Switch
-                            checked={autoAccept}
-                            onChange={onAutoAcceptChange}
-                            style={{ marginLeft: '5px', marginRight: '5px'}}
-                            loading={autoAcceptLoading}
-                        />
-                    </div>
-                    <div className={menuItem}>
-                        <Button
-                            className={approveButton} 
-                            onClick={() => approveRejectAll(true)}
-                            loading={approveAllLoading}
-                            style={isMobile ? { padding :'4px 10px'} : {}}
-                            disabled={autoAccept}
-                        >
-                            Approve All
-                        </Button>
-                    </div>
-                    <div className={menuItem}>
+                <Popover placement='rightBottom' visible={currTourStep === 2 && tourVisible} title={tourSteps[2].title} content={tourSteps[2].content}>
+                    <Drawer 
+                        visible={menuVisible}
+                        title={ getDrawerTitle()}
+                        onClose={() => setMenuVisible(false)}
+                        footer={
                         <Button 
-                            className={rejectButton}
-                            danger 
-                            onClick={() => approveRejectAll(false)}
-                            loading={rejectAllLoading}
-                            style={isMobile ? { padding :'4px 10px' } : {}}
-                            disabled={autoAccept}
+                            ghost 
+                            type='primary'
+                            shape='round' 
+                            style={{ marginLeft: '14px'}}
+                            onClick={() => setTourVisible(true)}
                         >
-                            Reject All
-                        </Button>
-                    </div>
-                </Drawer>
+                            Show Me Around
+                        </Button>}
+                    >
+                        <div className={menuItem}>
+                            Auto Accept:
+                            <Switch
+                                checked={autoAccept}
+                                onChange={onAutoAcceptChange}
+                                style={{ marginLeft: '5px', marginRight: '5px'}}
+                                loading={autoAcceptLoading}
+                            />
+                        </div>
+                        <div className={menuItem}>
+                            <Button
+                                className={approveButton} 
+                                onClick={() => approveRejectAll(true)}
+                                loading={approveAllLoading}
+                                style={isMobile ? { padding :'4px 10px'} : {}}
+                                disabled={autoAccept}
+                            >
+                                Approve All
+                            </Button>
+                        </div>
+                        <div className={menuItem}>
+                            <Button 
+                                className={rejectButton}
+                                danger 
+                                onClick={() => approveRejectAll(false)}
+                                loading={rejectAllLoading}
+                                style={isMobile ? { padding :'4px 10px' } : {}}
+                                disabled={autoAccept}
+                            >
+                                Reject All
+                            </Button>
+                        </div>
+                    </Drawer>
+                </Popover>
                 <PageHeader
                     title={
                     <div className={welcomeContainer}>
@@ -518,12 +584,14 @@ const Home = () => {
                                 >
                                     {queueActivated ? 'Active' : 'Inactive'}
                                 </Button>}
-                                <CopyToClipboard 
-                                    text={`${currUrl}/queue/${userId}`}
-                                    onCopy={() => showCopyNotification()}
-                                >
-                                    <Button shape='round' ghost>Copy Link</Button>
-                                </CopyToClipboard>
+                                <Popover visible={currTourStep === 0 && tourVisible} placement='left' content={tourSteps[0].content} title={tourSteps[0].title}>
+                                    <CopyToClipboard 
+                                        text={`${currUrl}/queue/${userId}`}
+                                        onCopy={() => showCopyNotification()}
+                                    >
+                                        <Button shape='round' ghost>Copy Link</Button>
+                                    </CopyToClipboard>
+                                </Popover>
                                 <Button 
                                     ghost 
                                     icon={<MenuOutlined />} 
@@ -541,11 +609,13 @@ const Home = () => {
                     </Dropdown>
                 </div> : ''}
                 {queueActivated ? 
-                    <Table 
-                        columns={columns} 
-                        dataSource={generateData()} 
-                        className={requestsTable}
-                        locale={{ emptyText: 'No Requests'}}/> : 
+                    <Popover visible={currTourStep === 1 && tourVisible} content={tourSteps[1].content} title={tourSteps[1].title}>
+                        <Table 
+                            columns={columns} 
+                            dataSource={generateData()} 
+                            className={requestsTable}
+                            locale={{ emptyText: 'No Requests'}}/>
+                    </Popover> : 
                     (queueActiveButtonFeatureEnabled && <p className={inactiveText}>Activate your queue by clicking the 'Inactive' button above to see requests</p>)}
             </Spin>
         </div>
