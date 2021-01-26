@@ -29,7 +29,7 @@ import {
 import { 
     CheckOutlined, 
     CloseOutlined, 
-    SettingOutlined,
+    MenuOutlined,
     DownOutlined,
     UpOutlined,
     LoadingOutlined
@@ -496,8 +496,8 @@ const Home = () => {
                                 </CopyToClipboard>
                                 <Button 
                                     ghost 
-                                    icon={<SettingOutlined />} 
-                                    style={{border: 'none'}} 
+                                    icon={<MenuOutlined />} 
+                                    style={isMobile ? { border: 'none', position: 'fixed', top: '0.5rem', right: '0.5rem'} : {border: 'none'}} 
                                     onClick={() => setMenuVisible(!menuVisible)} 
                                 />
                             </div>
