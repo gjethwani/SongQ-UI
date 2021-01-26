@@ -40,9 +40,10 @@ import {
 import { CopyToClipboard } from 'react-copy-to-clipboard'
 import 'antd/dist/antd.css'
 import axios from 'axios'
-import { getURL, logoUrl, featureFlags } from '../util'
+import { getURL, logoUrl, featureFlags, currUrl } from '../util'
 import { useState, useRef } from 'react'
 import { w3cwebsocket as W3CWebSocket } from "websocket"
+import Tour from '../Tour'
 
 const Home = () => {
     const { turnOnCodeFeatureEnabled, queueActiveButtonFeatureEnabled } = featureFlags
@@ -61,6 +62,7 @@ const Home = () => {
     const [menuVisible, setMenuVisible] = useState(false)
     const [dropdownVisible, setDropdownVisible] = useState(false)
     const [profilePicture, setProfilePicture] = useState('')
+    const [showTourClicked, setShowTourClicked] = useState(false)
     const requestsRef = useRef(requests)
     const sortKeyRef = useRef(sortKey)
     const errorHandle = err => {
@@ -449,10 +451,21 @@ const Home = () => {
     return (
         <div>
             <Spin spinning={pageLoading} indicator={<LoadingOutlined spin />}>
+                <Tour showTourClicked={showTourClicked} setShowTourClicked={stc => setShowTourClicked(stc)} />
                 <Drawer 
                     visible={menuVisible}
                     title={ getDrawerTitle()}
                     onClose={() => setMenuVisible(false)}
+                    footer={
+                    <Button 
+                        ghost 
+                        type='primary'
+                        shape='round' 
+                        style={{ marginLeft: '14px'}}
+                        onClick={() => setShowTourClicked(true)}
+                    >
+                        Show Me Around
+                    </Button>}
                 >
                     <div className={menuItem}>
                         Auto Accept:
@@ -507,7 +520,7 @@ const Home = () => {
                                     {queueActivated ? 'Active' : 'Inactive'}
                                 </Button>}
                                 <CopyToClipboard 
-                                    text={`${window.location.protocol}//${window.location.hostname}${window.location.hostname === 'localhost' ? `:${window.location.port}` : ''}/queue/${userId}`}
+                                    text={`${currUrl}/queue/${userId}`}
                                     onCopy={() => showCopyNotification()}
                                 >
                                     <Button shape='round' ghost>Copy Link</Button>
