@@ -472,7 +472,7 @@ const Home = () => {
                 <PageHeader
                     title={
                     <div className={welcomeContainer}>
-                        <img className={logo} src={logoUrl}/>
+                        <img className={logo} src={logoUrl} style={isMobile ? { width: '40%'} : {}}/>
                         <span>{(userName !== '' && userName !== undefined) ? `Welcome, ${userName}!` : `Welcome!`}</span>
                     </div>}
                     className={header}

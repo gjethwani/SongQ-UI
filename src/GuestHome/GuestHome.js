@@ -19,6 +19,7 @@ import { useParams } from 'react-router-dom'
 import axios from 'axios'
 import { CheckCircleTwoTone, PlusOutlined, LoadingOutlined } from '@ant-design/icons'
 import { getURL, logoUrl } from '../util'
+import { isMobile } from 'react-device-detect'
 import 'antd/dist/antd.css'
 import 'muicss/dist/css/mui.min.css'
 
@@ -231,7 +232,7 @@ const GuestHome = () => {
             <PageHeader 
                 title={
                 <div className={welcomeContainer}>
-                    <img className={logo} src={logoUrl}/>
+                    <img className={logo} src={logoUrl} style={isMobile ? { width: '40%'} : {}}/>
                     <span>{userName !== '' ? `${userName}'s queue` : `Welcome to the queue!`}</span>
                 </div>}
                 className={header}
