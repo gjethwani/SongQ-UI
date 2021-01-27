@@ -485,7 +485,7 @@ const Home = () => {
             index: 0,
             title: 'Queue Link',
             content: <div>
-                <p>You can use the 'Copy Link' button to get a shareable link where people will be able to request tracks for your queue</p>
+                <p>Use the 'Copy Link' button to get a shareable link for people to request tracks to your queue.</p>
                 <Button onClick={() => setTourVisible(false)}>Skip Tour</Button>
                 <Button type='primary' onClick={() => nextTourStep()}>Next</Button>
             </div>
@@ -494,8 +494,8 @@ const Home = () => {
             index: 1,
             title: 'Requests',
             content: <div>
-                <p>Your requests will show up here, where you can see the details about the request andhow many votes it has.</p>
-                <p>You can use the green and red buttons to approve or reject the track. On approval, the track will be added to your Spotify queue.</p>
+                <p>Your requests are here. You can approve or deny them, see details about the track and votes garnered.</p>
+                <p>On approval, the track will be added to your Spotify queue.</p>
                 <Button onClick={() => setTourVisible(false)}>Skip Tour</Button>
                 <Button onClick={() => previousTourStep()}>Previous</Button>
                 <Button type='primary' onClick={() => nextTourStep()}>Next</Button>
