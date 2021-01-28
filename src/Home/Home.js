@@ -108,6 +108,7 @@ const Home = () => {
                 const { tourShown } = cookies
                 if (!tourShown) {
                     setTourVisible(true)
+                    setCookie('tourShown', true)
                 }
             })
             .catch(err => {
