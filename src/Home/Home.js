@@ -505,9 +505,8 @@ const Home = () => {
             index: 2,
             title: 'Extra Actions',
             content: <div>
-                <p>You can perform other actions located in the menu</p>
-                <p>Enable auto accept to automatically approve any request that comes in</p>
-                <p>Use the 'Approve All' and 'Reject All' buttons to service all of your current requests</p>
+                <p>Use this menu to enable Auto Accept for all current and future requests.</p>
+                <p>You can use the 'Approve All' and 'Reject All' buttons to clear your current requests.</p>
                 <Button onClick={() => previousTourStep()}>Previous</Button>
                 <Button type='primary' onClick={() => nextTourStep()}>Finish</Button>
             </div>
