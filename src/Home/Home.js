@@ -437,7 +437,7 @@ const Home = () => {
             ),
         },
         {
-            title: 'Approve Or Reject',
+            title: 'Accept Or Reject',
             dataIndex: 'approveOrReject',
             key: 'approveOrReject',
             width: '30%',
@@ -495,7 +495,7 @@ const Home = () => {
             index: 1,
             title: 'Requests',
             content: <div>
-                <p>Your requests are here. You can approve or deny them, see details about the track and votes garnered.</p>
+                <p>Your requests are here. You can accept or reject them, see details about the track and votes garnered.</p>
                 <p>On approval, the track will be added to your Spotify queue.</p>
                 <Button onClick={() => setTourVisible(false)}>Skip Tour</Button>
                 <Button onClick={() => previousTourStep()}>Previous</Button>
@@ -507,7 +507,7 @@ const Home = () => {
             title: 'Extra Actions',
             content: <div>
                 <p>Use this menu to enable Auto Accept for all current and future requests.</p>
-                <p>You can use the 'Approve All' and 'Reject All' buttons to clear your current requests.</p>
+                <p>You can use the 'Accept All' and 'Reject All' buttons to clear your current requests.</p>
                 <Button onClick={() => previousTourStep()}>Previous</Button>
                 <Button type='primary' onClick={() => nextTourStep()}>Finish</Button>
             </div>
@@ -549,7 +549,7 @@ const Home = () => {
                                 style={isMobile ? { padding :'4px 10px'} : {}}
                                 disabled={autoAccept}
                             >
-                                Approve All
+                                Accept All
                             </Button>
                         </div>
                         <div className={menuItem}>

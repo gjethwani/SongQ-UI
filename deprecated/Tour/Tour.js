@@ -20,7 +20,7 @@ const steps = [
         title: 'Requests',
         content: <div className={tourInstructions}>
             <p>Your requests will show up here, where you can see the details about the request andhow many votes it has.</p>
-            <p>You can use the green and red buttons to approve or reject the track. On approval, the track will be added to your Spotify queue.</p>
+            <p>You can use the green and red buttons to accept or reject the track. On approval, the track will be added to your Spotify queue.</p>
             <img className={requestsImg} src={`${currUrl}/requests.png`} />
         </div>
     },
@@ -29,8 +29,8 @@ const steps = [
         title: 'Extra Actions',
         content: <div className={tourInstructions}>
             <p>You can perform other actions located in the menu</p>
-            <p>Enable auto accept to automatically approve any request that comes in</p>
-            <p>Use the 'Approve All' and 'Reject All' buttons to service all of your current requests</p>
+            <p>Enable auto accept to automatically accept any request that comes in</p>
+            <p>Use the 'Accept All' and 'Reject All' buttons to service all of your current requests</p>
             <img src={`${currUrl}/extras-menu.png`}/>
         </div>
     }
