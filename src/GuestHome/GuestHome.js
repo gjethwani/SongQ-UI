@@ -21,7 +21,7 @@ import { CheckCircleTwoTone, PlusOutlined, LoadingOutlined } from '@ant-design/i
 import { getURL, logoUrl, featureFlags } from '../util'
 import { isMobile } from 'react-device-detect'
 import 'antd/dist/antd.css'
-import 'muicss/dist/css/mui.min.css'
+import './mui.css'
 
 const joinArtists = artistsRaw => {
     let result = ''
