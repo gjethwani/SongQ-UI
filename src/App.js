@@ -2,6 +2,7 @@ import Login from './Login'
 import Home from './Home'
 import GuestHome from './GuestHome'
 import FooterComponent from './FooterComponent'
+import LandingPage from './LandingPage'
 import {
     BrowserRouter as Router,
     Switch,
