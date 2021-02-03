@@ -6,6 +6,41 @@ $(function () {
 
     $(window).on('load', function (event) {
         $('.preloader').delay(500).fadeOut(500);
+        $('#login-nav-button').attr("href", getLoginURL())
+        $('#get-started-button').attr("href", getLoginURL())
+        $('#subscribe-button').bind("click", function() {
+            const subscribeButton = document.getElementById('subscribe-button')
+            const subscribeError = document.getElementById('subscribe-error')
+            const email = document.getElementById("email").value
+            if (!email || email.trim().length === 0) {
+                subscribeError.innerHTML = 'Email is required'
+                subscribeError.style.display = 'block'
+                return
+            }
+            const xhttp = new XMLHttpRequest()
+            xhttp.onreadystatechange = function() {
+                if (this.readyState == 4) {
+                    if (this.status === 200) {
+                        $("#subscribe-button").attr("disabled",true)
+                        subscribeButton.style.opacity = 0.5
+                        subscribeButton.innerHTML = 'Subscribed'
+                    } else if (this.status === 400) {
+                        subscribeError.innerHTML = 'Please enter a valid email address'
+                        subscribeError.style.display = 'block'
+                        subscribeButton.innerHTML = 'Subscribe'
+                    } else {
+                        subscribeError.innerHTML = 'Error. Please try again later'
+                        subscribeError.style.display = 'block'
+                        subscribeButton.innerHTML = 'Subscribe'
+                    }
+                    
+                }
+            };
+            xhttp.open("GET", "http://localhost:5000/subscribe?email=" + email, true)
+            xhttp.send()
+            subscribeError.style.display = 'none'
+            subscribeButton.innerHTML = '<i id="spinner" class="fa fa-spinner fa-spin"></i>'
+        })
     });
 
 
@@ -387,3 +422,7 @@ $(function () {
 
 
 });
+
+function getLoginURL() {
+    return `${window.location.protocol === 'https' ? 'https' : 'http'}://${window.location.hostname === 'songq.io' ? 'api.songq.io' : 'localhost:5000'}/spotify-login`
+}

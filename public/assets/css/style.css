@@ -757,7 +757,7 @@ p {
   color: #574AE2;
   background-size: 200%; }
   .navbar-btn .main-btn:hover {
-    color: #fff;
+    /* color: #fff; */
     background-position: right center; }
 
 .sticky .navbar-toggler .toggler-icon {
@@ -817,7 +817,7 @@ p {
 .header-hero-image {
   padding-top: 45px; }
   .header-hero-image img {
-    max-width: 650px; }
+    max-width: 200px; }
     @media (max-width: 767px) {
       .header-hero-image img {
         max-width: 100%; } }
@@ -1536,4 +1536,12 @@ p {
   background: linear-gradient(239.6deg, #3C1778 24.44%, #574AE2 100.52%), #8E2DE2;
   padding: 10px;
   border-radius: 10px;
+}
+
+.services-image {
+  border-radius: 8px;
+}
+
+#app-image {
+  transform: rotate(330deg)
 }
