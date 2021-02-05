@@ -14,14 +14,17 @@
 }
 
 .approveButton { 
-    color: green;
-    border-color: green; 
-    margin-right: 0.5rem;
-    border-radius: 32px;
+    color: green !important;
+    border-color: green !important; 
+    margin-right: 0.5rem !important;
+    border-radius: 32px !important;
+}
+.approveButtonCurved {
+    border-radius: 32px !important
 }
 
 .rejectButton {
-    border-radius: 32px;
+    border-radius: 32px !important;
 }
 
 .albumArt {

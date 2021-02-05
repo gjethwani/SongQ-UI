@@ -12,7 +12,8 @@ import {
     inactiveText,
     logo,
     welcomeContainer,
-    welcomeText
+    welcomeText,
+    approveButtonCurved
 } from './Home.module.css'
 import { isMobile } from 'react-device-detect'
 import { 
@@ -543,7 +544,7 @@ const Home = () => {
                         </div>
                         <div className={menuItem}>
                             <Button
-                                className={approveButton} 
+                                className={autoAccept ? approveButtonCurved : approveButton} 
                                 onClick={() => approveRejectAll(true)}
                                 loading={approveAllLoading}
                                 style={isMobile ? { padding :'4px 10px'} : {}}
