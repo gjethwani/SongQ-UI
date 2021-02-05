@@ -820,7 +820,7 @@ p {
     max-width: 200px; }
     @media (max-width: 767px) {
       .header-hero-image img {
-        max-width: 100%; } }
+        max-width: 200px; } }
   @media (max-width: 767px) {
     .header-hero-image {
       padding-top: 30px; } }

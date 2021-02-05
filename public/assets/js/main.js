@@ -424,5 +424,5 @@ $(function () {
 });
 
 function getLoginURL() {
-    return `${window.location.protocol === 'https' ? 'https' : 'http'}://${window.location.hostname === 'songq.io' ? 'api.songq.io' : 'localhost:5000'}/spotify-login`
+    return `${window.location.protocol === 'https' ? 'https' : 'http'}://${window.location.hostname === 'songq.io' || window.location.hostname === 'www.songq.io' ? 'api.songq.io' : 'localhost:5000'}/spotify-login`
 }
