@@ -13,7 +13,8 @@ import {
     logo,
     welcomeContainer,
     welcomeText,
-    approveButtonCurved
+    approveButtonCurved,
+    recommendButton
 } from './Home.module.css'
 import { isMobile } from 'react-device-detect'
 import { 
@@ -28,7 +29,8 @@ import {
     Menu,
     Spin,
     Avatar,
-    Popover
+    Popover,
+    Tag
 } from 'antd'
 import { 
     CheckOutlined, 
@@ -73,7 +75,7 @@ const Home = () => {
         if (err.response) {
             if (err.response.status) {
                 if (err.response.status === 401) {
-                    window.location.href = '/login'
+                    window.location.href = '/landing-page.html'
                 } else {
                     notification['error']({
                         message: 'Server Error',
@@ -106,6 +108,9 @@ const Home = () => {
                 setUserName(user.name)
                 setAutoAccept(user.autoAccept)
                 setProfilePicture(user.profilePicture)
+                if (autoAccept) {
+                    approveRejectAll(true)
+                }
                 const { tourShown } = cookies
                 if (!tourShown) {
                     setTourVisible(true)
@@ -232,7 +237,8 @@ const Home = () => {
                 track: {
                     songName: r.songName,
                     albumArt: r.albumArt,
-                    artists: r.artists
+                    artists: r.artists,
+                    recommended: r.recommended
                 },
                 votes: r.votes,
                 approveOrReject: r._id
@@ -407,6 +413,20 @@ const Home = () => {
             </div>
         }
     }
+    const getRecommendation = () => {
+        axios.get(`${getURL()}/get-recommendation`, { withCredentials: true })
+            .then(response => {
+                const { recommendation } = response.data
+                requests.push(recommendation)
+                setRequests([...requests])
+            })
+            .catch(() => {
+                notification['error']({
+                    message: 'Unable to get recommendation',
+                    description: 'Please try again later'
+                })
+            })
+    }
     const columns = [
         {
             title: 'Votes',
@@ -423,18 +443,21 @@ const Home = () => {
             key: 'track',
             width: '60%',
             render: track => (
-                <List.Item>
-                    <List.Item.Meta 
-                        avatar={
-                            <img 
-                                alt='album art' 
-                                src={track.albumArt} 
-                                className={albumArt}
-                        />}
-                        title={track.songName}
-                        description={track.artists}
-                    />
-                </List.Item>
+                <div>
+                    {track.recommended && <Tag color='purple'>Recommended by SongQ</Tag>}
+                    <List.Item>
+                        <List.Item.Meta 
+                            avatar={
+                                <img 
+                                    alt='album art' 
+                                    src={track.albumArt} 
+                                    className={albumArt}
+                            />}
+                            title={track.songName}
+                            description={track.artists}
+                        />
+                    </List.Item>
+                </div>
             ),
         },
         {
@@ -563,6 +586,16 @@ const Home = () => {
                                 disabled={autoAccept}
                             >
                                 Reject All
+                            </Button>
+                        </div>
+                        <div className={menuItem}>
+                            <Button
+                                onClick={() => getRecommendation()}
+                                className={recommendButton}
+                                type='primary'
+                                ghost
+                            >
+                                Recommend Something
                             </Button>
                         </div>
                     </Drawer>

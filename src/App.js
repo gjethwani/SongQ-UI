@@ -3,7 +3,8 @@ import GuestHome from './GuestHome'
 import {
     BrowserRouter as Router,
     Switch,
-    Route
+    Route,
+    Redirect
   } from "react-router-dom"
 import {
   container
@@ -15,7 +16,9 @@ const App = () => {
     <HttpsRedirect>
       <Router className={container}>
           <Switch>
-            <Route exact path='/' render={() => { window.location.href='/landing-page.html' }} />
+            <Route exact path='/'>
+              <Redirect to='/home'/>
+            </Route>
             <Route exact path='/home'>
               <Home />
             </Route>

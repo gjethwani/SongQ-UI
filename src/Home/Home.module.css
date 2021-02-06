@@ -73,3 +73,7 @@
     font-size: 11px;
     margin-left: 0.5rem
 }
+
+.recommendButton {
+    border-radius: 20px;
+}
