@@ -69,6 +69,7 @@ const Home = () => {
     const [cookies, setCookie] = useCookies()
     const [currTourStep, setCurrTourStep] = useState(0)
     const [tourVisible, setTourVisible] = useState(false)
+    const [recommendLoading, setRecommendLoading] = useState(false)
     const requestsRef = useRef(requests)
     const sortKeyRef = useRef(sortKey)
     const errorHandle = err => {
@@ -414,6 +415,7 @@ const Home = () => {
         }
     }
     const getRecommendation = () => {
+        setRecommendLoading(true)
         axios.get(`${getURL()}/get-recommendation`, { withCredentials: true })
             .then(response => {
                 const { recommendation } = response.data
@@ -425,6 +427,9 @@ const Home = () => {
                     message: 'Unable to get recommendation',
                     description: 'Please try again later'
                 })
+            })
+            .finally(() => {
+                setRecommendLoading(false)
             })
     }
     const columns = [
@@ -466,7 +471,7 @@ const Home = () => {
             key: 'approveOrReject',
             width: '30%',
             render: requestId => (
-                <div>
+                <div style={{ 'display': 'flex' }}>
                     <Button 
                         className={approveButton} 
                         onClick={() => approveReject(requestId, true)}
@@ -532,6 +537,7 @@ const Home = () => {
             content: <div>
                 <p>Use this menu to enable Auto Accept for all current and future requests.</p>
                 <p>You can use the 'Accept All' and 'Reject All' buttons to clear your current requests.</p>
+                <p>Can't think of what to play? We can recommend you something based on what you've approved.</p>
                 <Button onClick={() => previousTourStep()}>Previous</Button>
                 <Button type='primary' onClick={() => nextTourStep()}>Finish</Button>
             </div>
@@ -594,6 +600,7 @@ const Home = () => {
                                 className={recommendButton}
                                 type='primary'
                                 ghost
+                                loading={recommendLoading}
                             >
                                 Recommend Something
                             </Button>

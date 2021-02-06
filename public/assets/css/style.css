@@ -1545,3 +1545,9 @@ p {
 #app-image {
   transform: rotate(330deg)
 }
+
+@media (max-width: 767px) {
+  .header-area {
+    margin-bottom: 100px;
+  }
+}
