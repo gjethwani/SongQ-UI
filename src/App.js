@@ -16,9 +16,6 @@ const App = () => {
     <HttpsRedirect>
       <Router className={container}>
           <Switch>
-            <Route exact path='/'>
-              <Redirect to='/home'/>
-            </Route>
             <Route exact path='/home'>
               <Home />
             </Route>
@@ -26,6 +23,7 @@ const App = () => {
               <GuestHome />
             </Route>
             <Route exact path='/terms-and-condition.html' onEnter={() => window.location.reload()} />
+            <Route exact path='/index.html' onEnter={() => window.location.reload()} />
             <Route exact path='/privacy-policy.html' onEnter={() => window.location.reload()} />
           </Switch>
       </Router>
