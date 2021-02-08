@@ -5,7 +5,12 @@ $(function () {
     //===== Prealoder
 
     $(window).on('load', function (event) {
-        $('.preloader').delay(500).fadeOut(500);
+        const urlParams = new URLSearchParams(window.location.search)
+        const err = urlParams.get('err')
+        if (err === 'nopremium') {
+            alert('You need Spotify Premium to use SongQ')
+        }
+        $('.preloader').delay(500).fadeOut(500)
         $('#login-nav-button').attr("href", getLoginURL())
         $('#get-started-button').attr("href", getLoginURL())
         $('#subscribe-button').bind("click", function() {

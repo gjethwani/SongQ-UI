@@ -76,7 +76,7 @@ const Home = () => {
         if (err.response) {
             if (err.response.status) {
                 if (err.response.status === 401) {
-                    window.location.href = '/landing-page.html'
+                    window.location.href = '/'
                 } else {
                     notification['error']({
                         message: 'Server Error',
