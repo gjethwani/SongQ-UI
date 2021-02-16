@@ -13,7 +13,7 @@ import HttpsRedirect from 'react-https-redirect'
 
 const App = () => {
   return (
-    <HttpsRedirect>
+    // <HttpsRedirect>
       <Router className={container}>
           <Switch>
             <Route exact path='/home'>
@@ -27,7 +27,7 @@ const App = () => {
             <Route exact path='/privacy-policy.html' onEnter={() => window.location.reload()} />
           </Switch>
       </Router>
-    </HttpsRedirect>
+    {/* </HttpsRedirect> */}
   );
 }
 

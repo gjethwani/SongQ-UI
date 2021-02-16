@@ -1,1 +1,1 @@
-node: HTTPS=true npm start
+node: npm start
