@@ -6,12 +6,14 @@ import {
     Switch,
     Route
   } from "react-router-dom"
+import HttpsRedirect from 'react-https-redirect'
 import {
   container
 } from './App.module.css'
 
 const App = () => {
   return (
+    <HttpsRedirect>
       <Router className={container}>
           <Switch>
             <Route exact path='/home'>
@@ -28,6 +30,7 @@ const App = () => {
             <Route exact path='/privacy-policy.html' onEnter={() => window.location.reload()} />
           </Switch>
       </Router>
+    </HttpsRedirect>
   );
 }
 
