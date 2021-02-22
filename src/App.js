@@ -1,15 +1,14 @@
 import Home from './Home'
 import GuestHome from './GuestHome'
+import Feedback from './Feedback'
 import {
     BrowserRouter as Router,
     Switch,
-    Route,
-    Redirect
+    Route
   } from "react-router-dom"
 import {
   container
 } from './App.module.css'
-import HttpsRedirect from 'react-https-redirect'
 
 const App = () => {
   return (
@@ -20,6 +19,9 @@ const App = () => {
             </Route>
             <Route exact path='/queue/:userId'>
               <GuestHome />
+            </Route>
+            <Route exact path='/feedback'>
+              <Feedback />
             </Route>
             <Route exact path='/terms-and-condition.html' onEnter={() => window.location.reload()} />
             <Route exact path='/index.html' onEnter={() => window.location.reload()} />
