@@ -5,6 +5,10 @@ $(function () {
     //===== Prealoder
 
     $(window).on('load', function (event) {
+        const loc = window.location.href+'';
+        if (loc.indexOf('http://')==0 && window.location.hostname !== 'localhost'){
+            window.location.href = loc.replace('http://','https://');
+        }
         const urlParams = new URLSearchParams(window.location.search)
         const err = urlParams.get('err')
         if (err === 'nopremium') {

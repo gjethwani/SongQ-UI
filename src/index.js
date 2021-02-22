@@ -6,8 +6,6 @@ import reportWebVitals from './reportWebVitals';
 
 const doNotRender = ['', '/', '/index.html']
 
-console.log(window.location.pathname.trim())
-
 if (!doNotRender.includes(window.location.pathname.trim())) {
   document.getElementById('root').innerHTML = ''
   ReactDOM.render(
