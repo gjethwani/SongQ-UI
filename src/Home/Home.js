@@ -16,6 +16,7 @@ import {
     approveButtonCurved,
     recommendButton
 } from './Home.module.css'
+import Feedback from '../Feedback'
 import { isMobile } from 'react-device-detect'
 import { 
     PageHeader, 
@@ -70,6 +71,7 @@ const Home = () => {
     const [currTourStep, setCurrTourStep] = useState(0)
     const [tourVisible, setTourVisible] = useState(false)
     const [recommendLoading, setRecommendLoading] = useState(false)
+    const [feedbackVisible, setFeedbackVisible] = useState(false)
     const requestsRef = useRef(requests)
     const sortKeyRef = useRef(sortKey)
     const errorHandle = err => {
@@ -552,15 +554,24 @@ const Home = () => {
                         title={ getDrawerTitle()}
                         onClose={() => setMenuVisible(false)}
                         footer={
-                        <Button 
-                            ghost 
-                            type='primary'
-                            shape='round' 
-                            style={{ marginLeft: '14px'}}
-                            onClick={() => setTourVisible(true)}
-                        >
-                            Show Me Around
-                        </Button>}
+                        <div>
+                            <Button 
+                                ghost 
+                                type='primary'
+                                shape='round' 
+                                style={{ marginLeft: '14px'}}
+                                onClick={() => setTourVisible(true)}
+                            >
+                                Show Me Around
+                            </Button>
+                            <Button 
+                                style={{ border: 'none'}}
+                                onClick={() => setFeedbackVisible(true)}
+                            >
+                                Submit Feedback
+                            </Button>
+                        </div>
+                        }
                     >
                         <div className={menuItem}>
                             Auto Accept:
@@ -659,6 +670,7 @@ const Home = () => {
                     </Popover> : 
                     (queueActiveButtonFeatureEnabled && <p className={inactiveText}>Activate your queue by clicking the 'Inactive' button above to see requests</p>)}
             </Spin>
+            <Feedback feedbackVisible={feedbackVisible} hideFeedback={() => setFeedbackVisible(false)}/>
         </div>
     )
 }
