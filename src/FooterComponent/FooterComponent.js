@@ -8,7 +8,7 @@ const { Footer } = Layout
 
 const FooterComponent = props => {
     const footerStyle = props.transparentBackground ? { background: 'none' } : {}
-    const aStyle = props.transparentBackground ? { color: 'white' } : {}
+    const aStyle = props.transparentBackground ? { color: 'black' } : {}
     return(
         <Footer className={footer} style={footerStyle}>
             <a 
@@ -26,9 +26,19 @@ const FooterComponent = props => {
                 href='/privacy-policy.html' 
                 target='_blank' 
                 className={footerElem}
-                style={aStyle}
+                style={{ 
+                    marginLeft: '1rem',
+                    ...aStyle
+                }}
             >
                 Privacy Policy
+            </a>
+            <a
+                onClick={() => props.showFeedback()}
+                className={footerElem}
+                style={aStyle}
+            >
+                Feedback
             </a>
         </Footer>
     )

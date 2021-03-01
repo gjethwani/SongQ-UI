@@ -49,6 +49,7 @@ import { getURL, logoUrl, featureFlags, currUrl } from '../util'
 import { useState, useRef } from 'react'
 import { w3cwebsocket as W3CWebSocket } from "websocket"
 import { useCookies } from 'react-cookie'
+import FooterComponent from '../FooterComponent'
 
 const Home = () => {
     const { turnOnCodeFeatureEnabled, queueActiveButtonFeatureEnabled } = featureFlags
@@ -564,12 +565,6 @@ const Home = () => {
                             >
                                 Show Me Around
                             </Button>
-                            <Button 
-                                style={{ border: 'none'}}
-                                onClick={() => setFeedbackVisible(true)}
-                            >
-                                Submit Feedback
-                            </Button>
                         </div>
                         }
                     >
@@ -671,6 +666,7 @@ const Home = () => {
                     (queueActiveButtonFeatureEnabled && <p className={inactiveText}>Activate your queue by clicking the 'Inactive' button above to see requests</p>)}
             </Spin>
             <Feedback feedbackVisible={feedbackVisible} hideFeedback={() => setFeedbackVisible(false)}/>
+            <FooterComponent transparentBackground showFeedback={() => setFeedbackVisible(true)}/>
         </div>
     )
 }

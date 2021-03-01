@@ -22,6 +22,8 @@ import { getURL, logoUrl, featureFlags } from '../util'
 import { isMobile } from 'react-device-detect'
 import 'antd/dist/antd.css'
 import './mui.css'
+import FooterComponent from '../FooterComponent/FooterComponent'
+import Feedback from '../Feedback'
 
 const joinArtists = artistsRaw => {
     let result = ''
@@ -43,6 +45,7 @@ const GuestHome = () => {
     const [currQuery, setQuery] = useState('')
     const [pageLoading, setPageLoading] = useState(true)
     const [requestsLoading, setRequestsLoading] = useState([])
+    const [feedbackVisible, setFeedbackVisible] = useState(false)
     const { userId } = useParams()
     const { queueActiveButtonFeatureEnabled } = featureFlags
     const albumArtIndex = 0
@@ -255,6 +258,8 @@ const GuestHome = () => {
                         <Table columns={columns} dataSource={generateData()} className={requestsTable} />
                     </div>}
             </Spin>
+            <Feedback feedbackVisible={feedbackVisible} hideFeedback={() => setFeedbackVisible(false)}/>
+            <FooterComponent transparentBackground showFeedback={() => setFeedbackVisible(true)}/>
         </div>
     )
 }
