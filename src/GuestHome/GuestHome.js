@@ -11,14 +11,13 @@ import {
     header, 
     cardExtras, 
     searchBox, 
-    inactive 
 } from './GuestHome.module.css'
 import { albumArt, requestsTable, welcomeContainer, logo } from '../Home/Home.module.css'
 import { useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
 import axios from 'axios'
 import { CheckCircleTwoTone, PlusOutlined, LoadingOutlined } from '@ant-design/icons'
-import { getURL, logoUrl, featureFlags } from '../util'
+import { getURL, logoUrl } from '../util'
 import { isMobile } from 'react-device-detect'
 import 'antd/dist/antd.css'
 import './mui.css'
@@ -39,7 +38,6 @@ const joinArtists = artistsRaw => {
 const GuestHome = () => {
     const [tracks, setTracks] = useState([])
     const [userName, setUserName]  = useState('')
-    const [queueActivated, setQueueActivated] = useState(false)
     const [requested, setRequested] = useState([])
     const [recentRequests, setRecentRequests] = useState([])
     const [currQuery, setQuery] = useState('')
@@ -47,7 +45,6 @@ const GuestHome = () => {
     const [requestsLoading, setRequestsLoading] = useState([])
     const [feedbackVisible, setFeedbackVisible] = useState(false)
     const { userId } = useParams()
-    const { queueActiveButtonFeatureEnabled } = featureFlags
     const albumArtIndex = 0
     let CancelToken = axios.CancelToken
     let cancel
@@ -55,20 +52,6 @@ const GuestHome = () => {
         document.title = 'Welcome to SongQ!'
         axios.post(`${getURL()}/guest-login`, {}, { withCredentials: true })
             .then(() => {
-                if (queueActiveButtonFeatureEnabled) {
-                    axios.post(`${getURL()}/is-queue-active`, { userId  }, { withCredentials: true })
-                    .then(response => {
-                        const { queueActivated } = response.data
-                        setQueueActivated(queueActivated)
-                    })
-                    .catch(err => {
-                        notification['error']({
-                            message: 'Server Error',
-                            description: 'Cannot connect to server'
-                        })
-                        console.log(err)
-                    })
-                }
                 axios.get(`${getURL()}/get-user-name?userId=${userId}`, { withCredentials: true })
                     .then(response => {
                         const { name } = response.data
@@ -243,20 +226,18 @@ const GuestHome = () => {
                 className={header}
             />
             <Spin spinning={pageLoading} indicator={<LoadingOutlined spin />}>
-                {!queueActivated && queueActiveButtonFeatureEnabled && <h3 className={inactive}>Queue is not active</h3>}
-                {(queueActivated || !queueActiveButtonFeatureEnabled) && 
-                    <div>
-                        <Input
-                            label='Search for songs'
-                            onChange={e => onSearchChanged(e.target.value)}
-                            className={searchBox}
-                            floatingLabel
-                        />
-                        <h2 style={{ textAlign: 'center', fontVariant: 'tabular-nums', fontWeight: 'bold'}}>
-                            {currQuery === '' ? 'Recently Played' : 'Search Results'}
-                        </h2>
-                        <Table columns={columns} dataSource={generateData()} className={requestsTable} />
-                    </div>}
+                <div>
+                    <Input
+                        label='Search for songs'
+                        onChange={e => onSearchChanged(e.target.value)}
+                        className={searchBox}
+                        floatingLabel
+                    />
+                    <h2 style={{ textAlign: 'center', fontVariant: 'tabular-nums', fontWeight: 'bold'}}>
+                        {currQuery === '' ? 'Recently Played' : 'Search Results'}
+                    </h2>
+                    <Table columns={columns} dataSource={generateData()} className={requestsTable} />
+                </div>
             </Spin>
             <Feedback feedbackVisible={feedbackVisible} hideFeedback={() => setFeedbackVisible(false)}/>
             <FooterComponent transparentBackground showFeedback={() => setFeedbackVisible(true)}/>

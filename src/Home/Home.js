@@ -6,10 +6,8 @@ import {
     rejectButton,
     albumArt,
     menuItem,
-    activeButton,
     requestsTable,
     sortByText,
-    inactiveText,
     logo,
     welcomeContainer,
     welcomeText,
@@ -52,9 +50,8 @@ import { useCookies } from 'react-cookie'
 import FooterComponent from '../FooterComponent'
 
 const Home = () => {
-    const { turnOnCodeFeatureEnabled, queueActiveButtonFeatureEnabled } = featureFlags
+    const { turnOnCodeFeatureEnabled } = featureFlags
     const [userId, setUserId] = useState(null)
-    const [queueActivated, setQueueActivated] = useState(false)
     const [code, setCode] = useState('')
     const [requests, setRequests] = useState([])
     const [userName, setUserName] = useState('')
@@ -73,6 +70,7 @@ const Home = () => {
     const [tourVisible, setTourVisible] = useState(false)
     const [recommendLoading, setRecommendLoading] = useState(false)
     const [feedbackVisible, setFeedbackVisible] = useState(false)
+    const [initialRender] = useState(false)
     const requestsRef = useRef(requests)
     const sortKeyRef = useRef(sortKey)
     const errorHandle = err => {
@@ -105,7 +103,6 @@ const Home = () => {
         axios.get(`${getURL()}/get-user-details`, { withCredentials: true })
             .then(response => {
                 const { user } = response.data
-                setQueueActivated(user.queueActivated)
                 setCode(user.code)
                 setUserId(user.userId)
                 setRequests(user.requests)
@@ -128,25 +125,7 @@ const Home = () => {
             .finally(() => {
                 setPageLoading(false)
             })
-    }, [queueActivated])
-    useEffect(() => { requestsRef.current = requests }, [requests])
-    useEffect(() => { 
-        if (currTourStep === 2) {
-            setMenuVisible(true)
-        } else {
-            if (menuVisible) {
-                setMenuVisible(false)
-            }
-        }
-        if (tourVisible === false) {
-            setMenuVisible(false)
-        }
-    } , [currTourStep, tourVisible])
-    useEffect(() => {
-        sortKeyRef.current = sortKey
-        sortBy(sortKey) 
-    }, [sortKey])
-    useEffect(() => {
+
         axios.post(`${getURL()}/can-create-ws-connection`, {}, { withCredentials: true })
             .then(response => {
                 const { id } = response.data
@@ -179,8 +158,59 @@ const Home = () => {
             .catch(err => {
                 console.log(err)
             })
+    }, [initialRender])
+    useEffect(() => { requestsRef.current = requests }, [requests])
+    useEffect(() => { 
+        if (currTourStep === 2) {
+            setMenuVisible(true)
+        } else {
+            if (menuVisible) {
+                setMenuVisible(false)
+            }
+        }
+        if (tourVisible === false) {
+            setMenuVisible(false)
+        }
+    } , [currTourStep, tourVisible])
+    useEffect(() => {
+        sortKeyRef.current = sortKey
+        sortBy(sortKey) 
+    }, [sortKey])
+    // useEffect(() => {
+        // axios.post(`${getURL()}/can-create-ws-connection`, {}, { withCredentials: true })
+        //     .then(response => {
+        //         const { id } = response.data
+        //         const client = new W3CWebSocket(
+        //             `${window.location.protocol === 'https:' ? 'wss:' : 'ws:'}//${window.location.hostname === 'localhost' ? `localhost:5000` : 'api.songq.io'}/connect?id=${id}`
+        //         )
+        //         client.onmessage = message => {
+        //             const { data } = message
+        //             if (data.substring(0, 12) === 'new-request:') {
+        //                 const newRequest = JSON.parse(data.substring(12, data.length))
+        //                 axios.get(`${getURL()}/get-requests`, { withCredentials: true })
+        //                     .then(response => {
+        //                         const { requests } = response.data
+        //                         setRequests(formatRequests(requests).sort(getSortComparator(sortKeyRef.current)))
+        //                     })
+        //                     .catch(err => {
+        //                         console.log(err)
+        //                         setRequests(formatRequests([...requestsRef.current, newRequest]).sort(getSortComparator(sortKeyRef.current)))
+        //                     })
+        //             } else if (data.substring(0, 12) === 'aew-request:') {
+        //                 const newRequest = JSON.parse(data.substring(12, data.length))
+        //                 notification['success']({
+        //                     message: 'Succesfully auto queued',
+        //                     description: `${newRequest.songName} by ${newRequest.artists} was succesfully queued!`
+        //                 })                    
+        //             }
+                    
+        //         }
+        //     })
+        //     .catch(err => {
+        //         console.log(err)
+        //     })
         
-    })
+    // })
     const nextTourStep = () => {
         if (currTourStep === tourSteps.length-1) {
             setCookie('tourShown', true)
@@ -220,16 +250,6 @@ const Home = () => {
             }
         })
         return formatted
-    }
-    const onCheckedButtonChange = activated => {
-        axios.patch(`${getURL()}/change-queue-activation`, { userId, activated }, { withCredentials: true })
-            .then(() => {
-                setQueueActivated(activated)
-            })
-            .catch(err => {
-                errorHandle(err)
-                console.log(err.response)
-            })
     }
     const generateData = () => {
         const result = []
@@ -622,15 +642,6 @@ const Home = () => {
                     extra={[
                         <div>
                             <div>
-                                {queueActiveButtonFeatureEnabled && <Button
-                                    ghost={!queueActivated}
-                                    className={!queueActivated ? '' : activeButton}
-                                    shape='round'
-                                    onClick={() => onCheckedButtonChange(!queueActivated)}
-                                    style={{ marginRight: '0.5rem'}}
-                                >
-                                    {queueActivated ? 'Active' : 'Inactive'}
-                                </Button>}
                                 <Popover visible={currTourStep === 0 && tourVisible} placement={isMobile ? 'bottom' : 'left'} content={tourSteps[0].content} title={tourSteps[0].title}>
                                     <CopyToClipboard 
                                         text={`${currUrl}/queue/${userId}`}
@@ -646,24 +657,22 @@ const Home = () => {
                                     onClick={() => setMenuVisible(!menuVisible)} 
                                 />
                             </div>
-                            {turnOnCodeFeatureEnabled ? <p className={queueActivatedText}>{queueActivated ? `Code: ${code}` : `Queue Disabled`}</p> : ''}
+                            {turnOnCodeFeatureEnabled ? <p className={queueActivatedText}>{`Code: ${code}`}</p> : ''}
                         </div>,
                     ]}
                 />
-                {queueActivated ? <div>
+                <div>
                     <Dropdown overlay={menu} trigger={'click'} onVisibleChange={visible => setDropdownVisible(visible)}>
                         <span className={sortByText}>Sort by {dropdownVisible ? <UpOutlined /> : <DownOutlined />}</span>
                     </Dropdown>
-                </div> : ''}
-                {queueActivated ? 
-                    <Popover visible={currTourStep === 1 && tourVisible} content={tourSteps[1].content} title={tourSteps[1].title}>
-                        <Table 
-                            columns={columns} 
-                            dataSource={generateData()} 
-                            className={requestsTable}
-                            locale={{ emptyText: 'No Requests'}}/>
-                    </Popover> : 
-                    (queueActiveButtonFeatureEnabled && <p className={inactiveText}>Activate your queue by clicking the 'Inactive' button above to see requests</p>)}
+                </div>
+                <Popover visible={currTourStep === 1 && tourVisible} content={tourSteps[1].content} title={tourSteps[1].title}>
+                    <Table 
+                        columns={columns} 
+                        dataSource={generateData()} 
+                        className={requestsTable}
+                        locale={{ emptyText: 'No Requests'}}/>
+                </Popover>
             </Spin>
             <Feedback feedbackVisible={feedbackVisible} hideFeedback={() => setFeedbackVisible(false)}/>
             <FooterComponent transparentBackground showFeedback={() => setFeedbackVisible(true)}/>

@@ -37,10 +37,6 @@
     margin-top: 0.5rem;
 }
 
-.activeButton span {
-    color: black !important
-}
-
 .requestsTable {
     margin-top: 16px;
 }
@@ -52,11 +48,6 @@
 .sortByText {
     padding-left: 16px;
     margin-top: 16px;
-}
-
-.inactiveText {
-    padding: 16px;
-    text-align: center;
 }
 
 .logo {

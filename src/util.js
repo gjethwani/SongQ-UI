@@ -19,8 +19,7 @@ const currUrl = `${window.location.protocol}//${window.location.hostname}${windo
 const logoUrl = `${currUrl}/logo.png`
 
 const featureFlags = {
-    turnOnCodeFeatureEnabled: false,
-    queueActiveButtonFeatureEnabled: false
+    turnOnCodeFeatureEnabled: false
 }
 
 module.exports = {
