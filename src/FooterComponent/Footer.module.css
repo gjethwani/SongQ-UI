@@ -8,3 +8,9 @@
     text-decoration: none;
     float: right;
 }
+
+.footerMobile {
+    padding: 0 !important;
+    margin-right: 24px;
+    margin-top: 24px;
+}
