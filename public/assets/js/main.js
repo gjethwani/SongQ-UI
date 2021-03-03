@@ -14,6 +14,19 @@ $(function () {
         if (err === 'nopremium') {
             alert('You need Spotify Premium to use SongQ')
         }
+
+        const xhttp = new XMLHttpRequest()
+        xhttp.onreadystatechange = function() {
+            if (this.readyState == 4) {
+                if (this.status === 200 && window.location.pathname !== "/home") {
+                    window.location.pathname = "/home"
+                }
+            }
+        };
+        xhttp.open("GET", "http://localhost:5000/get-user-details", true)
+        xhttp.withCredentials = true
+        xhttp.send()
+
         $('.preloader').delay(500).fadeOut(500)
         $('#login-nav-button').attr("href", getLoginURL())
         $('#get-started-button').attr("href", getLoginURL())
