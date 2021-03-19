@@ -14,7 +14,7 @@ import {
     approveButtonCurved,
     recommendButton
 } from './Home.module.css'
-import Feedback from '../Feedback'
+import FeedbackModal from '../FeedbackModal'
 import { isMobile } from 'react-device-detect'
 import { 
     PageHeader, 
@@ -176,41 +176,6 @@ const Home = () => {
         sortKeyRef.current = sortKey
         sortBy(sortKey) 
     }, [sortKey])
-    // useEffect(() => {
-        // axios.post(`${getURL()}/can-create-ws-connection`, {}, { withCredentials: true })
-        //     .then(response => {
-        //         const { id } = response.data
-        //         const client = new W3CWebSocket(
-        //             `${window.location.protocol === 'https:' ? 'wss:' : 'ws:'}//${window.location.hostname === 'localhost' ? `localhost:5000` : 'api.songq.io'}/connect?id=${id}`
-        //         )
-        //         client.onmessage = message => {
-        //             const { data } = message
-        //             if (data.substring(0, 12) === 'new-request:') {
-        //                 const newRequest = JSON.parse(data.substring(12, data.length))
-        //                 axios.get(`${getURL()}/get-requests`, { withCredentials: true })
-        //                     .then(response => {
-        //                         const { requests } = response.data
-        //                         setRequests(formatRequests(requests).sort(getSortComparator(sortKeyRef.current)))
-        //                     })
-        //                     .catch(err => {
-        //                         console.log(err)
-        //                         setRequests(formatRequests([...requestsRef.current, newRequest]).sort(getSortComparator(sortKeyRef.current)))
-        //                     })
-        //             } else if (data.substring(0, 12) === 'aew-request:') {
-        //                 const newRequest = JSON.parse(data.substring(12, data.length))
-        //                 notification['success']({
-        //                     message: 'Succesfully auto queued',
-        //                     description: `${newRequest.songName} by ${newRequest.artists} was succesfully queued!`
-        //                 })                    
-        //             }
-                    
-        //         }
-        //     })
-        //     .catch(err => {
-        //         console.log(err)
-        //     })
-        
-    // })
     const nextTourStep = () => {
         if (currTourStep === tourSteps.length-1) {
             setCookie('tourShown', true)
@@ -674,7 +639,7 @@ const Home = () => {
                         locale={{ emptyText: 'No Requests'}}/>
                 </Popover>
             </Spin>
-            <Feedback feedbackVisible={feedbackVisible} hideFeedback={() => setFeedbackVisible(false)}/>
+            <FeedbackModal feedbackVisible={feedbackVisible} hideFeedback={() => setFeedbackVisible(false)}/>
             <FooterComponent transparentBackground showFeedback={() => setFeedbackVisible(true)}/>
         </div>
     )

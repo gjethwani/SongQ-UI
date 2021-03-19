@@ -22,7 +22,7 @@ import { isMobile } from 'react-device-detect'
 import 'antd/dist/antd.css'
 import './mui.css'
 import FooterComponent from '../FooterComponent/FooterComponent'
-import Feedback from '../Feedback'
+import FeedbackModal from '../FeedbackModal'
 
 const joinArtists = artistsRaw => {
     let result = ''
@@ -239,7 +239,7 @@ const GuestHome = () => {
                     <Table columns={columns} dataSource={generateData()} className={requestsTable} />
                 </div>
             </Spin>
-            <Feedback feedbackVisible={feedbackVisible} hideFeedback={() => setFeedbackVisible(false)}/>
+            <FeedbackModal feedbackVisible={feedbackVisible} hideFeedback={() => setFeedbackVisible(false)}/>
             <FooterComponent transparentBackground showFeedback={() => setFeedbackVisible(true)}/>
         </div>
     )

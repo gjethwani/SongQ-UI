@@ -5,7 +5,7 @@ import { useState } from 'react'
 
 const { TextArea } = Input
 
-const Feedback = props => {
+const FeedbackModal = props => {
     const [rating, setRating] = useState(0)
     const [feedback, setFeedback] = useState('')
     const submitFeedback = () => {
@@ -52,4 +52,4 @@ const Feedback = props => {
     )
 }
 
-export default Feedback
+export default FeedbackModal
