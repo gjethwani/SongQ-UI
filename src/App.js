@@ -1,5 +1,6 @@
 import Home from './Home'
 import GuestHome from './GuestHome'
+import FeedbackPage from './FeedbackPage'
 import {
     BrowserRouter as Router,
     Switch,
@@ -20,6 +21,9 @@ const App = () => {
             </Route>
             <Route exact path='/queue/:userId'>
               <GuestHome />
+            </Route>
+            <Route exact path='/feedback'>
+              <FeedbackPage />
             </Route>
             <Route exact path='/terms-and-condition.html' onEnter={() => window.location.reload()} />
             <Route exact path='/index.html' onEnter={() => window.location.reload()} />
