@@ -29,7 +29,8 @@ import {
     Spin,
     Avatar,
     Popover,
-    Tag
+    Tag,
+    Radio
 } from 'antd'
 import { 
     CheckOutlined, 
@@ -71,6 +72,9 @@ const Home = () => {
     const [recommendLoading, setRecommendLoading] = useState(false)
     const [feedbackVisible, setFeedbackVisible] = useState(false)
     const [initialRender] = useState(false)
+    const [emailPreference, setEmailPreference] = useState("unreadRequests")
+    const [emailRadioValue, setEmailRadioValue] = useState(2)
+    const [emailPreferenceLoading, setEmailPreferenceLoading] = useState(false)
     const requestsRef = useRef(requests)
     const sortKeyRef = useRef(sortKey)
     const errorHandle = err => {
@@ -109,6 +113,7 @@ const Home = () => {
                 setUserName(user.name)
                 setAutoAccept(user.autoAccept)
                 setProfilePicture(user.profilePicture)
+                setEmailPreference(user.emailPreference)
                 if (autoAccept) {
                     approveRejectAll(true)
                 }
@@ -116,6 +121,16 @@ const Home = () => {
                 if (!tourShown) {
                     setTourVisible(true)
                     setCookie('tourShown', true)
+                }
+                if (user.emailPreference ===  "unreadRequests") {
+                    axios.post(`${getURL()}/change-should-send-email`,  { shouldSendEmail: true }, { withCredentials: true})
+                    setEmailRadioValue(2)
+                }
+                if (user.emailPreference === "none") {
+                    setEmailRadioValue(1)
+                }
+                if (user.emailPreference === "allRequests") {
+                    setEmailRadioValue(3)
                 }
             })
             .catch(err => {
@@ -420,6 +435,31 @@ const Home = () => {
                 setRecommendLoading(false)
             })
     }
+    const changeEmailPreference = preference => {
+        setEmailPreferenceLoading(true)
+        let preferenceString
+        if (preference === 1) {
+            preferenceString = "none"
+        } else if (preference === 2) {
+            preferenceString = "unreadRequests"
+        } else if (preference === 3) {
+            preferenceString = "allRequests"
+        }
+        axios.post(`${getURL()}/change-email-preference`, { emailPreference: preferenceString }, { withCredentials: true })
+            .then(() => {
+                setEmailPreference(preferenceString)
+                setEmailRadioValue(preference)
+            })
+            .catch(() => {
+                notification['error']({
+                    message: 'Could not change email preference',
+                    description: 'Please try again later'
+                })
+            })
+            .finally(() => {
+                setEmailPreferenceLoading(false)
+            })
+    }
     const columns = [
         {
             title: 'Votes',
@@ -595,6 +635,23 @@ const Home = () => {
                             >
                                 Recommend Something
                             </Button>
+                        </div>
+                        <div className={menuItem}>
+                            {emailPreferenceLoading && <LoadingOutlined spin />} Email Notification Preferences
+                            <Radio.Group 
+                                onChange={e => changeEmailPreference(e.target.value)} 
+                                value={emailRadioValue}
+                            >
+                                <Radio value={1}>
+                                    No Emails
+                                </Radio>
+                                <Radio value={2}>
+                                    Unread Requests Only
+                                </Radio>
+                                <Radio value={3}>
+                                    All Requests
+                                </Radio>
+                            </Radio.Group>
                         </div>
                     </Drawer>
                 </Popover>
