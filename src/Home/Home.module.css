@@ -68,3 +68,9 @@
 .recommendButton {
     border-radius: 32px !important;
 }
+
+.qrCodeContainer {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}

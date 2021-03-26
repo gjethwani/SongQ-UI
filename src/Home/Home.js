@@ -12,7 +12,8 @@ import {
     welcomeContainer,
     welcomeText,
     approveButtonCurved,
-    recommendButton
+    recommendButton,
+    qrCodeContainer
 } from './Home.module.css'
 import FeedbackModal from '../FeedbackModal'
 import { isMobile } from 'react-device-detect'
@@ -30,7 +31,8 @@ import {
     Avatar,
     Popover,
     Tag,
-    Radio
+    Radio,
+    Modal
 } from 'antd'
 import { 
     CheckOutlined, 
@@ -49,6 +51,7 @@ import { useState, useRef } from 'react'
 import { w3cwebsocket as W3CWebSocket } from "websocket"
 import { useCookies } from 'react-cookie'
 import FooterComponent from '../FooterComponent'
+import QRCode from 'react-qr-code'
 
 const Home = () => {
     const { turnOnCodeFeatureEnabled } = featureFlags
@@ -75,6 +78,7 @@ const Home = () => {
     const [emailPreference, setEmailPreference] = useState("unreadRequests")
     const [emailRadioValue, setEmailRadioValue] = useState(2)
     const [emailPreferenceLoading, setEmailPreferenceLoading] = useState(false)
+    const [showQRCodeModal, setShowQRCodeModal] = useState(false)
     const requestsRef = useRef(requests)
     const sortKeyRef = useRef(sortKey)
     const errorHandle = err => {
@@ -673,6 +677,14 @@ const Home = () => {
                                     </CopyToClipboard>
                                 </Popover>
                                 <Button 
+                                    onClick={() => setShowQRCodeModal(true)}
+                                    shape='round' 
+                                    ghost
+                                    style={{ marginLeft: '0.5rem'}}
+                                >
+                                    Show QR Code
+                                </Button>
+                                <Button 
                                     ghost 
                                     icon={<MenuOutlined />} 
                                     style={isMobile ? { border: 'none', position: 'fixed', top: '0.5rem', right: '0.5rem'} : {border: 'none'}} 
@@ -696,6 +708,16 @@ const Home = () => {
                         locale={{ emptyText: 'No Requests'}}/>
                 </Popover>
             </Spin>
+            <Modal
+                title={`${userName}'s Queue`}
+                visible={showQRCodeModal}
+                footer={null}
+                onCancel={() => setShowQRCodeModal(false)}
+            >
+                <div className={qrCodeContainer}>
+                    <QRCode value={`${currUrl}/queue/${userId}`} />
+                </div>
+            </Modal>
             <FeedbackModal feedbackVisible={feedbackVisible} hideFeedback={() => setFeedbackVisible(false)}/>
             <FooterComponent transparentBackground showFeedback={() => setFeedbackVisible(true)}/>
         </div>
