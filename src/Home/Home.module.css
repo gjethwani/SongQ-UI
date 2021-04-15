@@ -74,3 +74,8 @@
     justify-content: center;
     align-items: center;
 }
+
+.similarity {
+    color: #128913;
+    font-size: 12px;
+}

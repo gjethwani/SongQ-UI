@@ -13,7 +13,8 @@ import {
     welcomeText,
     approveButtonCurved,
     recommendButton,
-    qrCodeContainer
+    qrCodeContainer,
+    similarity
 } from './Home.module.css'
 import FeedbackModal from '../FeedbackModal'
 import { isMobile } from 'react-device-detect'
@@ -41,7 +42,8 @@ import {
     DownOutlined,
     UpOutlined,
     LoadingOutlined,
-    UserOutlined
+    UserOutlined,
+    LikeOutlined
 } from '@ant-design/icons'
 import { CopyToClipboard } from 'react-copy-to-clipboard'
 import 'antd/dist/antd.css'
@@ -246,7 +248,8 @@ const Home = () => {
                     songName: r.songName,
                     albumArt: r.albumArt,
                     artists: r.artists,
-                    recommended: r.recommended
+                    recommended: r.recommended,
+                    similar: r.similar
                 },
                 votes: r.votes,
                 approveOrReject: r._id
@@ -491,7 +494,16 @@ const Home = () => {
                                     className={albumArt}
                             />}
                             title={track.songName}
-                            description={track.artists}
+                            description={
+                                <div>
+                                    <p>{track.artists}</p>
+                                    {track.similar && track.similar.difference <= 20 &&
+                                        <p className={similarity}>
+                                            <LikeOutlined />
+                                            {`You may like this based on ${track.similar.name} by ${track.similar.artists} (${Math.round(100 - track.similar.difference)}% similar)`}
+                                        </p>}
+                                </div>
+                            }
                         />
                     </List.Item>
                 </div>
