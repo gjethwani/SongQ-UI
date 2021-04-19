@@ -115,7 +115,6 @@ const Home = () => {
                 const { user } = response.data
                 setCode(user.code)
                 setUserId(user.userId)
-                setRequests(user.requests)
                 setUserName(user.name)
                 setAutoAccept(user.autoAccept)
                 setProfilePicture(user.profilePicture)
@@ -137,6 +136,18 @@ const Home = () => {
                 }
                 if (user.emailPreference === "allRequests") {
                     setEmailRadioValue(3)
+                }
+                if (user.requests) {
+                    user.requests.forEach(request => {
+                        let noSimilar = 0
+                        request.similar.forEach(s => {
+                            if (s.difference < 20) {
+                                noSimilar++
+                            }
+                        })
+                        request.isSimilar = request.similar[0].difference !== 0 && noSimilar >= (request.similar.length / 2)
+                    })
+                    setRequests(user.requests)
                 }
             })
             .catch(err => {
@@ -235,6 +246,15 @@ const Home = () => {
                 }
             }
         })
+        formatted.forEach(request => {
+            let noSimilar = 0
+            request.similar.forEach(s => {
+                if (s.difference < 20) {
+                    noSimilar++
+                }
+            })
+            request.isSimilar = request.similar[0].difference !== 0 && noSimilar >= (request.similar.length / 2)
+        })
         return formatted
     }
     const generateData = () => {
@@ -249,7 +269,8 @@ const Home = () => {
                     albumArt: r.albumArt,
                     artists: r.artists,
                     recommended: r.recommended,
-                    similar: r.similar
+                    similar: r.similar,
+                    isSimilar: r.isSimilar
                 },
                 votes: r.votes,
                 approveOrReject: r._id
@@ -497,11 +518,18 @@ const Home = () => {
                             description={
                                 <div>
                                     <p>{track.artists}</p>
-                                    {track.similar && track.similar.difference <= 20 &&
+                                    {/* {track.similar && track.similar.difference <= 20 &&
                                         <p className={similarity}>
                                             <LikeOutlined />
                                             {`You may like this based on ${track.similar.name} by ${track.similar.artists} (${Math.round(100 - track.similar.difference)}% similar)`}
-                                        </p>}
+                                        </p>} */}
+                                    {
+                                        track.isSimilar && 
+                                        <p className={similarity}>
+                                            <LikeOutlined />
+                                            {`You may like this based on ${track.similar[0].name} by ${track.similar[0].artists}`}
+                                        </p>
+                                    }
                                 </div>
                             }
                         />
