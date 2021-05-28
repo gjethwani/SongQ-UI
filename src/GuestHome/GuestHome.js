@@ -23,6 +23,7 @@ import 'antd/dist/antd.css'
 import './mui.css'
 import FooterComponent from '../FooterComponent/FooterComponent'
 import FeedbackModal from '../FeedbackModal'
+import _ from 'lodash'
 
 const joinArtists = artistsRaw => {
     let result = ''
@@ -46,8 +47,6 @@ const GuestHome = () => {
     const [feedbackVisible, setFeedbackVisible] = useState(false)
     const { userId } = useParams()
     const albumArtIndex = 0
-    let CancelToken = axios.CancelToken
-    let cancel
     useEffect(() => {
         document.title = 'Welcome to SongQ!'
         axios.post(`${getURL()}/guest-login`, {}, { withCredentials: true })
@@ -88,15 +87,9 @@ const GuestHome = () => {
         if (query === '') {
             return
         }
-        if (cancel !== undefined) {
-            cancel()
-        }
         setPageLoading(true)
         axios.post(`${getURL()}/search-songs`, { q: query}, { 
             withCredentials: true,
-            cancelToken: new CancelToken(c => {
-                cancel = c
-            })
         })
             .then(response => {
                 const { items } = response.data.results.tracks
@@ -109,6 +102,7 @@ const GuestHome = () => {
                 setPageLoading(false)
             })
     }
+    const handleSearchText = _.debounce(onSearchChanged, 500)
     const makeRequest = track => {
         requestsLoading.push(track.id)
         setRequestsLoading([...requestsLoading])
@@ -229,7 +223,8 @@ const GuestHome = () => {
                 <div>
                     <Input
                         label='Search for songs'
-                        onChange={e => onSearchChanged(e.target.value)}
+                        // onChange={e => onSearchChanged(e.target.value)}
+                        onChange={e => handleSearchText(e.target.value)}
                         className={searchBox}
                         floatingLabel
                     />
