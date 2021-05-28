@@ -151,8 +151,14 @@ const Home = () => {
                 }
             })
             .catch(err => {
-                errorHandle(err)
-                console.log(err)
+                if (err.response) {
+                    if (err.response.status === 404) {
+                        window.location.href = currUrl
+                    }
+                } else {
+                    errorHandle(err)
+                    console.log(err)
+                }
             })
             .finally(() => {
                 setPageLoading(false)

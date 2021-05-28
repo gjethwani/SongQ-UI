@@ -223,7 +223,6 @@ const GuestHome = () => {
                 <div>
                     <Input
                         label='Search for songs'
-                        // onChange={e => onSearchChanged(e.target.value)}
                         onChange={e => handleSearchText(e.target.value)}
                         className={searchBox}
                         floatingLabel
